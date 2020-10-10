@@ -1,5 +1,6 @@
 const usersRouter = require('express').Router()
 const bcrypt = require('bcrypt')
+const User = require('../models/user')
 
 const { body, validationResult } = require('express-validator')
 usersRouter.post('/register', [
@@ -9,18 +10,24 @@ usersRouter.post('/register', [
 ], async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() })
+    return res.status(400).json({ error: errors.array() })
 
   const body = req.body
   const passwordHash = await bcrypt.hash(body.password, 10)
 
-  const user = {
+  const user = new User({
     username: body.username,
-    password: passwordHash,
+    passwordHash,
     email: body.email
+  })
+
+  let savedUser = null
+  try {
+    savedUser = await user.save()
+  } catch (err) {
+    return res.status(400).json({ error: err })
   }
 
-  console.log(user)
   return res.status(200).send(user)
 })
 

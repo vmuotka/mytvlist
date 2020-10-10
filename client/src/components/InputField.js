@@ -11,7 +11,7 @@ const InputField = ({ type, value, name, size, onChange, className, required, mi
       size={size}
       onChange={onChange}
       required={required ? required : false}
-      minlength={minLength}
+      minLength={minLength}
     />
   )
 }
