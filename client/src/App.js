@@ -8,7 +8,9 @@ const App = () => {
   return (
     <>
       <Navigation />
-      <main><AppRouter /></main>
+      <main className='container mt-4 px-4 mx-auto'>
+        <AppRouter />
+      </main>
     </>
   )
 }

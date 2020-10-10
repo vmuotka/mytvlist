@@ -1,5 +1,8 @@
 import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
+
+// project pages
+import SignUp from './pages/SignUp'
 
 const routes = [
   {
@@ -9,6 +12,10 @@ const routes = [
   {
     path: '/search',
     component: <h1>Search</h1>
+  },
+  {
+    path: '/signup',
+    component: <SignUp />
   },
   {
     path: '/',
