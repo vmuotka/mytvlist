@@ -46,7 +46,7 @@ const Navigation = () => {
             }
           </div>
           <div>
-            <Link to='/signup' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-0'>Sign Up</Link>
+            <Link to='/signup' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign Up</Link>
           </div>
         </div>
       </nav>

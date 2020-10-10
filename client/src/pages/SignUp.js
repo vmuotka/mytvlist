@@ -5,6 +5,9 @@ import InputField from '../components/InputField'
 import Form from '../components/Form'
 import Button from '../components/Button'
 
+// project services
+import userService from '../services/userService'
+
 const SignUp = () => {
   // handle form field changes
   const [form, setForm] = useState({ username: '', password: '', email: '' })
@@ -15,20 +18,27 @@ const SignUp = () => {
     })
   }
   // handle form submit
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    console.log('submitted')
+    try {
+      console.log(await userService.register(form))
+    } catch (err) {
+      console.log(err.response.data)
+    }
+
   }
 
   // form fields
   const fields = [
     {
       name: 'username',
-      type: 'text'
+      type: 'text',
+      minLength: 3
     },
     {
       name: 'password',
-      type: 'password'
+      type: 'password',
+      minLength: 5
     },
     {
       name: 'email',
@@ -42,7 +52,7 @@ const SignUp = () => {
           fields.map((field, index) =>
             <div className='mb-4' key={index}>
               <label className='block text-sm font-bold mb-2 text-gray-600 capitalize' htmlFor={field.name}>{field.name}</label>
-              <InputField className='w-full' type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} />
+              <InputField className='w-full' type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} minLength={field.minLength} required />
             </div>
           )
         }
