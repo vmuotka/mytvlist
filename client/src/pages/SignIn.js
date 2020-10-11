@@ -11,11 +11,13 @@ import userService from '../services/userService'
 
 // project hooks
 import { useAuth } from '../context/auth'
+import { useNotification } from '../context/notification'
 
 const SignUp = (props) => {
   // handle referer (if user got redirected to sign in page)
   const referer = props.location.state ? props.location.state.referer : '/'
   const { authTokens, setAuthTokens } = useAuth()
+  const { setNotifications } = useNotification()
 
 
 
@@ -33,7 +35,7 @@ const SignUp = (props) => {
     try {
       setAuthTokens(await userService.login(form))
     } catch (err) {
-      console.log(err.response.data)
+      setNotifications([{ title: 'Sign In failed', message: 'Incorrect username or password', type: 'error' }])
     }
 
   }

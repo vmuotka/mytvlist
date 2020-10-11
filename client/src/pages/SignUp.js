@@ -5,17 +5,18 @@ import { Link, Redirect } from 'react-router-dom'
 import InputField from '../components/InputField'
 import Form from '../components/Form'
 import Button from '../components/Button'
-import Notification from '../components/Notification'
 
 // project services
 import userService from '../services/userService'
 
 // project hooks
 import { useAuth } from '../context/auth'
+import { useNotification } from '../context/notification'
 
 const SignUp = (props) => {
   const referer = props.location.state ? props.location.state.referer : '/'
   const { authTokens, setAuthTokens } = useAuth()
+  const { setNotifications } = useNotification()
 
   // handle form field changes
   const [form, setForm] = useState({ username: '', password: '', confirm: '', email: '' })
@@ -32,10 +33,15 @@ const SignUp = (props) => {
       try {
         setAuthTokens(await userService.register(form))
       } catch (err) {
-        console.log(err.response.data)
+        const errors = err.response.data.error.errors
+        let notificationArray = []
+        for (let [key, error] of Object.entries(errors)) {
+          notificationArray.push({ title: error.name, message: error.message, type: 'error' })
+        }
+        setNotifications(notificationArray)
       }
     } else {
-      console.log('ree')
+      setNotifications([{ title: 'Passwords do not match', message: 'Make sure you wrote them correctly', type: 'error' }])
     }
   }
 
@@ -77,7 +83,6 @@ const SignUp = (props) => {
             </div>
           )
         }
-        <Notification title='Notification title' message='Something went wrong boi!' />
         <div className='text-center'>
           <Button className='mb-2' type='submit' value='Sign Up' />
         </div>
