@@ -8,7 +8,15 @@ import AppRouter from './AppRouter'
 import { AuthContext } from './context/auth'
 
 const App = () => {
-  const existingTokens = JSON.parse(localStorage.getItem("tokens"))
+  let existingTokens = JSON.parse(localStorage.getItem("tokens"))
+
+  const decodedToken = existingTokens ? JSON.parse(window.atob(existingTokens.token.split('.')[1])) : null
+
+  console.log(decodedToken)
+  if (decodedToken && Date.now() >= decodedToken.exp * 1000) {
+    existingTokens = null
+  }
+
   const [authTokens, setAuthTokens] = useState(existingTokens)
 
   const setTokens = (data) => {

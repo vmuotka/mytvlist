@@ -1,6 +1,7 @@
 const usersRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const { body, validationResult } = require('express-validator')
 usersRouter.post('/register', [
@@ -28,7 +29,14 @@ usersRouter.post('/register', [
     return res.status(400).json({ error: err })
   }
 
-  return res.status(200).send(user)
+  const userForToken = {
+    username: savedUser.username,
+    id: savedUser.id
+  }
+
+  const token = jwt.sign(userForToken, process.env.SECRET)
+
+  return res.status(200).send({ token })
 })
 
 usersRouter.post('/login', [
@@ -45,7 +53,14 @@ usersRouter.post('/login', [
     return res.status(401).json({ error: 'Incorrect username or password' })
   }
 
-  return res.status(200).json(user)
+  const userForToken = {
+    username: user.username,
+    id: user.id
+  }
+
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '7d' })
+
+  return res.status(200).json({ token })
 })
 
 module.exports = usersRouter

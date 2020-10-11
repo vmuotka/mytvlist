@@ -13,7 +13,7 @@ import Placeholdercomponent from './components/placeholdercomponent'
 const privateRoutes = [
   {
     path: '/discover',
-    component: <Placeholdercomponent />
+    component: Placeholdercomponent
   },
 ]
 
