@@ -13,8 +13,11 @@ import userService from '../services/userService'
 import { useAuth } from '../context/auth'
 
 const SignUp = (props) => {
+  // handle referer (if user got redirected to sign in page)
   const referer = props.location.state ? props.location.state.referer : '/'
   const { authTokens, setAuthTokens } = useAuth()
+
+
 
   // handle form field changes
   const [form, setForm] = useState({ username: '', password: '', email: '' })
@@ -28,35 +31,30 @@ const SignUp = (props) => {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
-      setAuthTokens(await userService.register(form))
+      setAuthTokens(await userService.login(form))
     } catch (err) {
       console.log(err.response.data)
     }
 
   }
 
+  // form fields
+  const fields = [
+    {
+      name: 'username',
+      type: 'text'
+    },
+    {
+      name: 'password',
+      type: 'password'
+    }
+  ]
+
   // if logged in, redirect to home page or a page the user tried to access before
   if (authTokens) {
     return <Redirect to={referer} />
   }
 
-  // form fields
-  const fields = [
-    {
-      name: 'username',
-      type: 'text',
-      minLength: 3
-    },
-    {
-      name: 'password',
-      type: 'password',
-      minLength: 5
-    },
-    {
-      name: 'email',
-      type: 'email'
-    }
-  ]
   return (
     <>
       <Form className='max-w-xs' onSubmit={handleSubmit} >
@@ -68,10 +66,10 @@ const SignUp = (props) => {
             </div>
           )
         }
-        <div className='text-center'>
-          <Button className='mb-2' type='submit' value='Sign Up' />
+        <div className='text-center mb-2'>
+          <Button type='submit' value='Sign In' />
         </div>
-        <Link className='text-teal-700 text-center' to='/signin'>Already an user? Sign in.</Link>
+        <Link className='text-teal-700 text-center' to={{ pathname: '/signup', state: { referer } }}>Don't have an user? Sign up.</Link>
       </Form>
     </>
   )

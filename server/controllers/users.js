@@ -31,5 +31,21 @@ usersRouter.post('/register', [
   return res.status(200).send(user)
 })
 
+usersRouter.post('/login', [
+  body('username').trim().escape(),
+  body('password').trim().escape()
+], async (req, res) => {
+  const body = req.body
+  const user = await User.findOne({ username: new RegExp(body.username, 'i') })
+  const passwordCorrect = user === null
+    ? false
+    : await bcrypt.compare(body.password, user.passwordHash)
+
+  if (!(passwordCorrect)) {
+    return res.status(401).json({ error: 'Incorrect username or password' })
+  }
+
+  return res.status(200).json(user)
+})
 
 module.exports = usersRouter

@@ -3,32 +3,52 @@ import { Switch, Route } from 'react-router-dom'
 
 // project pages
 import SignUp from './pages/SignUp'
+import SignIn from './pages/SignIn'
 
-const routes = [
+// project components
+import PrivateRoute from './PrivateRoute'
+
+import Placeholdercomponent from './components/placeholdercomponent'
+
+const privateRoutes = [
   {
     path: '/discover',
-    component: <h1>Discover!</h1>
+    component: <Placeholdercomponent />
   },
+]
+
+
+const publicRoutes = [
   {
     path: '/search',
-    component: <h1>Search</h1>
+    component: Placeholdercomponent
   },
   {
     path: '/signup',
-    component: <SignUp />
+    component: SignUp
+  },
+  {
+    path: '/signin',
+    component: SignIn
   },
   {
     path: '/',
-    component: <h1>Home!</h1>
+    component: Placeholdercomponent
   }
 ]
+
 
 const AppRouter = () => {
   return (
     <Switch>
       {
-        routes.map((route, index) =>
-          <Route key={index} path={route.path} render={() => route.component} />
+        privateRoutes.map((route, index) =>
+          <PrivateRoute key={index} path={route.path} component={route.component} />
+        )
+      }
+      {
+        publicRoutes.map((route, index) =>
+          <Route key={index} path={route.path} component={route.component} />
         )
       }
     </Switch>
