@@ -5,6 +5,7 @@ import { Link, Redirect } from 'react-router-dom'
 import InputField from '../components/InputField'
 import Form from '../components/Form'
 import Button from '../components/Button'
+import Notification from '../components/Notification'
 
 // project services
 import userService from '../services/userService'
@@ -17,7 +18,7 @@ const SignUp = (props) => {
   const { authTokens, setAuthTokens } = useAuth()
 
   // handle form field changes
-  const [form, setForm] = useState({ username: '', password: '', email: '' })
+  const [form, setForm] = useState({ username: '', password: '', confirm: '', email: '' })
   const handleChange = event => {
     setForm({
       ...form,
@@ -27,12 +28,15 @@ const SignUp = (props) => {
   // handle form submit
   const handleSubmit = async e => {
     e.preventDefault()
-    try {
-      setAuthTokens(await userService.register(form))
-    } catch (err) {
-      console.log(err.response.data)
+    if (form.password === form.confirm) {
+      try {
+        setAuthTokens(await userService.register(form))
+      } catch (err) {
+        console.log(err.response.data)
+      }
+    } else {
+      console.log('ree')
     }
-
   }
 
   // if logged in, redirect to home page or a page the user tried to access before
@@ -53,6 +57,11 @@ const SignUp = (props) => {
       minLength: 5
     },
     {
+      name: 'confirm',
+      type: 'password',
+      minLength: 5
+    },
+    {
       name: 'email',
       type: 'email'
     }
@@ -68,6 +77,7 @@ const SignUp = (props) => {
             </div>
           )
         }
+        <Notification title='Notification title' message='Something went wrong boi!' />
         <div className='text-center'>
           <Button className='mb-2' type='submit' value='Sign Up' />
         </div>

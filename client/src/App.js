@@ -12,7 +12,6 @@ const App = () => {
 
   const decodedToken = existingTokens ? JSON.parse(window.atob(existingTokens.token.split('.')[1])) : null
 
-  console.log(decodedToken)
   if (decodedToken && Date.now() >= decodedToken.exp * 1000) {
     existingTokens = null
   }
