@@ -5,6 +5,7 @@ import Form from '../components/Form'
 import InputField from '../components/InputField'
 import Heading from '../components/Heading'
 import TvCard from '../components/TvCard'
+import Spinner from '../components/Spinner'
 
 // project services
 import searchService from '../services/searchService'
@@ -113,6 +114,7 @@ const Search = () => {
     ], total_results: 1
   })
 
+  const [spinner, setSpinner] = useState(false)
   // handle form field changes
   const handleChange = e => {
     setForm({
@@ -124,25 +126,27 @@ const Search = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     if (form.searchword.length > 0) {
+      setSpinner(true)
       try {
         const res = await searchService.search(form)
-        console.log(res.results)
         setResponse(res)
       } catch (err) {
         console.error(err)
       }
+      setSpinner(false)
     }
   }
 
   return (
     <>
-      <Form className='max-w-sm' onSubmit={handleSubmit}>
+      <Form className='max-w-sm mb-4' onSubmit={handleSubmit}>
         <Heading className='text-center'>Search TV shows</Heading>
         <div className='mb4'>
           <InputField className='w-full' label='Search' type='text' value={form.searchword} onChange={handleChange} name='searchword' placeholder='eg. The Owl House' />
         </div>
       </Form>
       <div className='max-w-xl mx-auto'>
+        <Spinner className='mx-auto' color='bg-pink-500' show={spinner} />
         <p className='mt-4 mb-2 text-sm text-gray-600 font-semibold select-none' title='Some results might be removed because they did not meet our requirements'>Showing {response.results.length} of {response.total_results} result(s)</p>
         {
           response.results.map((result, index) => <TvCard show={result} key={index} />)
