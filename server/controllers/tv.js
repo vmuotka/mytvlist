@@ -8,12 +8,13 @@ tvRouter.post('/search', async (req, res) => {
   const response = await axios.get(`${baseUrl}/search/tv?api_key=${process.env.MOVIEDB_API}&query=${body.searchword}`)
 
   let results = []
-  for (let i = 0; i < response.data.results.length && i <= 5; i++) {
+  for (let i = 0; i < response.data.results.length && i < 5; i++) {
     const show = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
-    results.push(show.data)
+    if (show.data.number_of_seasons > 0)
+      results.push(show.data)
   }
 
-  return res.status(200).json({ results })
+  return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages })
 })
 
 module.exports = tvRouter

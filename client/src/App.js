@@ -49,7 +49,7 @@ const App = () => {
             )}
           </div>
           <Navigation />
-          <main className='container mt-4 px-4 mx-auto'>
+          <main className='container mt-4 px-4 mx-auto mb-8'>
             <AppRouter />
           </main>
         </NotificationContext.Provider>
