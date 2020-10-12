@@ -9,6 +9,9 @@ import Button from './Button'
 // project hooks
 import { useAuth } from '../context/auth'
 
+// project services
+import tvlistService from '../services/tvlistService'
+
 const TvCard = ({ show }) => {
   let genres = []
   for (let i = 0; i < show.genres.length; i++)
@@ -36,8 +39,13 @@ const TvCard = ({ show }) => {
   }
 
   // handle adding show to users showlist
-  const addToList = () => {
-    setListed(!listed)
+  const addToList = async () => {
+    try {
+      console.log(await tvlistService.addToList({ id: show.id }, authTokens))
+      setListed(!listed)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const description = show.overview ? ((!fullDesc && show.overview.length > 150) ? show.overview.slice(0, 150) + '...' : show.overview) : 'No description available'
@@ -53,7 +61,7 @@ const TvCard = ({ show }) => {
         <div className="mb-8">
           <div className="text-gray-900 font-bold text-xl mb-0">
             <span className='break-word'>
-              {authTokens && <Button onClick={addToList} className='text-sm float-right' value='Add&nbsp;to&nbsp;list' style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />} />}
+              {authTokens && <Button onClick={addToList} className='text-sm float-right' value={listed ? 'Unlist' : 'Add to list'} style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />} />}
               {show.name}&nbsp;
               <span className='text-gray-500'>({show.original_language})</span>
             </span>
