@@ -26,7 +26,7 @@ const TvCard = ({ show }) => {
   // we need to reset those states when the data changes
   useEffect(() => {
     setFullDesc(false)
-    setListed(false)
+    setListed(show.following)
   }, [show])
 
   // some shows return empty number of episodes when no episodes are published
@@ -41,7 +41,7 @@ const TvCard = ({ show }) => {
   // handle adding show to users showlist
   const addToList = async () => {
     try {
-      console.log(await tvlistService.addToList({ id: show.id }, authTokens))
+      await tvlistService.addToList({ id: show.id }, authTokens)
       setListed(!listed)
     } catch (err) {
       console.error(err)

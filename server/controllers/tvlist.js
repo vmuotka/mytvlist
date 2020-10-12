@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken')
 tvlistRouter.post('/addtolist', async (req, res) => {
   const tv_id = req.body.id
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+  let decodedToken
+  if (req.token)
+    decodedToken = jwt.verify(req.token, process.env.SECRET)
+
   if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
@@ -16,7 +19,7 @@ tvlistRouter.post('/addtolist', async (req, res) => {
     tv_id
   }
 
-  let findlist = await Tvlist.findOne(query)
+  let findlist = await Tvlist.find(query)
   if (findlist.length === 0) {
     // if the user has not listed the show before, create a document to the database
     const tvlist = new Tvlist({
@@ -27,12 +30,12 @@ tvlistRouter.post('/addtolist', async (req, res) => {
     await tvlist.save()
   } else {
     // if the user has listed the show before, change the shows following status instead
-    console.log(findlist)
+    findlist = findlist[0]
     findlist.following = !findlist.following
     await findlist.save()
   }
 
-  res.status(200)
+  res.status(200).json({ message: 'success' })
 })
 
 module.exports = tvlistRouter

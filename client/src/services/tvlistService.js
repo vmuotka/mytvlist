@@ -6,7 +6,6 @@ const addToList = async (showid, tokenObj) => {
   const config = {
     headers: { Authorization: token }
   }
-  console.log(token)
   const res = await axios.post(`${baseUrl}/addtolist`, showid, config)
   return res.data
 }

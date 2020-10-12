@@ -10,8 +10,12 @@ import Spinner from '../components/Spinner'
 // project services
 import searchService from '../services/searchService'
 
+// project hooks
+import { useAuth } from '../context/auth'
+
 const Search = () => {
   const [form, setForm] = useState({ searchword: '' })
+  const { authTokens } = useAuth()
   const [response, setResponse] = useState({
     results: [
       {
@@ -128,7 +132,7 @@ const Search = () => {
     if (form.searchword.length > 0) {
       setSpinner(true)
       try {
-        const res = await searchService.search(form)
+        const res = await searchService.search(form, authTokens)
         setResponse(res)
       } catch (err) {
         console.error(err)
