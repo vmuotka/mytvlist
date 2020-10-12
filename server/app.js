@@ -11,6 +11,10 @@ app.use(express.json())
 const usersRouter = require('./controllers/users')
 app.use('/api/user', usersRouter)
 
+// api routing for moviedatabase api
+const tvRouter = require('./controllers/tv')
+app.use('/api/tv', tvRouter)
+
 // connect to database
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 

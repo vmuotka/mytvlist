@@ -5,6 +5,7 @@ import { Link, Redirect } from 'react-router-dom'
 import InputField from '../components/InputField'
 import Form from '../components/Form'
 import Button from '../components/Button'
+import Heading from '../components/Heading'
 
 // project services
 import userService from '../services/userService'
@@ -35,6 +36,7 @@ const SignUp = (props) => {
       } catch (err) {
         const errors = err.response.data.error.errors
         let notificationArray = []
+        // eslint-disable-next-line
         for (let [key, error] of Object.entries(errors)) {
           notificationArray.push({ title: error.name, message: error.message, type: 'error' })
         }
@@ -75,11 +77,11 @@ const SignUp = (props) => {
   return (
     <>
       <Form className='max-w-xs' onSubmit={handleSubmit} >
+        <Heading className='text-center'>Sign up</Heading>
         {
           fields.map((field, index) =>
             <div className='mb-4' key={index}>
-              <label className='block text-sm font-bold mb-2 text-gray-600 capitalize' htmlFor={field.name}>{field.name}</label>
-              <InputField className='w-full' type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} minLength={field.minLength} required />
+              <InputField className='w-full' label={field.name} type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} minLength={field.minLength} required />
             </div>
           )
         }
