@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 // icons
 import Star from './icons/Star'
@@ -19,15 +19,8 @@ const TvCard = ({ show }) => {
 
   const [fullDesc, setFullDesc] = useState(false)
 
-  const [listed, setListed] = useState(false)
+  const [listed, setListed] = useState(show.following)
   const { authTokens } = useAuth()
-
-  // when react rerenders the cards with different data, they still retain old states
-  // we need to reset those states when the data changes
-  useEffect(() => {
-    setFullDesc(false)
-    setListed(show.following)
-  }, [show])
 
   // some shows return empty number of episodes when no episodes are published
   if (show.number_of_episodes === null || show.number_of_episodes === undefined)
@@ -52,7 +45,7 @@ const TvCard = ({ show }) => {
   return (
     <div className='w-full md:flex mt-4'>
       <div
-        className={`h-48 md:h-auto md:w-48 flex-none bg-cover rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500`}
+        className={`h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500`}
         style={{ backgroundImage: show.poster_path && `url('https://image.tmdb.org/t/p/w200${show.poster_path}')` }}
         title={`${show.name} poster`}
       >
