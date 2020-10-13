@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Search from './pages/Search'
+import Profile from './pages/Profile'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -31,6 +32,10 @@ const publicRoutes = [
   {
     path: '/signin',
     component: SignIn
+  },
+  {
+    path: '/profile/:id',
+    component: Profile
   },
   {
     path: '/',

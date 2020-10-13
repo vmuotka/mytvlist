@@ -11,4 +11,17 @@ const register = async credentials => {
   return res.data
 }
 
-export default { login, register }
+const profile = async (id, tokenObj) => {
+  let config = {}
+  // if user is logged in, send their token with the request
+  if (tokenObj) {
+    const token = `bearer ${tokenObj.token}`
+    config = {
+      headers: { Authorization: token }
+    }
+  }
+  const res = await axios.post(`${baseUrl}/profile`, { id }, config)
+  return res.data
+}
+
+export default { login, register, profile }

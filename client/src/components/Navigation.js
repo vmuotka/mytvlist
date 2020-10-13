@@ -4,28 +4,39 @@ import { Link, useLocation, useHistory } from 'react-router-dom'
 // project hooks
 import { useAuth } from '../context/auth'
 
-const routes = [
-  {
-    title: 'Discover',
-    href: '/discover'
-  },
-  {
-    title: 'Search',
-    href: '/search'
-  }
-]
+
 
 const Navigation = () => {
+
+  const { authTokens, setAuthTokens } = useAuth()
   // hide or show nav when clicking the burger menu button
   const [showNav, setShowNav] = useState(false)
   const onMenuClick = () => {
     setShowNav(!showNav)
   }
 
+  let token = ''
+  if (authTokens)
+    token = JSON.parse(window.atob(authTokens.token.split('.')[1]))
+
+  const routes = [
+    {
+      title: 'Discover',
+      href: '/discover'
+    },
+    {
+      title: 'Search',
+      href: '/search'
+    },
+    {
+      title: 'My Profile',
+      href: `/profile/${token.id}`
+    }
+  ]
+
   // get current route to highlight open page on navigation
   const location = useLocation().pathname
 
-  const { authTokens, setAuthTokens } = useAuth()
   const history = useHistory()
 
   const handleSignOut = () => {

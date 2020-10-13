@@ -12,7 +12,7 @@ import { useAuth } from '../context/auth'
 // project services
 import tvlistService from '../services/tvlistService'
 
-const TvCard = ({ show }) => {
+const TvCard = ({ show, className }) => {
   let genres = []
   for (let i = 0; i < show.genres.length; i++)
     genres.push(show.genres[i].name)
@@ -43,7 +43,7 @@ const TvCard = ({ show }) => {
 
   const description = show.overview ? ((!fullDesc && show.overview.length > 150) ? show.overview.slice(0, 150) + '...' : show.overview) : 'No description available'
   return (
-    <div className='w-full md:flex mt-4'>
+    <div className={`w-full md:flex ${className}`}>
       <div
         className={`h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500`}
         style={{ backgroundImage: show.poster_path && `url('https://image.tmdb.org/t/p/w200${show.poster_path}')` }}

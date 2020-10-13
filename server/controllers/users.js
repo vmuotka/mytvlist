@@ -2,6 +2,10 @@ const usersRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const Tvlist = require('../models/tvlist')
+const axios = require('axios')
+
+const apiUrl = `https://api.themoviedb.org/3`
 
 const { body, validationResult } = require('express-validator')
 usersRouter.post('/register', [
@@ -61,6 +65,45 @@ usersRouter.post('/login', [
   const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '7d' })
 
   return res.status(200).json({ token })
+})
+
+usersRouter.post('/profile', async (req, res) => {
+
+
+  try {
+    const id = req.body.id
+    const user = await User.findById(id)
+
+    let profile = JSON.parse(JSON.stringify(user))
+    profile.email = undefined
+
+    const tvlist = await Tvlist.find({ user: id, following: true })
+    profile.tvlist = JSON.parse(JSON.stringify(tvlist))
+
+    let decodedToken
+    if (req.token)
+      decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+    let tvlistArr
+    if (decodedToken !== undefined)
+      tvlistArr = await Tvlist.find({ user: decodedToken.id })
+
+    for (let i = 0; i < profile.tvlist.length; i++) {
+      let show = await axios.get(`${apiUrl}/tv/${profile.tvlist[i].tv_id}?api_key=${process.env.MOVIEDB_API}`)
+      if (tvlistArr) {
+        if (tvlistArr.filter(item => item.tv_id === show.data.id).length > 0) {
+          show.data.following = tvlistArr.filter(item => item.tv_id === show.data.id)[0].following
+        }
+      } else {
+        show.data.following = false
+      }
+      profile.tvlist[i].tv_info = show.data
+    }
+    return res.status(200).json(profile)
+  } catch (err) {
+    return res.status(404).json({ error: 'User not found' })
+  }
+
 })
 
 module.exports = usersRouter

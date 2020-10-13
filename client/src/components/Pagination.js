@@ -2,8 +2,10 @@ import React from 'react'
 
 const PaginationButton = ({ page, label, active, onClick, className }) => {
   return (
-    <li className={`px-3 py-1 hover:bg-blue-600 hover:text-white cursor-pointer ${active ? 'bg-blue-500 text-white' : 'text-gray-600'} ${className}`} onClick={onClick(page)}>
-      {label ? label : page}
+    <li>
+      <button className={`px-3 py-1 hover:bg-blue-600 hover:text-white ${active ? 'bg-blue-500 text-white' : 'text-gray-600'} ${className}`} onClick={onClick(page)}>
+        {label ? label : page}
+      </button>
     </li>
   )
 }
