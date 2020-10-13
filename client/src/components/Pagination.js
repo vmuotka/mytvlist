@@ -1,14 +1,14 @@
 import React from 'react'
 
-const PaginationButton = ({ page, label, active, onClick }) => {
+const PaginationButton = ({ page, label, active, onClick, className }) => {
   return (
-    <li className={`px-3 py-1 hover:bg-blue-600 hover:text-white cursor-pointer ${active ? 'bg-blue-500 text-white' : 'text-gray-600'}`} onClick={onClick(page)}>
+    <li className={`px-3 py-1 hover:bg-blue-600 hover:text-white cursor-pointer ${active ? 'bg-blue-500 text-white' : 'text-gray-600'} ${className}`} onClick={onClick(page)}>
       {label ? label : page}
     </li>
   )
 }
 
-const Pagination = ({ currentPage, totalPages, ariaLabel, onClick }) => {
+const Pagination = ({ currentPage, totalPages, ariaLabel, onClick, className }) => {
   const btns = []
 
   btns.push(<PaginationButton key='previous' page={currentPage > 1 ? currentPage - 1 : 1} label='Previous' onClick={onClick} />)
@@ -19,7 +19,7 @@ const Pagination = ({ currentPage, totalPages, ariaLabel, onClick }) => {
   btns.push(<PaginationButton key='next' page={currentPage !== totalPages ? currentPage + 1 : totalPages} label='Next' onClick={onClick} />)
 
   return (
-    <nav className='flex' aria-label={ariaLabel}>
+    <nav className={`flex ${className}`} aria-label={ariaLabel}>
       <ul className='flex border border-gray-600 rounded-md divide-x divide-gray-600 select-none'>
         {btns.map(btn => btn)}
       </ul>

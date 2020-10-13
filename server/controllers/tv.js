@@ -7,7 +7,7 @@ const baseUrl = `https://api.themoviedb.org/3`
 
 tvRouter.post('/search', async (req, res) => {
   const body = req.body
-  const response = await axios.get(`${baseUrl}/search/tv?api_key=${process.env.MOVIEDB_API}&query=${body.searchword}`)
+  const response = await axios.get(`${baseUrl}/search/tv?api_key=${process.env.MOVIEDB_API}&query=${body.searchword}&page=${body.page}`)
 
   // return array of shows the user is following
   let decodedToken
@@ -19,7 +19,7 @@ tvRouter.post('/search', async (req, res) => {
     tvlistArr = await Tvlist.find({ user: decodedToken.id })
 
   let results = []
-  for (let i = 0; i < response.data.results.length && i < 5; i++) {
+  for (let i = 0; i < response.data.results.length; i++) {
     let show = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
     if (show.data.number_of_seasons > 0) {
       if (tvlistArr) {
@@ -33,7 +33,7 @@ tvRouter.post('/search', async (req, res) => {
     }
   }
 
-  return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages })
+  return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages, searchword: body.searchword })
 })
 
 module.exports = tvRouter
