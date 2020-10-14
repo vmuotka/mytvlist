@@ -54,7 +54,7 @@ const TvCard = ({ show, className }) => {
         <div className="mb-8">
           <div className="text-gray-900 font-bold text-xl mb-0">
             <span className='break-word'>
-              {authTokens && <Button onClick={addToList} className='text-sm float-right' value={listed ? 'Unlist' : 'Add to list'} style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />} />}
+              {authTokens && <Button onClick={addToList} className='text-sm float-right ml-px' value={listed ? 'Unlist' : 'Add to list'} style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />} />}
               {show.name}&nbsp;
               <span className='text-gray-500'>({show.original_language})</span>
             </span>
