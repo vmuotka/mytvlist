@@ -34,7 +34,7 @@ const publicRoutes = [
     component: SignIn
   },
   {
-    path: '/profile/:id',
+    path: '/user/:username',
     component: Profile
   },
   {

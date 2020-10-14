@@ -30,7 +30,7 @@ const Navigation = () => {
     },
     {
       title: 'My Profile',
-      href: `/profile/${token.id}`
+      href: `/user/${token.username}`
     }
   ]
 

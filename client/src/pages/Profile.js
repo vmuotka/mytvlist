@@ -14,7 +14,7 @@ import { useAuth } from '../context/auth'
 import { useNotification } from '../context/notification'
 
 const Profile = () => {
-  const { id } = useParams()
+  const { username } = useParams()
   const [profile, setProfile] = useState({})
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
@@ -26,8 +26,8 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    if (id)
-      userService.profile(id, authTokens).then(data => {
+    if (username)
+      userService.profile(username, authTokens).then(data => {
         setProfile({
           ...data,
           tvlist: data.tvlist.reverse()
@@ -37,7 +37,7 @@ const Profile = () => {
       }
       )
     // eslint-disable-next-line
-  }, [id, setProfile, authTokens])
+  }, [username, setProfile, authTokens])
 
   const changeOrderBy = e => {
     setOrderBy(e.target.value)

@@ -11,7 +11,7 @@ const register = async credentials => {
   return res.data
 }
 
-const profile = async (id, tokenObj) => {
+const profile = async (username, tokenObj) => {
   let config = {}
   // if user is logged in, send their token with the request
   if (tokenObj) {
@@ -20,7 +20,7 @@ const profile = async (id, tokenObj) => {
       headers: { Authorization: token }
     }
   }
-  const res = await axios.post(`${baseUrl}/profile`, { id }, config)
+  const res = await axios.post(`${baseUrl}/profile`, { username }, config)
   return res.data
 }
 

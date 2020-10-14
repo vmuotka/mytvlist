@@ -68,16 +68,14 @@ usersRouter.post('/login', [
 })
 
 usersRouter.post('/profile', async (req, res) => {
-
-
   try {
-    const id = req.body.id
-    const user = await User.findById(id)
+    const username = req.body.username
+    const user = await User.findOne({ username })
 
     let profile = JSON.parse(JSON.stringify(user))
     profile.email = undefined
 
-    const tvlist = await Tvlist.find({ user: id, following: true })
+    const tvlist = await Tvlist.find({ user: profile.id, following: true })
     profile.tvlist = JSON.parse(JSON.stringify(tvlist))
 
     let decodedToken
