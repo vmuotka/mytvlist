@@ -12,25 +12,9 @@ const tvlistSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  seasons: [
-    {
-      season_id: {
-        type: Number,
-        required: true
-      },
-      episodes: [
-        {
-          episode_id: {
-            type: Number,
-            required: true
-          },
-          watched: {
-            type: Boolean
-          }
-        }
-      ]
-    }
-  ]
+  progress: []
+}, {
+  timestamps: true,
 })
 
 tvlistSchema.set('toJSON', {

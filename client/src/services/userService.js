@@ -24,4 +24,15 @@ const profile = async (username, tokenObj) => {
   return res.data
 }
 
-export default { login, register, profile }
+const progress = async (progress, tokenObj) => {
+  let config = {}
+  const token = `bearer ${tokenObj.token}`
+  config = {
+    headers: { Authorization: token }
+  }
+  const res = await axios.post(`${baseUrl}/progress`, progress, config)
+  return res.data
+
+}
+
+export default { login, register, profile, progress }

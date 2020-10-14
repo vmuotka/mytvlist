@@ -38,7 +38,7 @@ usersRouter.post('/register', [
     id: savedUser.id
   }
 
-  const token = jwt.sign(userForToken, process.env.SECRET)
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '7d' })
 
   return res.status(200).send({ token })
 })
@@ -48,7 +48,7 @@ usersRouter.post('/login', [
   body('password').trim().escape()
 ], async (req, res) => {
   const body = req.body
-  const user = await User.findOne({ username: new RegExp(body.username, 'i') })
+  const user = await User.findOne({ username: { '$regex': `^${body.username}$`, $options: 'i' } })
   const passwordCorrect = user === null
     ? false
     : await bcrypt.compare(body.password, user.passwordHash)
@@ -70,7 +70,7 @@ usersRouter.post('/login', [
 usersRouter.post('/profile', async (req, res) => {
   try {
     const username = req.body.username
-    const user = await User.findOne({ username })
+    const user = await User.findOne({ username: { '$regex': `^${username}$`, $options: 'i' } })
 
     let profile = JSON.parse(JSON.stringify(user))
     profile.email = undefined
@@ -95,12 +95,23 @@ usersRouter.post('/profile', async (req, res) => {
       } else {
         show.data.following = false
       }
+      show.data.seasons = show.data.seasons.filter(season => season.name !== 'Specials')
       profile.tvlist[i].tv_info = show.data
     }
     return res.status(200).json(profile)
   } catch (err) {
     return res.status(404).json({ error: 'User not found' })
   }
+})
+
+usersRouter.post('/progress', async (req, res) => {
+  const body = req.body
+  let decodedToken
+  if (req.token)
+    decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  await Tvlist.updateOne({ _id: body.id }, { $set: { progress: body.progress } })
+  return res.status(200).json({ message: 'ree' })
 
 })
 

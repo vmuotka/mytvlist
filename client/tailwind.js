@@ -123,6 +123,7 @@ module.exports = {
       },
       pink: {
         100: '#fff5f7',
+        150: '#ffeef1',
         200: '#fed7e2',
         300: '#fbb6ce',
         400: '#f687b3',
@@ -675,7 +676,7 @@ module.exports = {
     appearance: ['responsive'],
     backgroundAttachment: ['responsive'],
     backgroundClip: ['responsive'],
-    backgroundColor: ['responsive', 'hover', 'focus'],
+    backgroundColor: ['responsive', 'odd', 'hover', 'focus'],
     backgroundImage: ['responsive'],
     gradientColorStops: ['responsive', 'hover', 'focus'],
     backgroundOpacity: ['responsive', 'hover', 'focus'],

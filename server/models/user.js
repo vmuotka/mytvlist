@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, 'Email required']
   }
+}, {
+  timestamps: true,
 })
 
 userSchema.plugin(uniqueValidator)

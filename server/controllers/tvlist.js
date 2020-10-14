@@ -25,7 +25,13 @@ tvlistRouter.post('/addtolist', async (req, res) => {
     const tvlist = new Tvlist({
       user: decodedToken.id,
       tv_id,
-      following: true
+      following: true,
+      progress: [
+        {
+          season: 0,
+          episode: 0
+        }
+      ]
     })
     await tvlist.save()
   } else {
