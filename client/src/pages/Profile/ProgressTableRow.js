@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // project components
 import { Tr, Td } from '../../components/Table'
@@ -15,6 +15,10 @@ import './ProgressTableRow.css'
 const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
+
+  useEffect(() => {
+    setProgress(show.progress[show.progress.length - 1])
+  }, [setProgress, show])
 
   const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
   const myProfile = decodedToken ? decodedToken.id === profile.id : false
@@ -58,10 +62,10 @@ const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
       <Td>
         {myProfile ?
           <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
-            {progress.episode}/{show.tv_info.seasons[0].episode_count}
+            {progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
           </button>
           :
-          <>{progress.episode}/{show.tv_info.seasons[0].episode_count}
+          <>{progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
           </>
         }
       </Td>

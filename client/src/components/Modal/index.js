@@ -12,7 +12,7 @@ const Modal = (props) => {
       <table className={`w-full max-w-lg modal bg-pink-150 rounded-lg z-20 ${props.hidden ? 'hidden' : 'table'}`}>
         <thead>
           <tr className='w-full bg-pink-500'>
-            <th colspan='3' className='p-4 text-white'>
+            <th colSpan='3' className='p-4 text-white'>
               {props.title}
             </th>
             <th className='p-4'>
