@@ -1,0 +1,16 @@
+.table-row:hover .modal-btn {
+  display: inline;
+}
+
+.table-row:hover .progress-image { 
+  background-size: 0%;
+}
+
+.modal-btn {
+  transition-property: padding;
+  transition-duration: 250ms;
+}
+
+.modal-btn:hover {
+  padding: .125rem;
+}

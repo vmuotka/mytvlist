@@ -123,7 +123,7 @@ module.exports = {
       },
       pink: {
         100: '#fff5f7',
-        150: '#ffeef1',
+        150: '#ffe6ed',
         200: '#fed7e2',
         300: '#fbb6ce',
         400: '#f687b3',

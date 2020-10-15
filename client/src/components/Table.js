@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Table = (props) => {
   return (
-    <table className='w-full table-auto border-collapse bg-pink-100'>
+    <table className='w-full table-auto border-collapse bg-pink-150'>
       {props.children}
     </table>
   )
@@ -28,7 +28,7 @@ export const Tbody = (props) => {
 
 export const Tr = (props) => {
   return (
-    <tr className={`odd:bg-pink-150 hover:bg-pink-300 ${props.className}`}>
+    <tr className={`odd:bg-pink-100 hover:bg-pink-300 ${props.className}`}>
       {props.children}
     </tr>
   )

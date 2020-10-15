@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 // project components
 import { Tr, Td } from '../../components/Table'
+import ExpandIcon from '../../components/icons/Expand'
 
 // project services
 import userService from '../../services/userService'
@@ -9,7 +10,9 @@ import userService from '../../services/userService'
 // project hooks
 import { useAuth } from '../../context/auth'
 
-const ProgressTableRow = ({ show, profile, setProfile }) => {
+import './ProgressTableRow.css'
+
+const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
 
@@ -37,12 +40,16 @@ const ProgressTableRow = ({ show, profile, setProfile }) => {
     }
   }
   return (
-    <Tr className='text-sm sm:text-lg md:text-xl'>
+    <Tr className='text-sm sm:text-lg md:text-xl table-row'>
       <Td className='flex items-center'>
         <div
-          className='break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500'
+          className='break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center progress-image'
           style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
-        ></div>
+        >
+          <button onClick={handleModal(show)} className='hidden modal-btn text-lg text-white p-1'>
+            <ExpandIcon />
+          </button>
+        </div>
         <span className='ml-6'>{show.tv_info.name}</span>
       </Td>
       <Td>
@@ -50,7 +57,7 @@ const ProgressTableRow = ({ show, profile, setProfile }) => {
       </Td>
       <Td>
         {myProfile ?
-          <button className='p-2' onClick={handleProgress}>
+          <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
             {progress.episode}/{show.tv_info.seasons[0].episode_count}
           </button>
           :

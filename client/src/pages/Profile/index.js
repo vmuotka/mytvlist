@@ -38,8 +38,6 @@ const Profile = () => {
     // eslint-disable-next-line
   }, [username, setProfile, authTokens])
 
-
-
   return (
     <>
       <div className='w-full md:w-4/5 mx-auto mt-4'>
