@@ -19,7 +19,7 @@ const TvCard = ({ show, className }) => {
 
   const [fullDesc, setFullDesc] = useState(false)
 
-  const [listed, setListed] = useState(show.following)
+  const [listed, setListed] = useState(show.listed)
   const { authTokens } = useAuth()
 
   // some shows return empty number of episodes when no episodes are published

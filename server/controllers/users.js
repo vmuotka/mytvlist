@@ -75,7 +75,7 @@ usersRouter.post('/profile', async (req, res) => {
     let profile = JSON.parse(JSON.stringify(user))
     profile.email = undefined
 
-    const tvlist = await Tvlist.find({ user: profile.id, following: true })
+    const tvlist = await Tvlist.find({ user: profile.id, listed: true })
     profile.tvlist = JSON.parse(JSON.stringify(tvlist))
 
     let decodedToken
@@ -90,10 +90,10 @@ usersRouter.post('/profile', async (req, res) => {
       let show = await axios.get(`${apiUrl}/tv/${profile.tvlist[i].tv_id}?api_key=${process.env.MOVIEDB_API}`)
       if (tvlistArr) {
         if (tvlistArr.filter(item => item.tv_id === show.data.id).length > 0) {
-          show.data.following = tvlistArr.filter(item => item.tv_id === show.data.id)[0].following
+          show.data.listed = tvlistArr.filter(item => item.tv_id === show.data.id)[0].listed
         }
       } else {
-        show.data.following = false
+        show.data.listed = false
       }
       show.data.seasons = show.data.seasons.filter(season => season.name !== 'Specials')
       profile.tvlist[i].tv_info = show.data
@@ -110,7 +110,7 @@ usersRouter.post('/progress', async (req, res) => {
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
-  await Tvlist.updateOne({ _id: body.id }, { $set: { progress: body.progress } })
+  await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress } })
   return res.status(200).json({ message: 'ree' })
 
 })

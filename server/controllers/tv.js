@@ -24,10 +24,10 @@ tvRouter.post('/search', async (req, res) => {
     if (show.data.number_of_seasons > 0) {
       if (tvlistArr) {
         if (tvlistArr.filter(item => item.tv_id === show.data.id).length > 0) {
-          show.data.following = tvlistArr.filter(item => item.tv_id === show.data.id)[0].following
+          show.data.listed = tvlistArr.filter(item => item.tv_id === show.data.id)[0].listed
         }
       } else {
-        show.data.following = false
+        show.data.listed = false
       }
       results.push(show.data)
     }

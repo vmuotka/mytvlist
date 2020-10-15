@@ -25,7 +25,8 @@ tvlistRouter.post('/addtolist', async (req, res) => {
     const tvlist = new Tvlist({
       user: decodedToken.id,
       tv_id,
-      following: true,
+      listed: true,
+      watching: true,
       progress: [
         {
           season: 0,
@@ -37,7 +38,7 @@ tvlistRouter.post('/addtolist', async (req, res) => {
   } else {
     // if the user has listed the show before, change the shows following status instead
     findlist = findlist[0]
-    findlist.following = !findlist.following
+    findlist.listed = !findlist.listed
     await findlist.save()
   }
 

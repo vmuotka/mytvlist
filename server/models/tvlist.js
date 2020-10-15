@@ -5,7 +5,10 @@ const tvlistSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  following: {
+  watching: {
+    type: Boolean
+  },
+  listed: {
     type: Boolean
   },
   tv_id: {
