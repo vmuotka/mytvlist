@@ -7,7 +7,7 @@ import Button from '../Button'
 const Modal = (props) => {
   return (
     <>
-      <div className={`fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10 ${props.hidden ? 'hidden' : 'block'}`}>
+      <div onClick={props.closeFunction()} className={`fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10 ${props.hidden ? 'hidden' : 'block'}`}>
       </div>
       <table className={`w-full max-w-lg modal bg-pink-150 rounded-lg z-20 ${props.hidden ? 'hidden' : 'table'}`}>
         <thead>

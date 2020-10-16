@@ -4,6 +4,7 @@ import React from 'react'
 import Modal from '../../components/Modal/'
 import InputField from '../../components/InputField'
 import Button from '../../components/Button'
+import Select from '../../components/Select'
 
 // project services
 import userService from '../../services/userService'
@@ -48,6 +49,17 @@ const ProgressModal = ({ modal, handleModal, profile, setProfile, setModal }) =>
     setModal({ ...modal, progress })
   }
 
+  const handleWatching = e => {
+    const value = e.target.value === 'true'
+    setModal({
+      ...modal,
+      show: {
+        ...modal.show,
+        watching: value
+      }
+    })
+  }
+
   return (
     <>
       <Modal hidden={modal.hidden} title={modal.show.tv_info.name} closeFunction={handleModal}>
@@ -58,6 +70,7 @@ const ProgressModal = ({ modal, handleModal, profile, setProfile, setModal }) =>
             </td>
             <td colSpan='2' className='p-4'>
               <form onSubmit={saveProgress}>
+                <Select options={[{ value: true, name: 'Watching' }, { value: false, name: 'Paused' }]} value={modal.show.watching} onChange={handleWatching} label='Watching' />
                 <div className='inline-block mb-2 md:mr-2'>
                   <InputField onChange={handleModalChange} min='0' max={modal.show.tv_info.seasons.length} type='number' name='season' label='Season' size='5' value={modal.progress.season} className='text-center inline' />
                 </div>

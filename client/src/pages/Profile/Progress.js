@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import disableScroll from 'disable-scroll'
 
 // project components
 import { Table, Thead, Tbody } from '../../components/Table'
@@ -24,7 +25,7 @@ const Progress = ({ profile, setProfile }) => {
       let completed = []
       let paused = []
       list.forEach(show => {
-        if (show.progress[0].season === 0 && show.progress[0].episode === 0) {
+        if (show.progress[0].season === 0 && show.progress[0].episode === 0 && show.watching) {
           planning.push(show)
         } else if (show.watching && show.progress[show.progress.length - 1].season !== show.tv_info.seasons.length)
           watching.push(show)
@@ -41,7 +42,6 @@ const Progress = ({ profile, setProfile }) => {
         planning,
         paused
       })
-      console.log(completed)
     }
   }, [setTvlist, profile.tvlist])
 
@@ -59,10 +59,14 @@ const Progress = ({ profile, setProfile }) => {
         progress: show.progress[show.progress.length - 1]
       })
     }
+    if (modal.hidden)
+      disableScroll.on()
+    else
+      disableScroll.off()
   }
 
   return (
-    <div>
+    <div className='md:mx-10'>
       {(tvlist && tvlist.planning.length > 0) &&
         <div className='mt-4'>
           <p className='text-gray-600 text-lg ml-2 mb-2'>Planning ({tvlist && tvlist.planning.length} shows)</p>
@@ -98,6 +102,19 @@ const Progress = ({ profile, setProfile }) => {
             <Thead headers={['Show', 'Seasons', 'Episodes']} />
             <Tbody>
               {tvlist && tvlist.completed.map(show =>
+                <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
+              )}
+            </Tbody>
+          </Table>
+        </div>
+      }
+      {(tvlist && tvlist.paused.length > 0) &&
+        <div className='mt-4'>
+          <p className='text-gray-600 text-lg ml-2 mb-2'>Paused ({tvlist && tvlist.paused.length} shows)</p>
+          <Table>
+            <Thead headers={['Show', 'Seasons', 'Episodes']} />
+            <Tbody>
+              {tvlist && tvlist.paused.map(show =>
                 <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
               )}
             </Tbody>

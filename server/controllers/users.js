@@ -110,7 +110,7 @@ usersRouter.post('/progress', async (req, res) => {
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
-  await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress } })
+  await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching } })
   return res.status(200).json({ message: 'ree' })
 
 })

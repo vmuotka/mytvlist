@@ -62,7 +62,7 @@ const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
         {progress.season}/{show.tv_info.seasons.length}
       </Td>
       <Td>
-        {(myProfile && show.tv_info.seasons.length !== progress.season) ?
+        {(myProfile && show.tv_info.seasons.length !== progress.season && show.watching) ?
           <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
             {progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
           </button>
