@@ -51,8 +51,8 @@ const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
           style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
         >
           {myProfile &&
-            <button onClick={handleModal(show)} className='hidden modal-btn text-lg text-white p-1'>
-              <ExpandIcon />
+            <button onClick={handleModal(show)} className='modal-btn text-lg text-white p-1'>
+              <ExpandIcon className='w-full' />
             </button>
           }
         </div>
