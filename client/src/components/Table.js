@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Table = (props) => {
   return (
-    <table className='w-full table-auto border-collapse bg-pink-150'>
+    <table className='w-full border-collapse bg-pink-150'>
       {props.children}
     </table>
   )
@@ -12,7 +12,7 @@ export const Thead = (props) => {
   return (
     <thead className='bg-pink-400 text-white'>
       <tr>
-        {props.headers.map(header => <th key={header} className='py-2 px-2'>{header}</th>)}
+        {props.headers.map((header, index) => <th colSpan={props.colSpan && props.colSpan[index]} key={header} className='py-2 px-2'>{header}</th>)}
       </tr>
     </thead>
   )
@@ -36,7 +36,7 @@ export const Tr = (props) => {
 
 export const Td = (props) => {
   return (
-    <td className={`py-2 px-2 text-center ${props.className}`}>
+    <td className={`py-2 px-2 text-center ${props.className}`} colSpan={props.colSpan && props.colSpan}>
       {props.children}
     </td>
   )

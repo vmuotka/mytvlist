@@ -20,28 +20,28 @@ const Progress = ({ profile, setProfile }) => {
   useEffect(() => {
     if (profile.tvlist) {
       let list = [...profile.tvlist]
-      let planning = []
-      let watching = []
-      let completed = []
-      let paused = []
+      let planning = { name: 'Planning', array: [] }
+      let watching = { name: 'Watching', array: [] }
+      let completed = { name: 'Completed', array: [] }
+      let paused = { name: 'Paused', array: [] }
       list.forEach(show => {
         if (show.progress[0].season === 0 && show.progress[0].episode === 0 && show.watching) {
-          planning.push(show)
+          planning.array.push(show)
         } else if (show.watching && show.progress[show.progress.length - 1].season !== show.tv_info.seasons.length)
-          watching.push(show)
+          watching.array.push(show)
         else if (show.progress[show.progress.length - 1].season === show.tv_info.seasons.length) {
-          completed.push(show)
+          completed.array.push(show)
         } else if (!show.watching) {
-          paused.push(show)
+          paused.array.push(show)
         }
       })
 
-      setTvlist({
+      setTvlist([
         watching,
         completed,
         planning,
         paused
-      })
+      ])
     }
   }, [setTvlist, profile.tvlist])
 
@@ -64,62 +64,23 @@ const Progress = ({ profile, setProfile }) => {
     else
       disableScroll.off()
   }
-
   return (
     <div className='md:mx-10'>
-      {(tvlist && tvlist.planning.length > 0) &&
-        <div className='mt-4'>
-          <p className='text-gray-600 text-lg ml-2 mb-2'>Planning ({tvlist && tvlist.planning.length} shows)</p>
-          <Table>
-            <Thead headers={['Show', 'Season', 'Episode']} />
-            <Tbody>
-              {tvlist && tvlist.planning.map(show =>
-                <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-              )}
-            </Tbody>
-          </Table>
-        </div>
-      }
-
-      {(tvlist && tvlist.watching.length > 0) &&
-        <div className='mt-4'>
-          <p className='text-gray-600 text-lg ml-2 mb-2'>Watching ({tvlist && tvlist.watching.length} shows)</p>
-          <Table>
-            <Thead headers={['Show', 'Season', 'Episode']} />
-            <Tbody>
-              {tvlist && tvlist.watching.map(show =>
-                <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-              )}
-            </Tbody>
-          </Table>
-        </div>
-      }
-
-      {(tvlist && tvlist.completed.length > 0) &&
-        <div className='mt-4'>
-          <p className='text-gray-600 text-lg ml-2 mb-2'>Completed ({tvlist && tvlist.completed.length} shows)</p>
-          <Table>
-            <Thead headers={['Show', 'Seasons', 'Episodes']} />
-            <Tbody>
-              {tvlist && tvlist.completed.map(show =>
-                <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-              )}
-            </Tbody>
-          </Table>
-        </div>
-      }
-      {(tvlist && tvlist.paused.length > 0) &&
-        <div className='mt-4'>
-          <p className='text-gray-600 text-lg ml-2 mb-2'>Paused ({tvlist && tvlist.paused.length} shows)</p>
-          <Table>
-            <Thead headers={['Show', 'Seasons', 'Episodes']} />
-            <Tbody>
-              {tvlist && tvlist.paused.map(show =>
-                <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-              )}
-            </Tbody>
-          </Table>
-        </div>
+      {
+        tvlist &&
+        tvlist.map((list, index) =>
+          list.array.length > 0 && <div key={index} className='mt-4'>
+            <p className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
+            <Table className='table-fixed'>
+              <Thead headers={['Show', 'Season', 'Episode']} />
+              <Tbody>
+                {list.array.map(show =>
+                  <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
+                )}
+              </Tbody>
+            </Table>
+          </div>
+        )
       }
       {
         modal.show &&
