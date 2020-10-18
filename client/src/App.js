@@ -10,7 +10,7 @@ import { AuthContext } from './context/auth'
 import { NotificationContext } from './context/notification'
 
 const App = () => {
-  let existingTokens = JSON.parse(localStorage.getItem("tokens"))
+  let existingTokens = JSON.parse(localStorage.getItem('tokens'))
 
   const decodedToken = existingTokens ? JSON.parse(window.atob(existingTokens.token.split('.')[1])) : null
 

@@ -4,7 +4,7 @@ import React from 'react'
 
 const ProfileNavigation = ({ profile, active, onClick }) => {
   const navs = [
-    `TvList`,
+    'TvList',
     'Statistics',
     'Progress'
   ]

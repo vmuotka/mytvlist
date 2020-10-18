@@ -45,7 +45,7 @@ const TvCard = ({ show, className }) => {
   return (
     <div className={`w-full md:flex ${className}`}>
       <div
-        className={`h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500`}
+        className={'h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500'}
         style={{ backgroundImage: show.poster_path && `url('https://image.tmdb.org/t/p/w200${show.poster_path}')` }}
         title={`${show.name} poster`}
       >
