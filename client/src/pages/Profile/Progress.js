@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import disableScroll from 'disable-scroll'
 
 // project components
-import { Table, Thead, Tbody } from '../../components/Table'
-import ProgressTableRow from './ProgressTableRow'
+import ProgressTable from './ProgressTable'
 import ProgressModal from './ProgressModal'
 
 import './ProgressTableRow.css'
@@ -14,6 +13,7 @@ const Progress = ({ profile, setProfile }) => {
   const [modal, setModal] = useState({
     hidden: true, progress: { season: 0, episode: 0 }, show: undefined
   })
+
 
   const [tvlist, setTvlist] = useState(undefined)
 
@@ -64,22 +64,13 @@ const Progress = ({ profile, setProfile }) => {
     else
       disableScroll.off()
   }
+
   return (
     <div className='md:mx-10'>
       {
         tvlist &&
-        tvlist.map((list, index) =>
-          list.array.length > 0 && <div key={index} className='mt-4'>
-            <p className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
-            <Table className='table-fixed'>
-              <Thead headers={['Show', 'Season', 'Episode']} />
-              <Tbody>
-                {list.array.map(show =>
-                  <ProgressTableRow handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-                )}
-              </Tbody>
-            </Table>
-          </div>
+        tvlist.map((list) =>
+          <ProgressTable key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
         )
       }
       {

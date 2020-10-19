@@ -10,13 +10,17 @@ export const Table = (props) => {
 
 export const Thead = (props) => {
   return (
-    <thead className='bg-pink-400 text-white'>
-      <tr>
-        {props.headers.map((header, index) => <th colSpan={props.colSpan && props.colSpan[index]} key={header} className='py-2 px-2'>{header}</th>)}
-      </tr>
+    <thead className={`bg-pink-400 text-white ${props.className && props.className}`}>
+      {props.children}
     </thead>
   )
 }
+
+export const Th = (props => {
+  return (
+    <th colSpan={props.colSpan ? props.colSpan : 1} className='py-2 px-2 text-xl'>{props.children}</th>
+  )
+})
 
 export const Tbody = (props) => {
   return (

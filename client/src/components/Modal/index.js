@@ -16,7 +16,7 @@ const Modal = (props) => {
               {props.title}
             </th>
             <th className='p-4'>
-              <Button onClick={props.closeFunction()} value='Close' className='' /></th>
+              <Button onClick={props.closeFunction()} value='Close' className='px-4 py-2' /></th>
           </tr>
         </thead>
         {props.children}

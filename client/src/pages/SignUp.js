@@ -86,7 +86,7 @@ const SignUp = (props) => {
           )
         }
         <div className='text-center'>
-          <Button className='mb-2' type='submit' value='Sign Up' />
+          <Button className='py-2 px-4 mb-2' type='submit' value='Sign Up' />
         </div>
         <Link className='text-teal-700 text-center' to='/signin'>Already an user? Sign in.</Link>
       </Form>

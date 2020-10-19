@@ -71,7 +71,7 @@ const SignUp = (props) => {
           )
         }
         <div className='text-center mb-2'>
-          <Button type='submit' value='Sign In' />
+          <Button className='py-2 px-4' type='submit' value='Sign In' />
         </div>
         <Link className='text-teal-700 text-center' to={{ pathname: '/signup', state: { referer } }}>Don't have an user? Sign up.</Link>
       </Form>

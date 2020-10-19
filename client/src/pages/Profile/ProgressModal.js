@@ -96,7 +96,7 @@ const ProgressModal = ({ modal, handleModal, profile, setProfile, setModal }) =>
                 <div className='inline-block mb-2 md:ml-2'>
                   <InputField onChange={handleModalChange} min='0' max={modal.show.tv_info.seasons[modal.progress.season !== modal.show.tv_info.seasons.length ? modal.progress.season : modal.show.tv_info.seasons.length - 1].episode_count} type='number' name='episode' label='Episode' size='5' value={modal.progress.episode} className='text-center inline' />
                 </div>
-                <Button type='submit' className='block m-auto mt-2' color='bg-green-500 hover:bg-green-600'>Save</Button>
+                <Button type='submit' className='block m-auto mt-2 px-4 py-2' color='bg-green-500 hover:bg-green-600'>Save</Button>
               </form>
             </td>
           </tr>

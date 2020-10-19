@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 // project components
 import { Tr, Td } from '../../components/Table'
 import ExpandIcon from '../../components/icons/Expand'
+import Checkbox from '../../components/Checkbox/'
 
 // project services
 import userService from '../../services/userService'
@@ -12,7 +13,7 @@ import { useAuth } from '../../context/auth'
 
 import './ProgressTableRow.css'
 
-const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
+const ProgressTableRow = ({ show, profile, setProfile, handleModal, editMode, handleSelect }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
 
@@ -45,7 +46,8 @@ const ProgressTableRow = ({ show, profile, setProfile, handleModal }) => {
   }
   return (
     <Tr className='text-sm sm:text-lg md:text-xl table-row'>
-      <Td className='flex items-center w-4/6' colSpan='3'>
+      <Td className='flex items-center w-4/6'>
+        {editMode && <Checkbox onChange={handleSelect} name={show.tv_id} />}
         <div
           className={`break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
           style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
