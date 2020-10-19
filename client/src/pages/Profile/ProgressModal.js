@@ -46,24 +46,24 @@ const ProgressModal = ({ modal, handleModal, setModal }) => {
 
     progress[e.target.name] = value
 
-    // when the episode count is something else than final seasons full episode count
-    if (e.target.name === 'episode' && value !== modal.show.tv_info.seasons[modal.show.tv_info.seasons.length - 1].episode_count && modal.progress.season === modal.show.tv_info.seasons.length)
+    // when episode count is lowered from the max in the final season
+    if (e.target.name === 'episode' && value !== modal.show.tv_info.seasons[modal.show.tv_info.seasons.length - 1].episode_count && modal.progress.season === modal.show.tv_info.seasons.length) {
       progress.season = modal.show.tv_info.seasons.length - 1
-
+    }
     // when season counter fills the season count
     if (e.target.name === 'season' && value === modal.show.tv_info.seasons.length)
       progress.episode = modal.show.tv_info.seasons[modal.show.tv_info.seasons.length - 1].episode_count
 
-    // when the season count is lowered from the max value
-    if (e.target.name === 'season' && modal.progress.season === modal.show.tv_info.seasons.length) {
-      progress.episode = modal.show.tv_info.seasons[value].episode_count - 1
-    }
-
     // when episode counter fills the season episode count
-    if (e.target.name === 'episode' && value === modal.show.tv_info.seasons[progress.season].episode_count) {
+    if (e.target.name === 'episode' && value >= modal.show.tv_info.seasons[progress.season].episode_count) {
       progress.season += 1
       if (progress.season !== modal.show.tv_info.seasons.length)
         progress.episode = 0
+    }
+
+    // episode count is not allowed to be season max other than in the final season when the show is completed
+    if (e.target.name === 'season' && progress.episode >= modal.show.tv_info.seasons[value < modal.show.tv_info.seasons.length ? value : value - 1].episode_count && progress.season !== modal.show.tv_info.seasons.length) {
+      progress.episode = modal.show.tv_info.seasons[progress.season].episode_count - 1
     }
 
     setModal({ ...modal, progress })

@@ -32,6 +32,13 @@ const ProgressTable = ({ list, handleModal }) => {
 
   const handleEditMode = e => {
     setEditmode(e.target.checked)
+    if (!e.target.checked) {
+      let arr = []
+      list.array.forEach(show => {
+        arr.push({ selected: false, show })
+      })
+      setSelected(arr)
+    }
   }
 
   const handleSelect = e => {
@@ -99,20 +106,20 @@ const ProgressTable = ({ list, handleModal }) => {
         (list.array.length > 0 && selected.length > 0) && <div key={list.name} className='mt-4'>
           <p className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
           {myProfile && <div className='flex text-gray-700 gap-1 my-1'>
-            <Checkbox onChange={handleEditMode} checked={editMode} label='Edit mode' className='ml-1 py-1' />
+            <Checkbox onChange={handleEditMode} checked={editMode} label='Edit mode' className='ml-1 py-1 mb-1' />
             {
               editMode &&
               <span>
-                <Button value='Complete' onClick={handleComplete} className='inline px-2 py-1 text-sm ml-1' />
-                <Button value='Reset' onClick={handleReset} className='inline px-2 py-1 text-sm ml-1' />
-                <Button value='Pause/Unpause' onClick={handlePause} className='inline px-2 py-1 text-sm ml-1' />
+                <Button value='Complete' onClick={handleComplete} className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                <Button value='Reset' onClick={handleReset} className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                <Button value='Pause/Unpause' onClick={handlePause} className='inline px-2 py-1 text-sm ml-1 mb-1' />
               </span>
             }
           </div>}
-          <Table className='table-fixed'>
+          <Table className='table-fixed max-w-full'>
             <Thead>
               <tr>
-                <Th>Show</Th>
+                <Th> Show</Th>
                 <Th>Season</Th>
                 <Th>Episode</Th>
               </tr>

@@ -48,18 +48,19 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
   }
   return (
     <Tr className='text-sm sm:text-lg md:text-xl table-row'>
-      <Td className='flex items-center w-4/6'>
-        {editMode && <Checkbox onChange={handleSelect} name={show.tv_id} />}
-        <div
-          className={`break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
-          style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
-        >
-          {myProfile &&
-            <button onClick={handleModal(show)} className='modal-btn text-lg text-white p-1'>
-              <ExpandIcon className='w-full' />
-            </button>
-          }
-        </div>
+      <Td className='flex items-center w-4/6 max-w-4/6 break-words'>
+        {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
+          <div
+            className={`break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
+            style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
+          >
+            {myProfile &&
+              <button onClick={handleModal(show)} className='modal-btn text-lg text-white p-1'>
+                <ExpandIcon className='w-full' />
+              </button>
+            }
+          </div>
+        }
         <span className='ml-6'>{show.tv_info.name}</span>
       </Td>
       <Td className='w-1/6'>
