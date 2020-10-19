@@ -4,8 +4,11 @@ import React, { useState } from 'react'
 import Select from '../../components/Select'
 import TvCard from '../../components/TvCard'
 
+// project hooks
+import { useProfile } from '../../context/profile'
 
-const TvList = ({ profile, setProfile }) => {
+const TvList = () => {
+  const { profile, setProfile } = useProfile()
   const [orderBy, setOrderBy] = useState('newest')
   const changeOrderBy = e => {
     setOrderBy(e.target.value)

@@ -12,11 +12,12 @@ import userService from '../../services/userService'
 
 // project hooks
 import { useAuth } from '../../context/auth'
+import { useProfile } from '../../context/profile'
 
-// project hooks
 
-const ProgressModal = ({ modal, handleModal, profile, setProfile, setModal }) => {
+const ProgressModal = ({ modal, handleModal, setModal }) => {
   const { authTokens } = useAuth()
+  const { profile, setProfile } = useProfile()
 
   const saveProgress = (e) => {
     e.preventDefault()

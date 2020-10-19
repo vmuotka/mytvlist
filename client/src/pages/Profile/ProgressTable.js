@@ -11,8 +11,10 @@ import userService from '../../services/userService'
 
 // project hooks
 import { useAuth } from '../../context/auth'
+import { useProfile } from '../../context/profile'
 
-const ProgressTable = ({ list, handleModal, setProfile, profile }) => {
+const ProgressTable = ({ list, handleModal }) => {
+  const { profile, setProfile } = useProfile()
   const [editMode, setEditmode] = useState(false)
   const [selected, setSelected] = useState([])
   const { authTokens } = useAuth()

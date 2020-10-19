@@ -1,8 +1,10 @@
 import React from 'react'
 
+// project hooks
+import { useProfile } from '../../context/profile'
 
-
-const ProfileNavigation = ({ profile, active, onClick }) => {
+const ProfileNavigation = ({ active, onClick }) => {
+  const { profile } = useProfile()
   const navs = [
     'TvList',
     'Statistics',

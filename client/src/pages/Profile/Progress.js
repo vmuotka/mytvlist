@@ -7,9 +7,12 @@ import ProgressModal from './ProgressModal'
 
 import './ProgressTableRow.css'
 
+// project hooks
+import { useProfile } from '../../context/profile'
 
+const Progress = () => {
 
-const Progress = ({ profile, setProfile }) => {
+  const { profile, setProfile } = useProfile()
   const [modal, setModal] = useState({
     hidden: true, progress: { season: 0, episode: 0 }, show: undefined
   })

@@ -10,12 +10,14 @@ import userService from '../../services/userService'
 
 // project hooks
 import { useAuth } from '../../context/auth'
+import { useProfile } from '../../context/profile'
 
 import './ProgressTableRow.css'
 
-const ProgressTableRow = ({ show, profile, setProfile, handleModal, editMode, handleSelect }) => {
+const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
+  const { profile, setProfile } = useProfile()
 
   useEffect(() => {
     setProgress(show.progress[show.progress.length - 1])
