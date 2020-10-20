@@ -48,11 +48,15 @@ const ProgressTable = ({ list, handleModal }) => {
     setSelected(selectedCopy)
   }
 
-  const handleComplete = () => {
+  const handleProgress = e => {
+    const btn = e.target.name
     const sel = selected.filter(a => a.selected === true)
     sel.forEach(async show => {
       show = show.show
-      show.progress[show.progress.length - 1] = { season: show.tv_info.seasons.length, episode: show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count }
+      show.progress[show.progress.length - 1] = {
+        season: btn === 'complete' ? show.tv_info.seasons.length : 0,
+        episode: btn === 'complete' ? show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count : 0
+      }
       setProfile({
         ...profile,
         tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
@@ -110,8 +114,8 @@ const ProgressTable = ({ list, handleModal }) => {
             {
               editMode &&
               <span>
-                <Button value='Complete' onClick={handleComplete} className='inline px-2 py-1 text-sm ml-1 mb-1' />
-                <Button value='Reset' onClick={handleReset} className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                <Button value='Complete' onClick={handleProgress} name='complete' className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                <Button value='Reset' onClick={handleProgress} name='reset' className='inline px-2 py-1 text-sm ml-1 mb-1' />
                 <Button value='Pause/Unpause' onClick={handlePause} className='inline px-2 py-1 text-sm ml-1 mb-1' />
               </span>
             }
