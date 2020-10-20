@@ -4,6 +4,7 @@ import disableScroll from 'disable-scroll'
 // project components
 import ProgressTable from './ProgressTable'
 import ProgressModal from './ProgressModal'
+import Spinner from '../../components/Spinner/'
 
 import './ProgressTableRow.css'
 
@@ -71,10 +72,10 @@ const Progress = () => {
   return (
     <div className='md:mx-10'>
       {
-        tvlist &&
-        tvlist.map((list) =>
-          <ProgressTable key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
-        )
+        tvlist ?
+          tvlist.map((list) =>
+            <ProgressTable key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
+          ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
       }
       {
         modal.show &&

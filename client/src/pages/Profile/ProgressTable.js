@@ -69,23 +69,6 @@ const ProgressTable = ({ list, handleModal }) => {
     })
   }
 
-  const handleReset = () => {
-    const sel = selected.filter(a => a.selected === true)
-    sel.forEach(async show => {
-      show = show.show
-      show.progress[show.progress.length - 1] = { season: 0, episode: 0 }
-      setProfile({
-        ...profile,
-        tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
-      })
-      try {
-        await userService.progress(show, authTokens)
-      } catch (err) {
-        console.error(err)
-      }
-    })
-  }
-
   const handlePause = () => {
     const sel = selected.filter(a => a.selected === true)
     sel.forEach(async show => {
