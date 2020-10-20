@@ -49,4 +49,10 @@ tvRouter.post('/search', async (req, res) => {
   return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages, searchword: body.searchword })
 })
 
+tvRouter.get('/genres', async (req, res) => {
+  const response = await axios.get(`${baseUrl}/genre/tv/list?api_key=${process.env.MOVIEDB_API}`)
+  res.status(200).json(response)
+})
+
+
 module.exports = tvRouter

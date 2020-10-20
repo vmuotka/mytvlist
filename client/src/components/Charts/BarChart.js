@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Chart from 'chart.js'
 
-const PieChart = (props) => {
+const BarChart = (props) => {
   const chartRef = React.createRef(null)
   const [chart, setChart] = useState(null)
   useEffect(() => {
     if (chartRef && chartRef.current) {
       setChart(new Chart(chartRef.current, {
-        type: 'pie',
+        type: 'bar',
         data: {
           labels: props.data.map(d => d.name),
           datasets: [{
@@ -17,6 +17,9 @@ const PieChart = (props) => {
           },]
         },
         options: {
+          legend: {
+            display: false
+          },
           responsive: true,
           maintainAspectRatio: false,
         }
@@ -33,4 +36,4 @@ const PieChart = (props) => {
   )
 }
 
-export default PieChart
+export default BarChart

@@ -15,5 +15,10 @@ const search = async (searchObj, tokenObj) => {
   return res.data
 }
 
+const genres = async () => {
+  const res = await axios.post(`${baseUrl}/genres`)
+  return res.data
+}
 
-export default { search }
+
+export default { search, genres }

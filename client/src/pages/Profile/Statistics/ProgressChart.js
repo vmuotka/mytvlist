@@ -36,7 +36,6 @@ const ProgressChart = () => {
       ])
     }
   }, [profile])
-  console.log(progress)
   return (
     <div className='relative h-64'>
       <PieChart data={progress} colors={['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']} />
