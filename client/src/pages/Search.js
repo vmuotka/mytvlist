@@ -61,8 +61,6 @@ const Search = () => {
     }
   }
 
-  console.log(response)
-
   return (
     <>
       <Form className='max-w-sm mb-4' onSubmit={handleSubmit}>

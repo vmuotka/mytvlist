@@ -8,6 +8,7 @@ import userService from '../../services/userService'
 import ProfileNavigation from './ProfileNavigation'
 import TvList from './TvList'
 import Progress from './Progress'
+import Statistics from './Statistics/'
 
 // project hooks
 import { ProfileContext } from '../../context/profile'
@@ -19,7 +20,7 @@ const Profile = () => {
   const [profile, setProfile] = useState({})
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
-  const [profileNav, setProfileNav] = useState('Progress')
+  const [profileNav, setProfileNav] = useState('Statistics')
 
   const onNavClick = (nav) => e => {
     setProfileNav(nav)
@@ -43,9 +44,10 @@ const Profile = () => {
     <>
       <ProfileContext.Provider value={{ profile, setProfile }} >
         <div className='w-full md:w-4/5 mx-auto mt-4'>
-          <ProfileNavigation profile={profile} active={profileNav} onClick={onNavClick} />
-          {profileNav === 'TvList' && <TvList profile={profile} setProfile={setProfile} />}
-          {profileNav === 'Progress' && <Progress profile={profile} setProfile={setProfile} />}
+          <ProfileNavigation active={profileNav} onClick={onNavClick} />
+          {profileNav === 'TvList' && <TvList />}
+          {profileNav === 'Statistics' && <Statistics />}
+          {profileNav === 'Progress' && <Progress />}
         </div>
       </ProfileContext.Provider>
     </>
