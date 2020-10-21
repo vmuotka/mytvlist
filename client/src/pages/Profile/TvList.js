@@ -15,38 +15,11 @@ const TvList = () => {
   const [tvlist, setTvlist] = useState([])
   const [filter, setFilter] = useState([])
   const [filterOptions, setFilterOptions] = useState([])
-  // useEffect(() => {
-  //   if (profile.tvlist)
-  //     setTvlist([...profile.tvlist])
-  // }, [profile, setTvlist])
   const changeOrderBy = e => {
     setOrderBy(e.target.value)
   }
   useEffect(() => {
     if (profile.tvlist) {
-      let tvcopy = [...profile.tvlist]
-      switch (orderBy) {
-        case 'alphabetical':
-          tvcopy.sort((a, b) => {
-            if (a.tv_info.name < b.tv_info.name)
-              return -1
-            if (a.tv_info.name > b.tv_info.name)
-              return 1
-            return 0
-          })
-          break;
-        case 'newest':
-          tvcopy.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt)
-          })
-          break;
-        case 'oldest':
-          tvcopy.sort((a, b) => {
-            return new Date(a.createdAt) - new Date(b.createdAt)
-          })
-          break;
-        default: break;
-      }
 
       let genres = []
       profile.tvlist.forEach((show) => {
@@ -76,6 +49,35 @@ const TvList = () => {
         return 0
       })
       setFilterOptions(genres)
+    }
+  }, [profile.tvlist])
+
+  useEffect(() => {
+    if (profile.tvlist) {
+      let tvcopy = [...profile.tvlist]
+      switch (orderBy) {
+        case 'alphabetical':
+          tvcopy.sort((a, b) => {
+            if (a.tv_info.name < b.tv_info.name)
+              return -1
+            if (a.tv_info.name > b.tv_info.name)
+              return 1
+            return 0
+          })
+          break;
+        case 'newest':
+          tvcopy.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt)
+          })
+          break;
+        case 'oldest':
+          tvcopy.sort((a, b) => {
+            return new Date(a.createdAt) - new Date(b.createdAt)
+          })
+          break;
+        default: break;
+      }
+
       let arr = []
       if (filter.length > 0) {
         tvcopy.forEach(show => {
@@ -95,14 +97,20 @@ const TvList = () => {
   }, [orderBy, filter, profile.tvlist])
 
   return (
-    <div>
+    <div className='mx-2'>
       <Select onChange={changeOrderBy} className='w-full' value={orderBy} options={orderByOptions} label='Sort' />
       <div className='px-3 mt-2'>
-        <label htmlFor='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter</label>
-        <MultiSelect onChange={setFilter} value={filter} options={filterOptions} labelledBy={'filter'} />
+        <label id='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter</label>
+        <MultiSelect onChange={setFilter} hasSelectAll={false} focusSearchOnOpen={false} value={filter} options={filterOptions} labelledBy={'filter'} />
       </div>
+
       <div className='xl:grid grid-cols-2 gap-5 mt-4 xl:mx-2'>
-        {tvlist && tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show.tv_info} />)}
+        {tvlist &&
+          <>
+            <div className='xl:col-span-2'><p className='text-gray-600 text-lg'>{tvlist.length} shows</p></div>
+            {tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show.tv_info} />)}
+          </>
+        }
       </div>
     </div>
   )

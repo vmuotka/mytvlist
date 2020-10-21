@@ -6,6 +6,7 @@ import CompletionPercentageChart from './CompletionPercentageChart'
 import HoursByGenre from './HoursByGenre'
 import ShowStatusChart from './ShowStatusChart'
 import OriginCountryChart from './OriginCountryChart'
+import ReleaseYearChart from './ReleaseYearChart'
 
 const Statistics = () => {
   return (
@@ -33,6 +34,10 @@ const Statistics = () => {
             <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>
             <HoursByGenre />
           </div>
+        </div>
+        <div className='md:col-span-2'>
+          <p className='text-gray-700 text-lg text-center'>Years</p>
+          <ReleaseYearChart />
         </div>
       </div>
     </>

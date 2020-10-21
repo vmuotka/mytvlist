@@ -11,6 +11,7 @@ const BarChart = (props) => {
         data: {
           labels: props.data.map(d => d.name),
           datasets: [{
+            label: props.label && props.label,
             data: props.data.map(d => d.value),
             backgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391', '#fc8181', '#63b3ed', '#d53f8c', '#f6e05e', '#805ad5', '#d53f8c', '#e53e3e', '#48bb78', '#38b2ac', '#667eea', '#ed64a6', '#d69e2e'],
             hoverBackgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391', '#fc8181', '#63b3ed', '#d53f8c', '#f6e05e', '#805ad5', '#d53f8c', '#e53e3e', '#48bb78', '#38b2ac', '#667eea', '#ed64a6', '#d69e2e'],
@@ -19,6 +20,9 @@ const BarChart = (props) => {
         options: {
           legend: {
             display: false
+          },
+          tooltips: {
+            displayColors: false
           },
           responsive: true,
           maintainAspectRatio: false,

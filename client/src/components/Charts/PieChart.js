@@ -24,6 +24,10 @@ const PieChart = (props) => {
     }
     // eslint-disable-next-line
   }, [props.data, props.colors])
+  useEffect(() => {
+    if (chart)
+      chart.update()
+  }, [chart])
   // the chart dissapears when the window is resized, resize function fixes that
   chart && window.addEventListener('resize', () => chart.resize())
   return (

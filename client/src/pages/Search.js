@@ -45,19 +45,16 @@ const Search = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    if (form.searchword !== response.searchword) {
-      if (form.searchword.length > 0) {
-        setSpinner(true)
-        try {
-          const res = await searchService.search(form, authTokens)
-          setResponse(res)
-          setCurrentPage(1)
-        } catch (err) {
-          console.error(err)
-        }
-        setSpinner(false)
+    if (form.searchword.length > 0) {
+      setSpinner(true)
+      try {
+        const res = await searchService.search(form, authTokens)
+        setResponse(res)
+        setCurrentPage(1)
+      } catch (err) {
+        console.error(err)
       }
-
+      setSpinner(false)
     }
   }
 
@@ -73,9 +70,9 @@ const Search = () => {
       <div className='max-w-xl mx-auto'>
         <Spinner className='mx-auto' color='bg-pink-500' show={spinner} />
 
-        {response.results.length > 0 && <p className='mt-4 mb-2 text-sm text-gray-600 font-semibold select-none' title='Some results might be removed because they did not meet our requirements'>Showing {currentPage * 20 - 19} - {currentPage * 20} of {response.total_results} result(s)</p>}
+        {response.results.length > 0 && <p className='mt-4 mb-2 text-sm text-gray-600 font-semibold select-none' title='Some results might be removed because they did not meet our requirements'>Showing {currentPage * 20 - 19} - {currentPage * 20 - 20 + response.results.length} of {response.total_results} result(s)</p>}
 
-        {response.total_pages > 1 && <div className='flex justify-end'><Pagination ariaLabel='Page navigation' currentPage={currentPage} totalPages={7} onClick={paginationClick} /></div>}
+        {response.total_pages > 1 && <div className='flex justify-end'><Pagination ariaLabel='Page navigation' currentPage={currentPage} totalPages={response.total_pages} onClick={paginationClick} /></div>}
         {
           response.results.map((result) => <TvCard className='mt-4' show={result} key={result.id} />)
         }

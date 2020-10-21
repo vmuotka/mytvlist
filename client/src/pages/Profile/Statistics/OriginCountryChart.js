@@ -6,7 +6,7 @@ import { useProfile } from '../../../context/profile'
 // project components
 import PieChart from '../../../components/Charts/PieChart'
 
-const ShowStatusChart = () => {
+const OriginCountryChart = () => {
   const { profile } = useProfile()
   const [data, setData] = useState([])
   useEffect(() => {
@@ -15,7 +15,7 @@ const ShowStatusChart = () => {
       profile.tvlist.forEach((show) => {
         let found = false
         for (let i = 0; i < arr.length; i++) {
-          if (arr[i].name === show.tv_info.origin_country[0]) {
+          if (arr[i].name === (show.tv_info.origin_country[0] ? show.tv_info.origin_country[0] : 'No data')) {
             found = true
             arr[i].value += 1
           }
@@ -34,4 +34,4 @@ const ShowStatusChart = () => {
   )
 }
 
-export default ShowStatusChart
+export default OriginCountryChart

@@ -39,6 +39,7 @@ const Profile = () => {
             return 0
           })
         })
+        setProfileNav('TvList')
       }).catch(err => {
         setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
       }

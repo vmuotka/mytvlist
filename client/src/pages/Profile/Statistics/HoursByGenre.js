@@ -58,7 +58,7 @@ const ProgressChart = () => {
   }, [profile])
   return (
     <div className='relative' style={{ height: '20rem' }}>
-      <BarChart data={hoursByGenre} />
+      <BarChart data={hoursByGenre} label='Hours' />
     </div>
   )
 }
