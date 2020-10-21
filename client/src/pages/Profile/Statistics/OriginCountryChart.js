@@ -13,7 +13,6 @@ const ShowStatusChart = () => {
     if (profile.tvlist) {
       let arr = []
       profile.tvlist.forEach((show) => {
-        console.log(show.tv_info.name, show.tv_info.origin_country[0])
         let found = false
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].name === show.tv_info.origin_country[0]) {

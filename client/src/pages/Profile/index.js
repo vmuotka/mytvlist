@@ -20,7 +20,7 @@ const Profile = () => {
   const [profile, setProfile] = useState({})
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
-  const [profileNav, setProfileNav] = useState('Statistics')
+  const [profileNav, setProfileNav] = useState('TvList')
 
   const onNavClick = (nav) => e => {
     setProfileNav(nav)
@@ -31,7 +31,13 @@ const Profile = () => {
       userService.profile(username, authTokens).then(data => {
         setProfile({
           ...data,
-          tvlist: data.tvlist.reverse()
+          tvlist: data.tvlist.sort((a, b) => {
+            if (a.tv_info.name < b.tv_info.name)
+              return -1
+            if (a.tv_info.name > b.tv_info.name)
+              return 1
+            return 0
+          })
         })
       }).catch(err => {
         setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])

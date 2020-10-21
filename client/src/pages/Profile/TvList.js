@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import MultiSelect from 'react-multi-select-component'
 
 // project components
 import Select from '../../components/Select'
@@ -8,22 +9,100 @@ import TvCard from '../../components/TvCard'
 import { useProfile } from '../../context/profile'
 
 const TvList = () => {
-  const { profile, setProfile } = useProfile()
-  const [orderBy, setOrderBy] = useState('newest')
+  const { profile } = useProfile()
+  const [orderBy, setOrderBy] = useState('alphabetical')
+  const orderByOptions = ['alphabetical', 'newest', 'oldest']
+  const [tvlist, setTvlist] = useState([])
+  const [filter, setFilter] = useState([])
+  const [filterOptions, setFilterOptions] = useState([])
+  // useEffect(() => {
+  //   if (profile.tvlist)
+  //     setTvlist([...profile.tvlist])
+  // }, [profile, setTvlist])
   const changeOrderBy = e => {
     setOrderBy(e.target.value)
-    if (e.target.value !== orderBy) {
-      setProfile({
-        ...profile,
-        tvlist: profile.tvlist.reverse()
-      })
-    }
   }
+  useEffect(() => {
+    if (profile.tvlist) {
+      let tvcopy = [...profile.tvlist]
+      switch (orderBy) {
+        case 'alphabetical':
+          tvcopy.sort((a, b) => {
+            if (a.tv_info.name < b.tv_info.name)
+              return -1
+            if (a.tv_info.name > b.tv_info.name)
+              return 1
+            return 0
+          })
+          break;
+        case 'newest':
+          tvcopy.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt)
+          })
+          break;
+        case 'oldest':
+          tvcopy.sort((a, b) => {
+            return new Date(a.createdAt) - new Date(b.createdAt)
+          })
+          break;
+        default: break;
+      }
+
+      let genres = []
+      profile.tvlist.forEach((show) => {
+        for (let i = 0; i < show.tv_info.genres.length; i++) {
+          let genreFound = false
+          for (let j = 0; j < genres.length; j++) {
+            if (genres[j].value === show.tv_info.genres[i].id) {
+              genreFound = true
+            }
+          }
+          if (!genreFound) {
+            genres.push(
+              {
+                label: show.tv_info.genres[i].name,
+                value: show.tv_info.genres[i].id,
+              })
+          }
+        }
+      }
+      )
+
+      genres.sort((a, b) => {
+        if (a.label < b.label)
+          return -1
+        if (a.label > b.label)
+          return 1
+        return 0
+      })
+      setFilterOptions(genres)
+      let arr = []
+      if (filter.length > 0) {
+        tvcopy.forEach(show => {
+          let showFound = false
+          for (let i = 0; i < show.tv_info.genres.length; i++) {
+            for (let j = 0; j < filter.length; j++) {
+              if (filter[j].value === show.tv_info.genres[i].id && !showFound) {
+                arr.push(show)
+                showFound = true
+              }
+            }
+          }
+        })
+      }
+      setTvlist(arr.length > 0 ? arr : tvcopy)
+    }
+  }, [orderBy, filter, profile.tvlist])
+
   return (
     <div>
-      <Select onChange={changeOrderBy} className='w-full' value={orderBy} options={[{ value: 'newest', name: 'Newest' }, { value: 'oldest', name: 'Oldest' }]} label='Sort by' />
+      <Select onChange={changeOrderBy} className='w-full' value={orderBy} options={orderByOptions} label='Sort' />
+      <div className='px-3 mt-2'>
+        <label htmlFor='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter</label>
+        <MultiSelect onChange={setFilter} value={filter} options={filterOptions} labelledBy={'filter'} />
+      </div>
       <div className='xl:grid grid-cols-2 gap-5 mt-4 xl:mx-2'>
-        {profile.tvlist && profile.tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show.tv_info} />)}
+        {tvlist && tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show.tv_info} />)}
       </div>
     </div>
   )

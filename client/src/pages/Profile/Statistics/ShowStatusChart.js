@@ -25,6 +25,7 @@ const ShowStatusChart = () => {
           case 'Canceled':
             canceled.value += 1
             break;
+          default: break;
         }
       })
       setStatus([
