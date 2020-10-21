@@ -4,6 +4,8 @@ import React from 'react'
 import ProgressChart from './ProgressChart'
 import CompletionPercentageChart from './CompletionPercentageChart'
 import HoursByGenre from './HoursByGenre'
+import ShowStatusChart from './ShowStatusChart'
+import OriginCountryChart from './OriginCountryChart'
 
 const Statistics = () => {
   return (
@@ -18,6 +20,14 @@ const Statistics = () => {
           <div>
             <p className='text-gray-700 text-lg text-center'>Watched Episodes</p>
             <CompletionPercentageChart />
+          </div>
+          <div>
+            <p className='text-gray-700 text-lg text-center'>Show Status</p>
+            <ShowStatusChart />
+          </div>
+          <div>
+            <p className='text-gray-700 text-lg text-center'>Origin Country</p>
+            <OriginCountryChart />
           </div>
           <div className='md:col-span-2'>
             <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>

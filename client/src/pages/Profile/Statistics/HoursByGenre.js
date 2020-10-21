@@ -46,11 +46,18 @@ const ProgressChart = () => {
         genres[i].value = Math.floor(genres[i].minutes / 60)
         delete genres[i].minutes
       }
+      genres.sort((a, b) => {
+        if (a.name < b.name)
+          return -1
+        if (a.name > b.name)
+          return 1
+        return 0
+      })
       setHoursByGenre(genres)
     }
   }, [profile])
   return (
-    <div className='relative h-64'>
+    <div className='relative' style={{ height: '20rem' }}>
       <BarChart data={hoursByGenre} />
     </div>
   )
