@@ -18,8 +18,13 @@ tvlistRouter.post('/addtolist', async (req, res) => {
     user: decodedToken.id,
     tv_id
   }
+  let findlist = []
+  try {
+    findlist = await Tvlist.find(query)
+  } catch (err) {
+    res.status(503).json({ error: 'Database connection failed' })
+  }
 
-  let findlist = await Tvlist.find(query)
   if (findlist.length === 0) {
     // if the user has not listed the show before, create a document to the database
     const tvlist = new Tvlist({
@@ -34,12 +39,21 @@ tvlistRouter.post('/addtolist', async (req, res) => {
         }
       ]
     })
-    await tvlist.save()
+    try {
+      await tvlist.save()
+    } catch (err) {
+      res.status(503).json({ error: 'Database connection failed' })
+    }
   } else {
     // if the user has listed the show before, change the shows following status instead
     findlist = findlist[0]
     findlist.listed = !findlist.listed
-    await findlist.save()
+    try {
+      await findlist.save()
+    } catch (err) {
+      res.status(503).json({ error: 'Database connection failed' })
+    }
+
   }
 
   res.status(200).json({ message: 'success' })

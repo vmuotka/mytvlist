@@ -51,7 +51,13 @@ usersRouter.post('/login', [
   body('password').trim().escape()
 ], async (req, res) => {
   const body = req.body
-  const user = await User.findOne({ username: { '$regex': `^${body.username}$`, $options: 'i' } })
+  let user
+  try {
+    user = await User.findOne({ username: { '$regex': `^${body.username}$`, $options: 'i' } })
+  } catch (err) {
+    return res.status(503).json({ error: 'Database connection failed' })
+  }
+
   const passwordCorrect = user === null
     ? false
     : await bcrypt.compare(body.password, user.passwordHash)
@@ -71,52 +77,72 @@ usersRouter.post('/login', [
 })
 
 usersRouter.post('/profile', async (req, res) => {
+  const username = req.body.username
+  let user
   try {
-    const username = req.body.username
-    const user = await User.findOne({ username: { '$regex': `^${username}$`, $options: 'i' } })
-
-    let profile = JSON.parse(JSON.stringify(user))
-    profile.email = undefined
-
-    const tvlist = await Tvlist.find({ user: profile.id, listed: true })
-    profile.tvlist = JSON.parse(JSON.stringify(tvlist))
-
-    let decodedToken
-    if (req.token)
-      decodedToken = jwt.verify(req.token, process.env.SECRET)
-
-    let tvlistArr
-    if (decodedToken !== undefined)
-      tvlistArr = await Tvlist.find({ user: decodedToken.id })
-
-    const tvshowIdArr = profile.tvlist.map(show => show.tv_id)
-
-    const showsOnDb = await Tvshow.find({ 'tv_id': { $in: tvshowIdArr } })
-
-    for (let i = 0; i < profile.tvlist.length; i++) {
-      let show
-      if (showsOnDb.some(show => show.tv_id === profile.tvlist[i].tv_id)) {
-        show = showsOnDb.find(show => show.tv_id === profile.tvlist[i].tv_id).show
-      } else {
-        show = await axios.get(`${apiUrl}/tv/${profile.tvlist[i].tv_id}?api_key=${process.env.MOVIEDB_API}`)
-        show = show.data
-        const showToDb = new Tvshow({ tv_id: show.id, show })
-        showToDb.save()
-      }
-      if (tvlistArr) {
-        if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
-          show.listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
-        }
-      } else {
-        show.listed = false
-      }
-      show.seasons = show.seasons.filter(season => season.name !== 'Specials')
-      profile.tvlist[i].tv_info = show
-    }
-    return res.status(200).json(profile)
+    user = await User.findOne({ username: { '$regex': `^${username}$`, $options: 'i' } })
   } catch (err) {
-    return res.status(404).json({ error: 'User not found' })
+    return res.status(503).json({ error: 'Database connection failed' })
   }
+
+  if (!user)
+    return res.status(404).json({ error: 'User not found' })
+
+
+  let profile = JSON.parse(JSON.stringify(user))
+  profile.email = undefined
+
+  let tvlist
+  try {
+    tvlist = await Tvlist.find({ user: profile.id, listed: true })
+  } catch (err) {
+    return res.status(503).json({ error: 'Database connection failed' })
+  }
+  profile.tvlist = JSON.parse(JSON.stringify(tvlist))
+
+  let decodedToken
+  if (req.token)
+    decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  let tvlistArr
+  if (decodedToken !== undefined)
+    tvlistArr = await Tvlist.find({ user: decodedToken.id })
+
+  const tvshowIdArr = profile.tvlist.map(show => show.tv_id)
+
+  let showsOnDb
+  try {
+    showsOnDb = await Tvshow.find({ 'tv_id': { $in: tvshowIdArr } })
+  } catch (err) {
+    return res.status(503).json({ error: 'Database connection failed' })
+  }
+
+  for (let i = 0; i < profile.tvlist.length; i++) {
+    let show
+    if (showsOnDb.some(show => show.tv_id === profile.tvlist[i].tv_id)) {
+      show = showsOnDb.find(show => show.tv_id === profile.tvlist[i].tv_id).show
+    } else {
+      try {
+        show = await axios.get(`${apiUrl}/tv/${profile.tvlist[i].tv_id}?api_key=${process.env.MOVIEDB_API}`)
+      } catch (err) {
+        return res.status(503).json({ error: 'MovieDbAPI connection failed' })
+      }
+
+      show = show.data
+      const showToDb = new Tvshow({ tv_id: show.id, show })
+      showToDb.save()
+    }
+    if (tvlistArr) {
+      if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
+        show.listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
+      }
+    } else {
+      show.listed = false
+    }
+    show.seasons = show.seasons.filter(season => season.name !== 'Specials')
+    profile.tvlist[i].tv_info = show
+  }
+  return res.status(200).json(profile)
 })
 
 usersRouter.post('/progress', async (req, res) => {
@@ -125,8 +151,13 @@ usersRouter.post('/progress', async (req, res) => {
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
-  await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching } })
-  return res.status(200).json({ message: 'ree' })
+  try {
+    await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching } })
+  } catch (err) {
+    return res.status(503).json({ error: 'Database connection failed' })
+  }
+
+  return res.status(200).json({ message: 'Progress saved successfully' })
 
 })
 

@@ -8,7 +8,12 @@ const baseUrl = `https://api.themoviedb.org/3`
 
 tvRouter.post('/search', async (req, res) => {
   const body = req.body
-  const response = await axios.get(`${baseUrl}/search/tv?api_key=${process.env.MOVIEDB_API}&query=${body.searchword}&page=${body.page}`)
+  let response
+  try {
+    response = await axios.get(`${baseUrl}/search/tv?api_key=${process.env.MOVIEDB_API}&query=${body.searchword}&page=${body.page}`)
+  } catch (err) {
+    return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
+  }
 
   // return array of shows the user is following
   let decodedToken
@@ -21,7 +26,14 @@ tvRouter.post('/search', async (req, res) => {
 
   const tvshowIdArr = response.data.results.map(show => show.id)
 
-  const showsOnDb = await Tvshow.find({ 'tv_id': { $in: tvshowIdArr } })
+  let showsOnDb = []
+  try {
+    showsOnDb = await Tvshow.find({ 'tv_id': { $in: tvshowIdArr } })
+  } catch (err) {
+    // if this response results in an error, the code can get the needed info from the api
+    console.error(err)
+  }
+
 
   let results = []
   for (let i = 0; i < response.data.results.length; i++) {
@@ -29,7 +41,11 @@ tvRouter.post('/search', async (req, res) => {
     if (showsOnDb.some(show => show.tv_id === response.data.results[i].id)) {
       show = showsOnDb.find(show => show.tv_id === response.data.results[i].id).show
     } else {
-      show = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
+      try {
+        show = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
+      } catch (err) {
+        return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
+      }
       show = show.data
       const showToDb = new Tvshow({ tv_id: show.id, show })
       showToDb.save()
@@ -50,7 +66,12 @@ tvRouter.post('/search', async (req, res) => {
 })
 
 tvRouter.get('/genres', async (req, res) => {
-  const response = await axios.get(`${baseUrl}/genre/tv/list?api_key=${process.env.MOVIEDB_API}`)
+  let response
+  try {
+    response = await axios.get(`${baseUrl}/genre/tv/list?api_key=${process.env.MOVIEDB_API}`)
+  } catch (err) {
+    return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
+  }
   res.status(200).json(response)
 })
 
