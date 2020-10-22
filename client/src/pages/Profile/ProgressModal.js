@@ -88,7 +88,7 @@ const ProgressModal = ({ modal, handleModal, setModal }) => {
         <tbody className='text-center'>
           <tr>
             <td colSpan='2'>
-              <img src={`https://image.tmdb.org/t/p/w400${modal.show.tv_info.poster_path}`} alt='Show Poster' />
+              <img src={modal.show.tv_info.poster_path && `https://image.tmdb.org/t/p/w400${modal.show.tv_info.poster_path}`} alt='Show Poster' />
             </td>
             <td colSpan='2' className='p-4'>
               <form onSubmit={saveProgress}>

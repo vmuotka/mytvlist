@@ -11,7 +11,7 @@ import userService from '../../services/userService'
 // project hooks
 import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
-import { useNotification } from '../context/notification'
+import { useNotification } from '../../context/notification'
 
 import './ProgressTableRow.css'
 
@@ -54,7 +54,7 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
         {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
           <div
             className={`break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
-            style={{ backgroundImage: `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
+            style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
           >
             {myProfile &&
               <button onClick={handleModal(show)} className='modal-btn text-lg text-white p-1'>

@@ -31,17 +31,20 @@ const SignUp = (props) => {
   const handleSubmit = async e => {
     e.preventDefault()
     if (form.password === form.confirm) {
-      try {
-        setAuthTokens(await userService.register(form))
-      } catch (err) {
-        const errors = err.response.data.error.errors
-        let notificationArray = []
-        // eslint-disable-next-line
-        for (let [key, error] of Object.entries(errors)) {
-          notificationArray.push({ title: error.name, message: error.message, type: 'error' })
+      if (form.username.indexOf(' ') < 0) {
+        try {
+          setAuthTokens(await userService.register(form))
+        } catch (err) {
+          const errors = err.response.data.error.errors
+          let notificationArray = []
+          // eslint-disable-next-line
+          for (let [key, error] of Object.entries(errors)) {
+            notificationArray.push({ title: error.name, message: error.message, type: 'error' })
+          }
+          setNotifications(notificationArray)
         }
-        setNotifications(notificationArray)
-      }
+      } else
+        setNotifications([{ title: 'Invalid username', message: 'Username should not contain spaces', type: 'error' }])
     } else {
       setNotifications([{ title: 'Passwords do not match', message: 'Make sure you wrote them correctly', type: 'error' }])
     }
