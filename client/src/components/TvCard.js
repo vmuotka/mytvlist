@@ -8,11 +8,13 @@ import Button from './Button'
 
 // project hooks
 import { useAuth } from '../context/auth'
+import { useNotification } from '../context/notification'
 
 // project services
 import tvlistService from '../services/tvlistService'
 
 const TvCard = ({ show, className }) => {
+  const { setNotifications } = useNotification()
   let genres = []
   for (let i = 0; i < show.genres.length; i++)
     genres.push(show.genres[i].name)
@@ -37,7 +39,7 @@ const TvCard = ({ show, className }) => {
       await tvlistService.addToList({ id: show.id }, authTokens)
       setListed(!listed)
     } catch (err) {
-      console.error(err)
+      setNotifications([{ title: 'Listing failed', message: 'There was an error while processing request', type: 'error' }])
     }
   }
 

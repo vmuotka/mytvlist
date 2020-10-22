@@ -12,12 +12,14 @@ import userService from '../../services/userService'
 // project hooks
 import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
+import { useNotification } from '../../context/notification'
 
 const ProgressTable = ({ list, handleModal }) => {
   const { profile, setProfile } = useProfile()
   const [editMode, setEditmode] = useState(false)
   const [selected, setSelected] = useState([])
   const { authTokens } = useAuth()
+  const { setNotifications } = useNotification()
 
   const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
   const myProfile = decodedToken ? decodedToken.id === profile.id : false
@@ -64,7 +66,7 @@ const ProgressTable = ({ list, handleModal }) => {
       try {
         await userService.progress(show, authTokens)
       } catch (err) {
-        console.error(err)
+        setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
       }
     })
   }
@@ -81,7 +83,7 @@ const ProgressTable = ({ list, handleModal }) => {
       try {
         await userService.progress(show, authTokens)
       } catch (err) {
-        console.error(err)
+        setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
       }
     })
   }

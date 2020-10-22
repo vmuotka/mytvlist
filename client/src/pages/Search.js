@@ -13,12 +13,14 @@ import searchService from '../services/searchService'
 
 // project hooks
 import { useAuth } from '../context/auth'
+import { useNotification } from '../context/notification'
 
 const Search = () => {
   const [form, setForm] = useState({ searchword: '' })
   const { authTokens } = useAuth()
   const [response, setResponse] = useState({ results: [], total_results: 0 })
   const [spinner, setSpinner] = useState(false)
+  const { setNotifications } = useNotification()
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -30,7 +32,7 @@ const Search = () => {
       setResponse(res)
       setCurrentPage(page)
     } catch (err) {
-      console.error(err)
+      setNotifications([{ title: 'Request failed', message: 'Couln\'t get the requested data.', type: 'error' }])
     }
     setSpinner(false)
   }
@@ -52,7 +54,7 @@ const Search = () => {
         setResponse(res)
         setCurrentPage(1)
       } catch (err) {
-        console.error(err)
+        setNotifications([{ title: 'Request failed', message: 'Couln\'t get the requested data.', type: 'error' }])
       }
       setSpinner(false)
     }

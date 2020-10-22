@@ -11,6 +11,7 @@ import userService from '../../services/userService'
 // project hooks
 import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
+import { useNotification } from '../context/notification'
 
 import './ProgressTableRow.css'
 
@@ -18,6 +19,7 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
   const { profile, setProfile } = useProfile()
+  const { setNotifications } = useNotification()
 
   useEffect(() => {
     setProgress(show.progress[show.progress.length - 1])
@@ -42,7 +44,7 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
       try {
         userService.progress(showCopy, authTokens)
       } catch (err) {
-        console.error(err)
+        setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
       }
     }
   }

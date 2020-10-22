@@ -13,11 +13,13 @@ import userService from '../../services/userService'
 // project hooks
 import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
+import { useNotification } from '../../context/notification'
 
 
 const ProgressModal = ({ modal, handleModal, setModal }) => {
   const { authTokens } = useAuth()
   const { profile, setProfile } = useProfile()
+  const { setNotifications } = useNotification()
 
   const saveProgress = (e) => {
     e.preventDefault()
@@ -30,7 +32,7 @@ const ProgressModal = ({ modal, handleModal, setModal }) => {
     try {
       userService.progress(showCopy, authTokens)
     } catch (err) {
-      console.error(err)
+      setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
     }
     setModal({
       ...modal,
