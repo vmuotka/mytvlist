@@ -164,4 +164,29 @@ usersRouter.post('/progress', async (req, res) => {
 
 })
 
+usersRouter.post('/search', async (req, res) => {
+  const body = req.body
+  let users
+  try {
+    users = await User.find({ username: { $regex: body.username, $options: 'i' } })
+  } catch (err) {
+    res.status(503).json({ error: 'Connection to database failed' })
+  }
+
+  users = JSON.parse(JSON.stringify(users))
+
+  for (let i = 0; i < users.length; i++) {
+    users[i].hours_watched = 0
+    try {
+      const tvlist = await Tvlist.find({ user: users[i].id })
+      users[i].show_count = tvlist.length
+    } catch (err) {
+      console.error(err)
+      res.status(503).json({ error: 'Connection to database failed' })
+    }
+  }
+  return res.status(200).json({ results: users })
+
+})
+
 module.exports = usersRouter

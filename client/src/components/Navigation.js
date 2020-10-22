@@ -25,8 +25,12 @@ const Navigation = () => {
       href: '/discover'
     },
     {
-      title: 'Search',
-      href: '/search'
+      title: 'Search Tv',
+      href: '/search/tv'
+    },
+    {
+      title: 'Search Users',
+      href: '/search/users'
     },
     {
       title: 'My Profile',

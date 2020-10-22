@@ -1,0 +1,96 @@
+import React, { useState } from 'react'
+
+// project components
+import Form from '../components/Form'
+import InputField from '../components/InputField'
+import Heading from '../components/Heading'
+import UserCard from '../components/UserCard'
+import Spinner from '../components/Spinner'
+
+// project services
+import userService from '../services/userService'
+
+// project hooks
+import { useAuth } from '../context/auth'
+import { useNotification } from '../context/notification'
+
+const SearchUsers = () => {
+  const [form, setForm] = useState({ username: '' })
+  const { authTokens } = useAuth()
+  const [response, setResponse] = useState({
+    results: [
+      {
+        "username": "Jakk3",
+        "createdAt": "2020-10-15T02:13:16.574Z",
+        "updatedAt": "2020-10-15T02:13:16.574Z",
+        "id": "5f87b03c842e500d044853ff",
+        "hours_watched": 0,
+        "show_count": 47
+      },
+      {
+        "username": "PohjoinenKoala",
+        "createdAt": "2020-10-15T01:56:39.001Z",
+        "updatedAt": "2020-10-15T01:56:39.001Z",
+        "id": "5f87ac56842e500d044853dd",
+        "hours_watched": 0,
+        "show_count": 55
+      },
+      {
+        "username": "santeri",
+        "createdAt": "2020-10-16T11:29:03.543Z",
+        "updatedAt": "2020-10-16T11:29:03.543Z",
+        "id": "5f8983ff66a96b31f845f8df",
+        "hours_watched": 0,
+        "show_count": 2
+      }
+    ]
+  })
+  const [spinner, setSpinner] = useState(false)
+  const { setNotifications } = useNotification()
+
+  // handle form field changes
+  const handleChange = e => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (form.username.length >= 0) {
+      setSpinner(true)
+      try {
+        const res = await userService.search(form, authTokens)
+        setResponse(res)
+      } catch (err) {
+        console.error(err)
+        setNotifications([{ title: 'Request failed', message: 'Couln\'t get the requested data.', type: 'error' }])
+      }
+      setSpinner(false)
+    }
+  }
+
+  return (
+    <>
+      <Form className='max-w-sm mb-4' onSubmit={handleSubmit}>
+        <Heading className='text-center'>Search Users</Heading>
+        <div className='mb4'>
+          <InputField className='w-full' label='Search' type='text' value={form.username} onChange={handleChange} name='username' placeholder='Search by username' />
+        </div>
+      </Form>
+
+      <div className='max-w-xl mx-auto'>
+        <Spinner className='mx-auto' color='bg-pink-500' show={spinner} />
+        {response.results.length > 0 && <p className='mt-4 mb-2 text-sm text-gray-600 font-semibold select-none'>Showing {response.results.length} users</p>}
+        <div className='grid grid-cols-2 gap-4'>
+          {response.results.length > 0 &&
+            response.results.map(user => <UserCard key={user.id} user={user} />)
+          }
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default SearchUsers

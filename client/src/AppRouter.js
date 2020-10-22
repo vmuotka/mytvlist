@@ -4,7 +4,8 @@ import { Switch, Route } from 'react-router-dom'
 // project pages
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
-import Search from './pages/Search'
+import SearchTv from './pages/SearchTv'
+import SearchUsers from './pages/SearchUsers'
 import Profile from './pages/Profile/'
 
 // project components
@@ -22,8 +23,12 @@ const privateRoutes = [
 
 const publicRoutes = [
   {
-    path: '/search',
-    component: Search
+    path: '/search/tv',
+    component: SearchTv
+  },
+  {
+    path: '/search/users',
+    component: SearchUsers
   },
   {
     path: '/signup',

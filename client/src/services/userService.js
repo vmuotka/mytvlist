@@ -32,7 +32,11 @@ const progress = async (progress, tokenObj) => {
   }
   const res = await axios.post(`${baseUrl}/progress`, progress, config)
   return res.data
-
 }
 
-export default { login, register, profile, progress }
+const search = async (searchObj) => {
+  const res = await axios.post(`${baseUrl}/search`, searchObj)
+  return res.data
+}
+
+export default { login, register, profile, progress, search }

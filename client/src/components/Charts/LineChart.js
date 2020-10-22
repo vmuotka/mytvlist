@@ -4,7 +4,6 @@ import Chart from 'chart.js'
 const BarChart = (props) => {
   const chartRef = React.createRef(null)
   const [chart, setChart] = useState(null)
-  console.log(props.data)
   useEffect(() => {
     if (chartRef && chartRef.current) {
       let datasets = []
