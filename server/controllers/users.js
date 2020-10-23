@@ -121,6 +121,7 @@ usersRouter.post('/profile', async (req, res) => {
   }
 
   for (let i = 0; i < profile.tvlist.length; i++) {
+    profile.tvlist[i].listed = false
     let show
     if (showsOnDb.some(show => show.tv_id === profile.tvlist[i].tv_id)) {
       show = showsOnDb.find(show => show.tv_id === profile.tvlist[i].tv_id).show
@@ -139,12 +140,11 @@ usersRouter.post('/profile', async (req, res) => {
       if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
         profile.tvlist[i].listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
       }
-    } else {
-      profile.tvlist[i].listed = false
     }
     show.seasons = show.seasons.filter(season => season.name !== 'Specials')
     profile.tvlist[i].tv_info = show
   }
+  // console.log(profile.tvlist)
   return res.status(200).json(profile)
 })
 
@@ -176,12 +176,10 @@ usersRouter.post('/search', async (req, res) => {
   users = JSON.parse(JSON.stringify(users))
 
   for (let i = 0; i < users.length; i++) {
-    users[i].hours_watched = 0
     try {
-      const tvlist = await Tvlist.find({ user: users[i].id })
+      const tvlist = await Tvlist.find({ user: users[i].id, listed: true })
       users[i].show_count = tvlist.length
     } catch (err) {
-      console.error(err)
       res.status(503).json({ error: 'Connection to database failed' })
     }
   }
