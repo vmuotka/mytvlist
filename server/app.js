@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const config = require('./utils/config')
 const cors = require('cors')
 const middleware = require('./utils/middleware')
+const path = require('path')
 
 // parse json bodies sent by api clients
 app.use(express.json())

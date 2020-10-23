@@ -137,10 +137,10 @@ usersRouter.post('/profile', async (req, res) => {
     }
     if (tvlistArr) {
       if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
-        show.listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
+        profile.tvlist[i].listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
       }
     } else {
-      show.listed = false
+      profile.tvlist[i].listed = false
     }
     show.seasons = show.seasons.filter(season => season.name !== 'Specials')
     profile.tvlist[i].tv_info = show

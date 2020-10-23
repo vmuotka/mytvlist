@@ -17,34 +17,7 @@ import { useNotification } from '../context/notification'
 const SearchUsers = () => {
   const [form, setForm] = useState({ username: '' })
   const { authTokens } = useAuth()
-  const [response, setResponse] = useState({
-    results: [
-      {
-        "username": "Jakk3",
-        "createdAt": "2020-10-15T02:13:16.574Z",
-        "updatedAt": "2020-10-15T02:13:16.574Z",
-        "id": "5f87b03c842e500d044853ff",
-        "hours_watched": 0,
-        "show_count": 47
-      },
-      {
-        "username": "PohjoinenKoala",
-        "createdAt": "2020-10-15T01:56:39.001Z",
-        "updatedAt": "2020-10-15T01:56:39.001Z",
-        "id": "5f87ac56842e500d044853dd",
-        "hours_watched": 0,
-        "show_count": 55
-      },
-      {
-        "username": "santeri",
-        "createdAt": "2020-10-16T11:29:03.543Z",
-        "updatedAt": "2020-10-16T11:29:03.543Z",
-        "id": "5f8983ff66a96b31f845f8df",
-        "hours_watched": 0,
-        "show_count": 2
-      }
-    ]
-  })
+  const [response, setResponse] = useState({ results: [] })
   const [spinner, setSpinner] = useState(false)
   const { setNotifications } = useNotification()
 

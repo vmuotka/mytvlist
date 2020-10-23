@@ -108,7 +108,7 @@ const TvList = () => {
         {tvlist &&
           <>
             <div className='xl:col-span-2'><p className='text-gray-600 text-lg'>{tvlist.length} shows</p></div>
-            {tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show.tv_info} />)}
+            {tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show} />)}
           </>
         }
       </div>

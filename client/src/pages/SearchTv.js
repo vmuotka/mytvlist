@@ -59,6 +59,7 @@ const Search = () => {
       setSpinner(false)
     }
   }
+  console.log(response.results)
 
   return (
     <>

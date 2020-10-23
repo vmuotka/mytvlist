@@ -21,9 +21,9 @@ tvRouter.post('/search', async (req, res) => {
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
   let tvlistArr
-  if (decodedToken !== undefined)
+  if (decodedToken !== undefined) {
     tvlistArr = await Tvlist.find({ user: decodedToken.id })
-
+  }
   const tvshowIdArr = response.data.results.map(show => show.id)
 
   let showsOnDb = []
@@ -37,23 +37,24 @@ tvRouter.post('/search', async (req, res) => {
 
   let results = []
   for (let i = 0; i < response.data.results.length; i++) {
-    let show
+    let show = {}
     if (showsOnDb.some(show => show.tv_id === response.data.results[i].id)) {
-      show = showsOnDb.find(show => show.tv_id === response.data.results[i].id).show
+      show.tv_info = showsOnDb.find(show => show.tv_id === response.data.results[i].id).show
     } else {
       try {
-        show = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
+        show.tv_info = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
+        show.tv_info = show.tv_info.tv_info
       } catch (err) {
         return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
       }
-      show = show.data
-      const showToDb = new Tvshow({ tv_id: show.id, show })
+      show.tv_info = show.tv_info.data
+      const showToDb = new Tvshow({ tv_id: show.id, show: show.tv_info })
       showToDb.save()
     }
-    if (show.number_of_seasons > 0) {
+    if (show.tv_info.number_of_seasons > 0 && decodedToken.id) {
       if (tvlistArr) {
-        if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
-          show.listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
+        if (tvlistArr.filter(item => item.tv_id === show.tv_info.id).length > 0) {
+          show.listed = tvlistArr.filter(item => item.tv_id === show.tv_info.id)[0].listed
         }
       } else {
         show.listed = false
