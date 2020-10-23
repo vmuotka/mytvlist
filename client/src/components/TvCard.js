@@ -14,7 +14,6 @@ import { useNotification } from '../context/notification'
 import tvlistService from '../services/tvlistService'
 
 const TvCard = ({ show, className }) => {
-  console.log(show)
   const tv_info = show.tv_info
   const { setNotifications } = useNotification()
   let genres = []

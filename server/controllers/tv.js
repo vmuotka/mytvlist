@@ -43,12 +43,11 @@ tvRouter.post('/search', async (req, res) => {
     } else {
       try {
         show.tv_info = await axios.get(`${baseUrl}/tv/${response.data.results[i].id}?api_key=${process.env.MOVIEDB_API}`)
-        show.tv_info = show.tv_info.tv_info
       } catch (err) {
         return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
       }
       show.tv_info = show.tv_info.data
-      const showToDb = new Tvshow({ tv_id: show.id, show: show.tv_info })
+      const showToDb = new Tvshow({ tv_id: show.tv_info.id, show: show.tv_info })
       showToDb.save()
     }
     if (show.tv_info.number_of_seasons > 0 && decodedToken.id) {

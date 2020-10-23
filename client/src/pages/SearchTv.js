@@ -59,7 +59,6 @@ const Search = () => {
       setSpinner(false)
     }
   }
-  console.log(response.results)
 
   return (
     <>
@@ -77,7 +76,7 @@ const Search = () => {
 
         {response.total_pages > 1 && <div className='flex justify-end'><Pagination ariaLabel='Page navigation' currentPage={currentPage} totalPages={response.total_pages} onClick={paginationClick} /></div>}
         {
-          response.results.map((result) => <TvCard className='mt-4' show={result} key={result.id} />)
+          response.results.map((result) => <TvCard className='mt-4' show={result} key={result.tv_info.id} />)
         }
         {response.total_pages > 1 && <div className='flex justify-end'><Pagination ariaLabel='Page navigation' className='mt-4' currentPage={currentPage} totalPages={response.total_pages} onClick={paginationClick} /></div>}
       </div>
