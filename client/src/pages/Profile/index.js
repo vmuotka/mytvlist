@@ -9,6 +9,7 @@ import ProfileNavigation from './ProfileNavigation'
 import TvList from './TvList'
 import Progress from './Progress'
 import Statistics from './Statistics/'
+import Spinner from '../../components/Spinner'
 
 // project hooks
 import { ProfileContext } from '../../context/profile'
@@ -17,7 +18,7 @@ import { useNotification } from '../../context/notification'
 
 const Profile = () => {
   const { username } = useParams()
-  const [profile, setProfile] = useState({})
+  const [profile, setProfile] = useState()
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
   const [profileNav, setProfileNav] = useState('TvList')
@@ -51,10 +52,16 @@ const Profile = () => {
     <>
       <ProfileContext.Provider value={{ profile, setProfile }} >
         <div className='w-full md:w-4/5 mx-auto mt-4'>
-          <ProfileNavigation active={profileNav} onClick={onNavClick} />
-          {profileNav === 'TvList' && <TvList />}
-          {profileNav === 'Statistics' && <Statistics />}
-          {profileNav === 'Progress' && <Progress />}
+          {
+            profile ?
+              <>
+                <ProfileNavigation active={profileNav} onClick={onNavClick} />
+                {profileNav === 'TvList' && <TvList />}
+                {profileNav === 'Statistics' && <Statistics />}
+                {profileNav === 'Progress' && <Progress />}
+              </>
+              : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
+          }
         </div>
       </ProfileContext.Provider>
     </>

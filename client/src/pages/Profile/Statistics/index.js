@@ -7,6 +7,7 @@ import HoursByGenre from './HoursByGenre'
 import ShowStatusChart from './ShowStatusChart'
 import OriginCountryChart from './OriginCountryChart'
 import ReleaseYearChart from './ReleaseYearChart'
+import ShowsPerGenre from './ShowsPerGenre'
 
 import { useProfile } from '../../../context/profile'
 
@@ -33,6 +34,11 @@ const Statistics = () => {
               <div>
                 <p className='text-gray-700 text-lg text-center'>Origin Country</p>
                 <OriginCountryChart />
+              </div>
+              <div className='md:col-span-2'>
+                <p className='text-gray-700 text-lg text-center'>Shows Per Genre</p>
+                <p className='text-gray-500 text-center italic text-sm'>You can hide genres by clicking their labels</p>
+                <ShowsPerGenre />
               </div>
               <div className='md:col-span-2'>
                 <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>

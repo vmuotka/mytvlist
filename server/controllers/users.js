@@ -20,8 +20,8 @@ usersRouter.post('/register', [
   if (!errors.isEmpty())
     return res.status(400).json({ error: errors.array() })
 
-  if (req.body.username.indexOf(' ') >= 0)
-    res.status(400).json({ error: 'Username should not contain spaces' })
+  if (/^(?=.{3,20}$)[a-zA-Z0-9._-]$/.test(req.body.username))
+    res.status(400).json({ error: 'Username is invalid' })
 
   const body = req.body
   const passwordHash = await bcrypt.hash(body.password, 10)
