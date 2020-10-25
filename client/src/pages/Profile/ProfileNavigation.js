@@ -12,7 +12,7 @@ const ProfileNavigation = ({ active, onClick }) => {
   ]
   return (
     <>
-      <nav className='flex items-center justify-between flex-wrap bg-indigo-500 p-4 select-none mb-2'>
+      <nav className='flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-700 to-indigo-500 rounded-sm shadow-lg p-4 select-none mb-2'>
         <div className='flex items-center flex-shrink-0 text-white mr-6'>
           <h1 className='font-semibold text-xl tracking-tight'>
             {profile.username}

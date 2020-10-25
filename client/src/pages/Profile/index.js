@@ -51,7 +51,7 @@ const Profile = () => {
   return (
     <>
       <ProfileContext.Provider value={{ profile, setProfile }} >
-        <div className='w-full md:w-4/5 mx-auto mt-4'>
+        <div className='w-full md:w-4/5 mx-auto mt-3'>
           {
             profile ?
               <>

@@ -47,8 +47,11 @@ const BarChart = (props) => {
           scales: {
             yAxes: [{
               ticks: {
-                min: 0,
-                suggestedMax: 10
+                beginAtZero: true,
+                precision: 0
+              },
+              afterDataLimits(scale) {
+                scale.max += 1
               }
             }]
           }

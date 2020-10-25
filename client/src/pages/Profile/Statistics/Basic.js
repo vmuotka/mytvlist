@@ -30,10 +30,9 @@ const Basic = () => {
   })
   const days = Math.floor(minutes / 60 / 24 * 10) / 10
   const percentage_watched = Math.floor(completed_episodes / total_episodes * 1000) / 10
-  console.log(profile)
   return (
     <>
-      <div className='w-full bg-gradient-to-t from-pink-500 to-pink-400  text-white px-6 py-4 grid sm:grid-cols-3 divide-white divide-y sm:divide-y-0 sm:divide-x shadow-xl rounded'>
+      <div className='w-full bg-gradient-to-t from-pink-500 to-pink-400  text-white px-6 py-4 grid sm:grid-cols-3 divide-white divide-y sm:divide-y-0 sm:divide-x shadow-xl rounded font-medium'>
         <div className='text-center py-2 sm:py-0'>
           <span className='block text-lg'>Number of shows</span>
           {profile.tvlist.length}
