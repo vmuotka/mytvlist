@@ -31,6 +31,10 @@ const SearchUsers = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    const inputs = e.target.querySelectorAll('input')
+    inputs.forEach(input =>
+      input.blur()
+    )
     if (form.username.length >= 0) {
       setSpinner(true)
       try {
@@ -56,7 +60,7 @@ const SearchUsers = () => {
       <div className='max-w-xl mx-auto'>
         <Spinner className='mx-auto' color='bg-pink-500' show={spinner} />
         {response.results.length > 0 && <p className='mt-4 mb-2 text-sm text-gray-600 font-semibold select-none'>Showing {response.results.length} users</p>}
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
           {response.results.length > 0 &&
             response.results.map(user => <UserCard key={user.id} user={user} />)
           }

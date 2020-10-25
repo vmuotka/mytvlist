@@ -47,6 +47,10 @@ const Search = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    const inputs = e.target.querySelectorAll('input')
+    inputs.forEach(input =>
+      input.blur()
+    )
     if (form.searchword.length > 0) {
       setSpinner(true)
       try {

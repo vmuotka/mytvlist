@@ -22,7 +22,8 @@ const Navigation = () => {
   const routes = [
     {
       title: 'Discover',
-      href: '/discover'
+      href: '/discover',
+      hidden: authTokens ? false : true
     },
     {
       title: 'Search Tv',
@@ -34,7 +35,8 @@ const Navigation = () => {
     },
     {
       title: 'My Profile',
-      href: `/user/${token.username}`
+      href: `/user/${token.username}`,
+      hidden: authTokens ? false : true
     }
   ]
 
@@ -67,13 +69,18 @@ const Navigation = () => {
           <div className='text-sm md:flex-grow'>
             {
               routes.map(route => (
-                <Link to={route.href} key={route.title} className={`block text-base font-semibold mt-4 md:inline-block md:mt-0 ${location === route.href ? 'text-white' : 'text-pink-200'} hover:text-white mr-4`}>{route.title}</Link>
+                route.hidden ? null : <Link to={route.href} key={route.title} className={`block text-base font-semibold mt-4 md:inline-block md:mt-0 ${location === route.href ? 'text-white' : 'text-pink-200'} hover:text-white mr-4`}>{route.title}</Link>
               ))
             }
           </div>
           <div>
             {
-              authTokens ? <button type='button' onClick={handleSignOut} value='Sign Out' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign Out</button> : <Link to={{ pathname: '/signin', state: { referer: location } }} className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign In</Link>
+              authTokens ?
+                <button type='button' onClick={handleSignOut} value='Sign Out' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign Out</button> :
+                <>
+                  <Link to={{ pathname: '/signin', state: { referer: location } }} className='inline-block text-xs font-bold px-3 py-2 leading-none rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0 mr-1'>Sign In</Link>
+                  <Link to={{ pathname: '/signup', state: { referer: location } }} className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0  ml-2'>Sign Up</Link>
+                </>
             }
           </div>
         </div>
