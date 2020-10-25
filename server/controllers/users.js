@@ -144,7 +144,6 @@ usersRouter.post('/profile', async (req, res) => {
     show.seasons = show.seasons.filter(season => season.name !== 'Specials')
     profile.tvlist[i].tv_info = show
   }
-  // console.log(profile.tvlist)
   return res.status(200).json(profile)
 })
 

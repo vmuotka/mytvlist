@@ -77,6 +77,7 @@ const Progress = () => {
             <ProgressTable key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
           ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
       }
+      {(tvlist && tvlist[0].array.length === 0 && tvlist[1].array.length === 0 && tvlist[2].array.length === 0 && tvlist[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
       {
         modal.show &&
         <ProgressModal modal={modal} handleModal={handleModal} profile={profile} setProfile={setProfile} setModal={setModal} />

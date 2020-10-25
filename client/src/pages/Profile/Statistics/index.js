@@ -8,38 +8,43 @@ import ShowStatusChart from './ShowStatusChart'
 import OriginCountryChart from './OriginCountryChart'
 import ReleaseYearChart from './ReleaseYearChart'
 
+import { useProfile } from '../../../context/profile'
+
 const Statistics = () => {
+  const { profile } = useProfile()
   return (
     <>
-      <div className='w-full md:w-4/5 mx-auto mt-4'>
-
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-12 mt-4 md:mx-2'>
-          <div>
-            <p className='text-gray-700 text-lg text-center'>Progress</p>
-            <ProgressChart />
+      {
+        (profile.tvlist && profile.tvlist.length > 0) ?
+          <div className='w-full md:w-4/5 mx-auto mt-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-12 mt-4 md:mx-2'>
+              <div>
+                <p className='text-gray-700 text-lg text-center'>Progress</p>
+                <ProgressChart />
+              </div>
+              <div>
+                <p className='text-gray-700 text-lg text-center'>Watched Episodes</p>
+                <CompletionPercentageChart />
+              </div>
+              <div>
+                <p className='text-gray-700 text-lg text-center'>Show Status</p>
+                <ShowStatusChart />
+              </div>
+              <div>
+                <p className='text-gray-700 text-lg text-center'>Origin Country</p>
+                <OriginCountryChart />
+              </div>
+              <div className='md:col-span-2'>
+                <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>
+                <HoursByGenre />
+              </div>
+            </div>
+            <div className='md:col-span-2'>
+              <p className='text-gray-700 text-lg text-center'>Years</p>
+              <ReleaseYearChart />
+            </div>
           </div>
-          <div>
-            <p className='text-gray-700 text-lg text-center'>Watched Episodes</p>
-            <CompletionPercentageChart />
-          </div>
-          <div>
-            <p className='text-gray-700 text-lg text-center'>Show Status</p>
-            <ShowStatusChart />
-          </div>
-          <div>
-            <p className='text-gray-700 text-lg text-center'>Origin Country</p>
-            <OriginCountryChart />
-          </div>
-          <div className='md:col-span-2'>
-            <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>
-            <HoursByGenre />
-          </div>
-        </div>
-        <div className='md:col-span-2'>
-          <p className='text-gray-700 text-lg text-center'>Years</p>
-          <ReleaseYearChart />
-        </div>
-      </div>
+          : <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p>}
     </>
   )
 }
