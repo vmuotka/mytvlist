@@ -32,9 +32,9 @@ const ShowsPerGenre = () => {
         }
       })
       genres.sort((a, b) => {
-        if (a.name < b.name)
+        if (a.value > b.value)
           return -1
-        if (a.name > b.name)
+        if (a.value < b.value)
           return 1
         return 0
       })
