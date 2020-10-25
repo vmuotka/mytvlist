@@ -31,7 +31,7 @@ const SignUp = (props) => {
   const handleSubmit = async e => {
     e.preventDefault()
     if (form.password === form.confirm) {
-      if (/^(?=.{3,20}$)[a-zA-Z0-9._-]$/.test(form.username)) {
+      if ((/^(?=[a-zA-Z0-9._]{3,20}$)/).test(form.username)) {
         try {
           setAuthTokens(await userService.register(form))
         } catch (err) {

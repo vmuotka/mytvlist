@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     minlength: [3, 'Username is too short'],
+    uniqueCaseInsensitive: true,
     required: [true, 'Username required'],
     unique: true
   },
@@ -15,6 +16,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    uniqueCaseInsensitive: true,
     required: [true, 'Email required']
   }
 }, {
