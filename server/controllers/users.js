@@ -153,8 +153,14 @@ usersRouter.post('/progress', async (req, res) => {
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
+  let score = body.score
+  if (score <= 0)
+    score = undefined
+  else if (score > 100)
+    score = 100
+
   try {
-    await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching } })
+    await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching, score } })
   } catch (err) {
     return res.status(503).json({ error: 'Database connection failed' })
   }

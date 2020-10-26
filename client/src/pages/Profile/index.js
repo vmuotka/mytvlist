@@ -21,7 +21,7 @@ const Profile = () => {
   const [profile, setProfile] = useState()
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
-  const [profileNav, setProfileNav] = useState('Statistics')
+  const [profileNav, setProfileNav] = useState('Progress')
 
   const onNavClick = (nav) => e => {
     setProfileNav(nav)
@@ -40,7 +40,7 @@ const Profile = () => {
             return 0
           })
         })
-        setProfileNav('Statistics')
+        setProfileNav('Progress')
       }).catch(err => {
         setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
       }

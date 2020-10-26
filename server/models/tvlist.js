@@ -8,6 +8,9 @@ const tvlistSchema = new mongoose.Schema({
   watching: {
     type: Boolean
   },
+  score: {
+    type: Number
+  },
   listed: {
     type: Boolean
   },

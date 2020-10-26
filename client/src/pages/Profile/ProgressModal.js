@@ -82,6 +82,22 @@ const ProgressModal = ({ modal, handleModal, setModal }) => {
     })
   }
 
+  const handleScore = e => {
+    let value = Math.floor(+e.target.value)
+    if (value <= 0)
+      value = undefined
+    else if (value > 100)
+      value = 100
+
+    setModal({
+      ...modal,
+      show: {
+        ...modal.show,
+        score: value
+      }
+    })
+  }
+
   return (
     <>
       <Modal hidden={modal.hidden} title={modal.show.tv_info.name} closeFunction={handleModal}>
@@ -92,16 +108,23 @@ const ProgressModal = ({ modal, handleModal, setModal }) => {
             </td>
             <td colSpan='2' className='p-4'>
               <form onSubmit={saveProgress}>
+
                 <Select options={[{ value: true, name: 'Watching' }, { value: false, name: 'Paused' }]} value={modal.show.watching} onChange={handleWatching} label={`Watching`} />
-                <div className='inline-block mb-2 md:mr-2'>
+
+                <div className='md:inline-block mb-2 md:mr-2'>
                   <InputField onChange={handleModalChange} min='0' max={modal.show.tv_info.seasons.length} type='number' name='season' label={`Season (${modal.show.tv_info.seasons.length})`} size='5' value={modal.progress.season} className='text-center inline' />
                 </div>
-                <div className='inline-block mb-2 md:ml-2'>
+
+                <div className='md:inline-block mb-2 md:ml-2'>
                   <InputField onChange={handleModalChange} min='0'
                     max={modal.show.tv_info.seasons[modal.progress.season !== modal.show.tv_info.seasons.length ? modal.progress.season : modal.show.tv_info.seasons.length - 1].episode_count}
                     type='number' name='episode'
                     label={`Episode (${modal.show.tv_info.seasons[modal.progress.season !== modal.show.tv_info.seasons.length ? modal.progress.season : modal.show.tv_info.seasons.length - 1].episode_count})`}
                     size='5' value={modal.progress.episode} className='text-center inline' />
+                </div>
+
+                <div className='mb-2'>
+                  <InputField onChange={handleScore} type='number' name='score' min='0' max='100' className='text-center' label='Score (1-100)' value={modal.show.score ? modal.show.score : 0} />
                 </div>
                 <Button type='submit' className='block m-auto mt-2 px-4 py-2' color='bg-green-500 hover:bg-green-600'>Save</Button>
               </form>

@@ -16,11 +16,11 @@ export const Thead = (props) => {
   )
 }
 
-export const Th = (props => {
+export const Th = (props) => {
   return (
-    <th colSpan={props.colSpan ? props.colSpan : 1} className='py-2 px-2 text-xl'>{props.children}</th>
+    <th className='py-2 px-2 md:text-xl'>{props.children}</th>
   )
-})
+}
 
 export const Tbody = (props) => {
   return (
@@ -40,7 +40,7 @@ export const Tr = (props) => {
 
 export const Td = (props) => {
   return (
-    <td className={`py-2 px-2 text-center ${props.className}`} colSpan={props.colSpan && props.colSpan}>
+    <td className={`py-2 px-2 text-center ${props.className}`}>
       {props.children}
     </td>
   )

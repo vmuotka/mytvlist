@@ -105,10 +105,11 @@ const ProgressTable = ({ list, handleModal }) => {
               </span>
             }
           </div>}
-          <Table className='table-fixed max-w-full'>
+          <Table className='md:table-fixed max-w-full overflow-x-hidden'>
             <Thead>
               <tr>
-                <Th> Show</Th>
+                <Th>Show</Th>
+                <Th>Score</Th>
                 <Th>Season</Th>
                 <Th>Episode</Th>
               </tr>

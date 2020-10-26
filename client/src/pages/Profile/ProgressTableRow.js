@@ -50,10 +50,10 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
   }
   return (
     <Tr className='text-sm sm:text-lg md:text-xl table-row'>
-      <Td className='flex items-center w-4/6 max-w-4/6 break-words'>
+      <Td colSpan='4' className='flex items-center md:w-8/12'>
         {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
           <div
-            className={`break-words h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
+            className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
             style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
           >
             {myProfile &&
@@ -63,12 +63,15 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
             }
           </div>
         }
-        <span className='ml-6'>{show.tv_info.name}</span>
+        <span className='ml-6 break-all'>{show.tv_info.name}</span>
       </Td>
-      <Td className='w-1/6'>
+      <Td className='md:w-1/12'>
+        {(show.score && show.score > 0) && show.score}
+      </Td>
+      <Td className='md:w-1/12'>
         {progress.season}/{show.tv_info.seasons.length}
       </Td>
-      <Td className='w-1/6'>
+      <Td className='md:w-2/12'>
         {(myProfile && show.tv_info.seasons.length !== progress.season && show.watching) ?
           <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
             {progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
