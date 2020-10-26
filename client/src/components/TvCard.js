@@ -77,6 +77,7 @@ const TvCard = ({ show, className }) => {
         </div>
         <div className="flex items-center">
           <div className="text-sm">
+            {(show.score && show.score > 0) ? <p className='text-gray-700'>User's score: {show.score}</p> : null}
             <p className="text-gray-600">{genres.join(', ')}</p>
           </div>
         </div>

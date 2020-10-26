@@ -11,7 +11,7 @@ import { useProfile } from '../../context/profile'
 const TvList = () => {
   const { profile } = useProfile()
   const [orderBy, setOrderBy] = useState('alphabetical')
-  const orderByOptions = ['alphabetical', 'newest', 'oldest']
+  const orderByOptions = ['alphabetical', 'score', 'newest', 'oldest']
   const [tvlist, setTvlist] = useState([])
   const [filter, setFilter] = useState([])
   const [filterOptions, setFilterOptions] = useState([])
@@ -55,6 +55,7 @@ const TvList = () => {
   useEffect(() => {
     if (profile.tvlist) {
       let tvcopy = [...profile.tvlist]
+      tvcopy = JSON.parse(JSON.stringify(tvcopy))
       switch (orderBy) {
         case 'alphabetical':
           tvcopy.sort((a, b) => {
@@ -73,6 +74,19 @@ const TvList = () => {
         case 'oldest':
           tvcopy.sort((a, b) => {
             return new Date(a.createdAt) - new Date(b.createdAt)
+          })
+          break;
+        case 'score':
+          tvcopy.sort((a, b) => {
+            if (a.score === undefined)
+              a.score = 0
+            if (b.score === undefined)
+              b.score = 0
+            if (a.score > b.score)
+              return -1
+            if (a.score < b.score)
+              return 1
+            return 0
           })
           break;
         default: break;
