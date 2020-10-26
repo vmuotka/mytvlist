@@ -10,7 +10,7 @@ const Select = (props) => {
         <select
           value={props.value}
           onChange={props.onChange}
-          className='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-transparent focus:border-gray-500 capitalize h-full'
+          className='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-transparent focus:border-gray-500 capitalize h-full'
           id='label'
         >
           {props.options.map(option => <option className='appearance-none bg-gray-300 focus:bg-gray-500 capitalize' value={option.value !== undefined ? option.value : option.name} key={option.name ? option.name : option}>{option.name ? option.name : option}</option>)}

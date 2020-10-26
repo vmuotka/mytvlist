@@ -4,6 +4,7 @@ import MultiSelect from 'react-multi-select-component'
 // project components
 import Select from '../../components/Select'
 import TvCard from '../../components/TvCard'
+import InputField from '../../components/InputField'
 
 // project hooks
 import { useProfile } from '../../context/profile'
@@ -12,6 +13,7 @@ const TvList = () => {
   const { profile } = useProfile()
   const [orderBy, setOrderBy] = useState('alphabetical')
   const orderByOptions = ['alphabetical', 'score', 'newest', 'oldest']
+  const [filtertext, setFiltertext] = useState('')
   const [tvlist, setTvlist] = useState([])
   const [filter, setFilter] = useState([])
   const [filterOptions, setFilterOptions] = useState([])
@@ -56,6 +58,7 @@ const TvList = () => {
     if (profile.tvlist) {
       let tvcopy = [...profile.tvlist]
       tvcopy = JSON.parse(JSON.stringify(tvcopy))
+      tvcopy = tvcopy.filter(tv => tv.tv_info.name.toLowerCase().includes(filtertext.toLowerCase()))
       switch (orderBy) {
         case 'alphabetical':
           tvcopy.sort((a, b) => {
@@ -108,14 +111,27 @@ const TvList = () => {
       }
       setTvlist(arr.length > 0 ? arr : tvcopy)
     }
-  }, [orderBy, filter, profile.tvlist])
+  }, [orderBy, filter, profile.tvlist, filtertext])
 
   return (
     <div className='mx-2'>
-      <Select onChange={changeOrderBy} className='w-full' value={orderBy} options={orderByOptions} label='Sort' />
-      <div className='px-3 mt-2'>
-        <label id='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter</label>
-        <MultiSelect onChange={setFilter} hasSelectAll={false} focusSearchOnOpen={false} value={filter} options={filterOptions} labelledBy={'filter'} />
+      <div className='flex flex-row'>
+        <Select onChange={changeOrderBy} className='w-1/2' value={orderBy} options={orderByOptions} label='Sort' />
+
+        <div className='w-1/2 px-3'>
+          <label id='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter by genre</label>
+          <MultiSelect onChange={setFilter} hasSelectAll={false} focusSearchOnOpen={false} value={filter} options={filterOptions} labelledBy={'filter'} />
+        </div>
+      </div>
+
+      <div className='mt-2 px-3'>
+        <InputField
+          type='text'
+          value={filtertext}
+          onChange={(e) => setFiltertext(e.target.value)}
+          className='w-full'
+          label='Filter by name'
+          placeholder='Start writing a name...' />
       </div>
 
       <div className='xl:grid grid-cols-2 gap-5 mt-4 xl:mx-2'>
