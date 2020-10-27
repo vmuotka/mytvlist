@@ -18,7 +18,7 @@ export const Thead = (props) => {
 
 export const Th = (props) => {
   return (
-    <th className='py-2 px-2 md:text-xl'>{props.children}</th>
+    <th className={`py-2 px-2 md:text-xl ${props.className && props.className}`}>{props.children}</th>
   )
 }
 

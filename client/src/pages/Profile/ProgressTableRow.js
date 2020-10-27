@@ -65,7 +65,7 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
         }
         <span className='ml-6 break-all'>{show.tv_info.name}</span>
       </Td>
-      <Td className='md:w-1/12'>
+      <Td className='hidden sm:table-cell md:w-1/12'>
         {(show.score && show.score > 0) && show.score}
       </Td>
       <Td className='md:w-1/12'>

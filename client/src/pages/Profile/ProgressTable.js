@@ -109,7 +109,7 @@ const ProgressTable = ({ list, handleModal }) => {
             <Thead>
               <tr>
                 <Th>Show</Th>
-                <Th>Score</Th>
+                <Th className='hidden sm:table-cell'>Score</Th>
                 <Th>Season</Th>
                 <Th>Episode</Th>
               </tr>

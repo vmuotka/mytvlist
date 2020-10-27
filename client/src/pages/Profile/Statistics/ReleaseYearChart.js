@@ -24,7 +24,7 @@ const ReleaseYearChart = () => {
           }
         }
         for (let i = 0; i < ended.length; i++) {
-          if (+ended[i].x === +show.tv_info.last_air_date.split('-')[0]) {
+          if (show.tv_info.last_air_date !== null && +ended[i].x === +show.tv_info.last_air_date.split('-')[0]) {
             ended[i].y += 1
             endedFound = true
             break;
@@ -34,7 +34,8 @@ const ReleaseYearChart = () => {
           started.push({ y: 1, x: +show.tv_info.first_air_date.split('-')[0] })
         }
         if (!endedFound) {
-          ended.push({ y: 1, x: +show.tv_info.last_air_date.split('-')[0] })
+          if (show.tv_info.last_air_date !== null)
+            ended.push({ y: 1, x: +show.tv_info.last_air_date.split('-')[0] })
         }
       })
       started.sort((a, b) => {
