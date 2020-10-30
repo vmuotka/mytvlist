@@ -39,4 +39,17 @@ const search = async (searchObj) => {
   return res.data
 }
 
-export default { login, register, profile, progress, search }
+const discover = async (tokenObj) => {
+  let config = {}
+  // if user is logged in, send their token with the request
+  if (tokenObj) {
+    const token = `bearer ${tokenObj.token}`
+    config = {
+      headers: { Authorization: token }
+    }
+  }
+  const res = await axios.post(`${baseUrl}/discover`, {}, config)
+  return res.data
+}
+
+export default { login, register, profile, progress, search, discover }

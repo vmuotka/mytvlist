@@ -7,6 +7,7 @@ import SignIn from './pages/SignIn'
 import SearchTv from './pages/SearchTv'
 import SearchUsers from './pages/SearchUsers'
 import Profile from './pages/Profile/'
+import Discover from './pages/Discover'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -16,7 +17,7 @@ import Placeholdercomponent from './components/placeholdercomponent'
 const privateRoutes = [
   {
     path: '/discover',
-    component: Placeholdercomponent
+    component: Discover
   },
 ]
 
