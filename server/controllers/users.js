@@ -198,15 +198,13 @@ usersRouter.post('/discover', async (req, res) => {
     decodedToken = jwt.verify(req.token, process.env.SECRET)
 
   let date = new Date()
-  date.setMonth(date.getMonth() - 9)
+  date.setMonth(date.getMonth() - 6)
   date = date.toLocaleDateString('en-US').split('/')
   if (+date[0] < 10)
     date[0] = '0' + date[0]
   date = date[2] + '-' + date[0] + '-' + date[1]
-  console.log(date)
   let discover = await axios.get(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}`)
   discover = await getDetails(discover.data.results, decodedToken)
-  // console.log(discover)
   return res.status(200).json({ discover })
 })
 

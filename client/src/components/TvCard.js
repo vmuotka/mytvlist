@@ -45,6 +45,7 @@ const TvCard = ({ show, className }) => {
   }
 
   const description = tv_info.overview ? ((!fullDesc && tv_info.overview.length > 150) ? tv_info.overview.slice(0, 150) + '...' : tv_info.overview) : 'No description available'
+
   return (
     <div className={`w-full md:flex ${className}`}>
       <div

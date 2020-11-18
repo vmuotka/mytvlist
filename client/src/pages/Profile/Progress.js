@@ -29,6 +29,9 @@ const Progress = () => {
       let completed = { name: 'Completed', array: [] }
       let paused = { name: 'Paused', array: [] }
       list.forEach(show => {
+        if (show.progress[0].season >= show.tv_info.seasons.length && show.progress[0].episode < show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count) {
+          show.progress.season = show.tv_info.seasons.length - 1
+        }
         if (show.progress[0].season === 0 && show.progress[0].episode === 0 && show.watching) {
           planning.array.push(show)
         } else if (show.watching && show.progress[show.progress.length - 1].season !== show.tv_info.seasons.length)
@@ -48,7 +51,6 @@ const Progress = () => {
       ])
     }
   }, [setTvlist, profile.tvlist])
-
 
   const handleModal = (show) => e => {
     if (show === undefined) {

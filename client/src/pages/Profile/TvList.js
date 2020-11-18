@@ -134,14 +134,15 @@ const TvList = () => {
           placeholder='Start writing a name...' />
       </div>
 
-      <div className='xl:grid grid-cols-2 gap-5 mt-4 xl:mx-2'>
-        {tvlist &&
-          <>
-            <div className='xl:col-span-2'><p className='text-gray-600 text-lg'>{tvlist.length} shows</p></div>
-            {tvlist.map(show => <TvCard className='mt-4 xl:mt-0' key={show.tv_id} show={show} />)}
-          </>
-        }
-      </div>
+
+      {tvlist &&
+        <>
+          <div className='xl:col-span-2'><p className='text-gray-600 text-lg my-4 xl:mx-2'>{tvlist.length} shows</p></div>
+          <div className='grid xl:grid-cols-2 gap-5 xl:mx-2'>
+            {tvlist.map(show => <TvCard key={show.tv_id} show={show} />)}
+          </div>
+        </>
+      }
     </div>
   )
 }
