@@ -200,12 +200,41 @@ usersRouter.post('/discover', async (req, res) => {
   let date = new Date()
   date.setMonth(date.getMonth() - 6)
   date = date.toLocaleDateString('en-US').split('/')
+
   if (+date[0] < 10)
     date[0] = '0' + date[0]
   date = date[2] + '-' + date[0] + '-' + date[1]
+
   let discover = await axios.get(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}`)
-  discover = await getDetails(discover.data.results, decodedToken)
-  return res.status(200).json({ discover })
+  const discoverIdArr = discover.data.results.map(show => show.id)
+  discover = await getDetails(discoverIdArr, decodedToken)
+
+  let tvlist = await Tvlist.find({ user: decodedToken.id })
+  tvlist = tvlist.filter(show => show.score)
+  tvlist.sort((a, b) => {
+    return b.score - a.score
+  })
+
+  const tvshowIdArr = tvlist.slice(0, 2).map(show => show.tv_id)
+  let recommendations = []
+  for (let i = 0; i < tvshowIdArr.length; i++) {
+    const temp = await axios.get(`${apiUrl}/tv/${tvshowIdArr[i]}/recommendations?api_key=${process.env.MOVIEDB_API}`)
+    recommendations.push(temp.data.results.slice(0, 4))
+  }
+
+  let recommendationDetails = []
+  for (let i = 0; i < recommendations.length; i++) {
+    let obj = {}
+    const idArr = recommendations[i].map(show => show.id)
+    // get the name of the show that the recommendations are for
+    const tempArr = [tvlist[i].tv_id]
+    const show = await getDetails(tempArr, decodedToken)
+    obj.name = show[0].tv_info.name
+    obj.recommendations = await getDetails(idArr, decodedToken)
+    recommendationDetails.push(obj)
+  }
+
+  return res.status(200).json({ discover, recommendationDetails })
 })
 
 const getDetails = async (showlist, decodedToken) => {
@@ -214,7 +243,7 @@ const getDetails = async (showlist, decodedToken) => {
     tvlistArr = await Tvlist.find({ user: decodedToken.id })
   }
 
-  const tvshowIdArr = showlist.map(show => show.id)
+  const tvshowIdArr = showlist
 
   let showsOnDb = []
   try {
@@ -227,11 +256,11 @@ const getDetails = async (showlist, decodedToken) => {
   let results = []
   for (let i = 0; i < showlist.length; i++) {
     let show = {}
-    if (showsOnDb.some(show => show.tv_id === showlist[i].id)) {
-      show.tv_info = showsOnDb.find(show => show.tv_id === showlist[i].id).show
+    if (showsOnDb.some(show => show.tv_id === showlist[i])) {
+      show.tv_info = showsOnDb.find(show => show.tv_id === showlist[i]).show
     } else {
       try {
-        show.tv_info = await axios.get(`${apiUrl}/tv/${showlist[i].id}?api_key=${process.env.MOVIEDB_API}`)
+        show.tv_info = await axios.get(`${apiUrl}/tv/${showlist[i]}?api_key=${process.env.MOVIEDB_API}`)
       } catch (err) {
         // return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
       }
