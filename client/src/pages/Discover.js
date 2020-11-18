@@ -5,6 +5,7 @@ import Heading from '../components/Heading'
 import TvCard from '../components/TvCard'
 import Button from '../components/Button'
 import ArrowLeft from '../components/icons/ArrowLeft'
+import Spinner from '../components/Spinner/'
 
 // project services
 import userService from '../services/userService'
@@ -45,7 +46,6 @@ const Discover = () => {
   useEffect(() => {
     userService.discover(authTokens)
       .then(data => {
-        console.log(data)
         setDiscover(data)
       }).catch(err => {
         console.error(err)
@@ -53,17 +53,57 @@ const Discover = () => {
 
   }, [authTokens])
 
+  // detect when user has scrolled to the bottom of the screen and load more recommendations
+  const [isFetching, setIsFetching] = useState(false)
+  const handleScroll = () => {
+    if ((window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight)) {
+      setIsFetching(true)
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    if (isFetching) {
+      userService.discoverScroll(
+        discover.recommendationList.length,
+        discover.recommendationList.length + 4,
+        authTokens
+      ).then(data => {
+        setDiscover({
+          ...discover,
+          recommendationList: [
+            ...discover.recommendationList,
+            ...data.recommendationList
+          ]
+        })
+        setIsFetching(false)
+      })
+        .catch(err => {
+          console.error(err)
+        })
+      console.log('fetching')
+    }
+  }, [isFetching])
+
   const handleSeeAll = () => {
     window.scrollTo(0, 0)
     setSubpage(true)
   }
 
+  console.log(discover)
+
   return (
-    <div className='w-full md:w-4/5 mx-auto'>
+    <div className='w-full mb-5 md:w-4/5 mx-auto'>
+      {!discover &&
+        <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />
+      }
       { (!subpage && discover) &&
         <>
           <Heading className='text-center'>Discover</Heading>
-          <h2 className='text-gray-700 text-lg'>Popular in the last 6 months</h2>
+          <h2 className='text-gray-700 text-xl'>Popular in the last 6 months</h2>
           <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
             {
               discover.discover.slice(0, 4).map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
@@ -72,6 +112,17 @@ const Discover = () => {
           <div className='flex justify-end'>
             <Button value='See all' onClick={handleSeeAll} className='py-2 px-4 mt-2' />
           </div>
+          {
+            discover.recommendationList.map(obj =>
+              <div className='mt-10' key={obj.name}>
+                <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
+                <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
+                  {obj.recommendations.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)}
+                </div>
+              </div>
+            )
+          }
+          <Spinner className={`mx-auto mt-2 ${isFetching ? 'opacity-100' : 'opacity-0'}`} mt-4 color='bg-pink-500' show={true} />
         </>
       }
       { subpage &&

@@ -209,13 +209,37 @@ usersRouter.post('/discover', async (req, res) => {
   const discoverIdArr = discover.data.results.map(show => show.id)
   discover = await getDetails(discoverIdArr, decodedToken)
 
+  const recommendationList = await getRecommendations(0, 4, decodedToken)
+
+  return res.status(200).json({ discover, recommendationList })
+})
+
+usersRouter.post('/discover/scroll', async (req, res) => {
+  let decodedToken
+  if (req.token)
+    decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  const body = req.body
+
+  const recommendationList = await getRecommendations(body.startIndex, body.endIndex, decodedToken)
+  return res.status(200).json({ recommendationList })
+})
+
+const getRecommendations = async (startIndex, endIndex, decodedToken) => {
   let tvlist = await Tvlist.find({ user: decodedToken.id })
-  tvlist = tvlist.filter(show => show.score)
+  // tvlist = tvlist.filter(show => show.score)
   tvlist.sort((a, b) => {
+    if (!a.score && !b.score)
+      return 0
+    if (!a.score)
+      return 1
+    if (!b.score)
+      return -1
     return b.score - a.score
   })
+  tvlist = tvlist.slice(startIndex, endIndex)
 
-  const tvshowIdArr = tvlist.slice(0, 2).map(show => show.tv_id)
+  const tvshowIdArr = tvlist.map(show => show.tv_id)
   let recommendations = []
   for (let i = 0; i < tvshowIdArr.length; i++) {
     const temp = await axios.get(`${apiUrl}/tv/${tvshowIdArr[i]}/recommendations?api_key=${process.env.MOVIEDB_API}`)
@@ -233,9 +257,8 @@ usersRouter.post('/discover', async (req, res) => {
     obj.recommendations = await getDetails(idArr, decodedToken)
     recommendationDetails.push(obj)
   }
-
-  return res.status(200).json({ discover, recommendationDetails })
-})
+  return recommendationDetails
+}
 
 const getDetails = async (showlist, decodedToken) => {
   let tvlistArr

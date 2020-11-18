@@ -52,4 +52,17 @@ const discover = async (tokenObj) => {
   return res.data
 }
 
-export default { login, register, profile, progress, search, discover }
+const discoverScroll = async (startIndex, endIndex, tokenObj) => {
+  let config = {}
+  // if user is logged in, send their token with the request
+  if (tokenObj) {
+    const token = `bearer ${tokenObj.token}`
+    config = {
+      headers: { Authorization: token }
+    }
+  }
+  const res = await axios.post(`${baseUrl}/discover/scroll`, { startIndex, endIndex }, config)
+  return res.data
+}
+
+export default { login, register, profile, progress, search, discover, discoverScroll }
