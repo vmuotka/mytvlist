@@ -50,8 +50,8 @@ tvRouter.post('/search', async (req, res) => {
       const showToDb = new Tvshow({ tv_id: show.tv_info.id, show: show.tv_info })
       showToDb.save()
     }
-    if (show.tv_info.number_of_seasons > 0 && decodedToken.id) {
-      if (tvlistArr) {
+    if (show.tv_info.number_of_seasons > 0) {
+      if (tvlistArr && decodedToken) {
         if (tvlistArr.filter(item => item.tv_id === show.tv_info.id).length > 0) {
           show.listed = tvlistArr.filter(item => item.tv_id === show.tv_info.id)[0].listed
         }

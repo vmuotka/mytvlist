@@ -17,7 +17,10 @@ import { useAuth } from '../context/auth'
 const DiscoverPage = (props) => {
   const GoBackBtn = () => {
     return (
-      <span className='text-gray-600 text-2xl cursor-pointer' onClick={() => props.setSubpage(false)}>
+      <span className='text-gray-600 text-xl cursor-pointer' onClick={() => {
+        props.setSubpage(false)
+        window.scrollTo(0, 0)
+      }}>
         <ArrowLeft className='h-10 w-10 inline' />
         back to discover
       </span>
@@ -66,7 +69,7 @@ const Discover = () => {
   }, [])
 
   useEffect(() => {
-    if (isFetching) {
+    if (isFetching && !subpage) {
       userService.discoverScroll(
         discover.recommendationList.length,
         discover.recommendationList.length + 4,
@@ -84,16 +87,13 @@ const Discover = () => {
         .catch(err => {
           console.error(err)
         })
-      console.log('fetching')
     }
-  }, [isFetching])
+  }, [isFetching, authTokens, discover, subpage])
 
   const handleSeeAll = () => {
     window.scrollTo(0, 0)
     setSubpage(true)
   }
-
-  console.log(discover)
 
   return (
     <div className='w-full mb-5 md:w-4/5 mx-auto'>
