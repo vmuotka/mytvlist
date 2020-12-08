@@ -75,6 +75,7 @@ const Discover = () => {
         discover.recommendationList.length + 4,
         authTokens
       ).then(data => {
+        setIsFetching(false)
         setDiscover({
           ...discover,
           recommendationList: [
@@ -82,13 +83,14 @@ const Discover = () => {
             ...data.recommendationList
           ]
         })
-        setIsFetching(false)
       })
         .catch(err => {
           console.error(err)
         })
+    } else {
+      setIsFetching(false)
     }
-  }, [isFetching, authTokens, discover, subpage])
+  }, [isFetching, discover, authTokens, subpage])
 
   const handleSeeAll = () => {
     window.scrollTo(0, 0)
@@ -100,7 +102,7 @@ const Discover = () => {
       {!discover &&
         <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />
       }
-      { (!subpage && discover) &&
+      { (!subpage && discover && discover.discover.length > 0) &&
         <>
           <Heading className='text-center'>Discover</Heading>
           <h2 className='text-gray-700 text-xl'>Popular in the last 6 months</h2>
@@ -112,19 +114,19 @@ const Discover = () => {
           <div className='flex justify-end'>
             <Button value='See all' onClick={handleSeeAll} className='py-2 px-4 mt-2' />
           </div>
-          {
-            discover.recommendationList.map(obj =>
-              <div className='mt-10' key={obj.name}>
-                <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
-                <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
-                  {obj.recommendations.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)}
-                </div>
-              </div>
-            )
-          }
-          <Spinner className={`mx-auto mt-2 ${isFetching ? 'opacity-100' : 'opacity-0'}`} mt-4 color='bg-pink-500' show={true} />
         </>
       }
+      {!subpage && discover &&
+        discover.recommendationList.map(obj =>
+          <div className='mt-10' key={obj.name}>
+            <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
+            <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
+              {obj.recommendations.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)}
+            </div>
+          </div>
+        )
+      }
+      <Spinner className={`mx-auto mt-2 ${isFetching ? 'opacity-100' : 'opacity-0'}`} mt-4 color='bg-pink-500' show={true} />
       { subpage &&
         <DiscoverPage setSubpage={setSubpage}>
           {discover &&

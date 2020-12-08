@@ -201,8 +201,12 @@ usersRouter.post('/discover', async (req, res) => {
   date.setMonth(date.getMonth() - 6)
   date = date.toLocaleDateString('en-US').split('/')
 
+  // API requires date string to have months and days with 2 numbers
   if (+date[0] < 10)
     date[0] = '0' + date[0]
+
+  if (+date[1] < 10)
+    date[1] = '0' + date[1]
   date = date[2] + '-' + date[0] + '-' + date[1]
 
   let discover = await axios.get(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}`)
@@ -227,7 +231,6 @@ usersRouter.post('/discover/scroll', async (req, res) => {
 
 const getRecommendations = async (startIndex, endIndex, decodedToken) => {
   let tvlist = await Tvlist.find({ user: decodedToken.id })
-  // tvlist = tvlist.filter(show => show.score)
   tvlist.sort((a, b) => {
     if (!a.score && !b.score)
       return 0
