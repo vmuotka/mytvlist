@@ -8,11 +8,11 @@ import SearchTv from './pages/SearchTv'
 import SearchUsers from './pages/SearchUsers'
 import Profile from './pages/Profile/'
 import Discover from './pages/Discover'
+import LandingPage from './pages/LandingPage'
 
 // project components
 import PrivateRoute from './PrivateRoute'
 
-import Placeholdercomponent from './components/placeholdercomponent'
 
 const privateRoutes = [
   {
@@ -45,7 +45,7 @@ const publicRoutes = [
   },
   {
     path: '/',
-    component: Placeholdercomponent
+    component: LandingPage
   }
 ]
 

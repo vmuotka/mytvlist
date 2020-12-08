@@ -18,7 +18,7 @@ const ProfileNavigation = ({ active, onClick }) => {
             {profile.username}
           </h1>
         </div>
-        <div className='w-full md:block flex-grow md:flex md:items-center md:w-auto'>
+        <div className='w-full flex-grow md:flex md:items-center md:w-auto'>
           <div className='text-md md:flex-grow'>
             {navs.map(nav =>
               <button key={nav} onClick={onClick(nav)} className={`${active === nav ? 'text-white' : 'text-indigo-200'} font-semibold hover:text-indigo-300 mr-4`}>{nav}</button>
