@@ -13,6 +13,9 @@ const Basic = () => {
     let a = 0 // all episodes
     const progress = { ...show.progress[show.progress.length - 1] }
     for (let i = 0; i < progress.season; i++) {
+      if (i > show.tv_info.seasons.length - 1) {
+        console.log(show.tv_info.name)
+      }
       w += show.tv_info.seasons[i].episode_count
     }
     if (progress.season !== show.tv_info.seasons.length)

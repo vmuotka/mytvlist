@@ -159,6 +159,38 @@ usersRouter.post('/progress', async (req, res) => {
   else if (score > 100)
     score = 100
 
+  let progress = body.progress
+
+  let show
+  try {
+    show = await axios.get(`${apiUrl}/tv/${body.tv_id}?api_key=${process.env.MOVIEDB_API}`)
+    show = show.data
+  } catch (err) {
+    return res.status(503).json({ error: 'There was an error. Try again later.' })
+  }
+  show.seasons = show.seasons.filter(season => season.name !== 'Specials')
+
+  progress.forEach(obj => {
+    if (obj.episode < 0) {
+      obj.episode = 0
+    }
+    if (obj.season <= show.seasons.length && obj.season > 0) {
+      // there might be a new season
+      if (obj.season === show.seasons.length && obj.episode !== show.seasons[show.seasons.length - 1].episode_count) {
+        obj.season = show_number_of_seasons - 1
+      }
+
+      if (obj.episode > show.seasons[obj.season - 1].episode_count) {
+        obj.episode = show.seasons[obj.season - 1].episode_count - 1
+      }
+    } else if (obj.season === 0) {
+      if (obj.episode > show.seasons[0].episode_count)
+        obj.episode = show.seasons[0].episode_count - 1
+    } else {
+      return res.status(400).json({ error: 'Invalid progress given.' })
+    }
+
+  })
   try {
     await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching, score } })
   } catch (err) {
