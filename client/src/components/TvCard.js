@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // icons
 import Star from './icons/Star'
@@ -61,8 +62,9 @@ const TvCard = ({ show, className }) => {
               {authTokens &&
                 <Button onClick={addToList} className='text-sm float-right ml-px' value={listed ? 'Unlist' : 'Add to list'} style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />}
                 />}
-              {tv_info.name}&nbsp;
+              <Link to={`/show/${tv_info.id}`} >{tv_info.name}&nbsp;
               <span className='text-gray-500'>({tv_info.original_language})</span>
+              </Link>
             </span>
           </div>
           <p className='mb-2 text-gray-600 font-semibold'>

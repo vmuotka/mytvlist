@@ -15,10 +15,17 @@ const search = async (searchObj, tokenObj) => {
   return res.data
 }
 
-const genres = async () => {
-  const res = await axios.post(`${baseUrl}/genres`)
+const showPage = async (id, tokenObj) => {
+  let config = {}
+  // if user is logged in, send their token with the request
+  if (tokenObj) {
+    const token = `bearer ${tokenObj.token}`
+    config = {
+      headers: { Authorization: token }
+    }
+  }
+  const res = await axios.post(`${baseUrl}/details`, { id }, config)
   return res.data
 }
 
-
-export default { search, genres }
+export default { search, showPage }

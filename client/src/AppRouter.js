@@ -9,6 +9,7 @@ import SearchUsers from './pages/SearchUsers'
 import Profile from './pages/Profile/'
 import Discover from './pages/Discover'
 import LandingPage from './pages/LandingPage'
+import ShowPage from './pages/ShowPage'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -26,6 +27,10 @@ const publicRoutes = [
   {
     path: '/search/tv',
     component: SearchTv
+  },
+  {
+    path: '/show/:id',
+    component: ShowPage
   },
   {
     path: '/search/users',

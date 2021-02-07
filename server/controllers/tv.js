@@ -65,15 +65,35 @@ tvRouter.post('/search', async (req, res) => {
   return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages, searchword: body.searchword })
 })
 
-tvRouter.get('/genres', async (req, res) => {
+tvRouter.post('/details', async (req, res) => {
+  const body = req.body
   let response
   try {
-    response = await axios.get(`${baseUrl}/genre/tv/list?api_key=${process.env.MOVIEDB_API}`)
+    response = await axios.get(`${baseUrl}/tv/${body.id}?api_key=${process.env.MOVIEDB_API}`)
   } catch (err) {
     return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
   }
-  res.status(200).json(response)
-})
+  let providers
+  try {
+    providers = await axios.get(`${baseUrl}/tv/${body.id}/watch/providers?api_key=${process.env.MOVIEDB_API}`)
+    response.data.providers = providers.data.results
+  } catch (err) {
+    response.data.providers = {}
+  }
 
+  // return array of shows the user is following
+  let decodedToken
+  if (req.token)
+    decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  let tvlistItem
+  if (decodedToken !== undefined) {
+    tvlistItem = await Tvlist.find({ user: decodedToken.id, tv_id: body.id })
+    tvlistItem = tvlistItem[0]
+    response.data.listed = tvlistItem ? tvlistItem.listed : false
+  }
+
+  return res.status(200).json(response.data)
+})
 
 module.exports = tvRouter
