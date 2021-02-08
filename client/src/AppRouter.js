@@ -9,7 +9,7 @@ import SearchUsers from './pages/SearchUsers'
 import Profile from './pages/Profile/'
 import Discover from './pages/Discover'
 import LandingPage from './pages/LandingPage'
-import ShowPage from './pages/ShowPage'
+import ShowPage from './pages/ShowPage/'
 
 // project components
 import PrivateRoute from './PrivateRoute'
