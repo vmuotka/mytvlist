@@ -13,7 +13,7 @@ const Seasons = ({ show }) => {
       <h2 className='text-gray-700 text-4xl'>
         Seasons
       </h2>
-      <div className='flex gap-1'>
+      <div className='flex gap-1 flex-wrap'>
         {show.seasons.map((item, index) =>
           <Button
             key={item.id}

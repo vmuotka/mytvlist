@@ -74,7 +74,7 @@ usersRouter.post('/login', [
     id: user.id
   }
 
-  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '7d' })
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '28d' })
 
   return res.status(200).json({ token })
 })

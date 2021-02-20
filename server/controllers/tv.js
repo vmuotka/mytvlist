@@ -84,14 +84,22 @@ tvRouter.post('/details', async (req, res) => {
   }
 
   for (let i = 0; i < response.seasons.length; i++) {
-    let season
+    console.log(response.seasons[i].season_number)
+    // axios.get(`${baseUrl}/tv/${body.id}/season/${response.seasons[i].season_number}?api_key=${process.env.MOVIEDB_API}`)
+    //   .then(res => {
+    //     response.seasons[i] = res.data
+    //   })
+    //   .catch(err => {
+    //     // in the event of error, assing nothing to the season info
+    //     console.error(err)
+    //   })
     try {
-      season = await axios.get(`${baseUrl}/tv/${body.id}/season/${i}?api_key=${process.env.MOVIEDB_API}`)
+      const season_details = await axios.get(`${baseUrl}/tv/${body.id}/season/${response.seasons[i].season_number}?api_key=${process.env.MOVIEDB_API}`)
+      response.seasons[i] = season_details.data
     } catch (err) {
-
+      // in the event of error, assing nothing to the season info
+      console.error(err)
     }
-    if (season)
-      response.seasons[i] = season.data
   }
 
   // return array of shows the user is following
