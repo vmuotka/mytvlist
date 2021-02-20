@@ -6,11 +6,9 @@ import Button from '../../components/Button'
 const Seasons = ({ show }) => {
   const [season, setSeason] = useState(show.seasons[0])
 
-  console.log(season.episodes)
-
   return (
     <div className='mt-4'>
-      <h2 className='text-gray-700 text-4xl'>
+      <h2 className='text-gray-700 text-4xl' id='seasons'>
         Seasons
       </h2>
       <div className='flex gap-1 flex-wrap'>
@@ -27,7 +25,7 @@ const Seasons = ({ show }) => {
         <h3 className='text-xl text-gray-700'>
           {season.name}
         </h3>
-        {season.episodes ? season.episodes.map(episode =>
+        {season.episodes ? <> {season.episodes.map(episode =>
           <div className='w-full md:flex'>
             <div
               className={'h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500'}
@@ -44,9 +42,13 @@ const Seasons = ({ show }) => {
                 {episode.overview}
               </p>
             </div>
-
           </div>
-        ) :
+        )}
+          <Button
+            className='px-3 py-2'
+            onClick={() => document.getElementById('seasons').scrollIntoView({ block: 'start', behavior: 'smooth' })}
+            value='Back to top' />
+        </> :
           <span className='text-gray-600 italic'>Failed to retrieve episode data.</span>}
       </div>
     </div>

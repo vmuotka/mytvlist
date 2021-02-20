@@ -69,7 +69,7 @@ tvRouter.post('/details', async (req, res) => {
   const body = req.body
   let response
   try {
-    response = await axios.get(`${baseUrl}/tv/${body.id}?api_key=${process.env.MOVIEDB_API}`)
+    response = await axios.get(`${baseUrl}/tv/${body.id}?api_key=${process.env.MOVIEDB_API}&append_to_response=aggregate_credits`)
   } catch (err) {
     return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
   }
@@ -84,15 +84,6 @@ tvRouter.post('/details', async (req, res) => {
   }
 
   for (let i = 0; i < response.seasons.length; i++) {
-    console.log(response.seasons[i].season_number)
-    // axios.get(`${baseUrl}/tv/${body.id}/season/${response.seasons[i].season_number}?api_key=${process.env.MOVIEDB_API}`)
-    //   .then(res => {
-    //     response.seasons[i] = res.data
-    //   })
-    //   .catch(err => {
-    //     // in the event of error, assing nothing to the season info
-    //     console.error(err)
-    //   })
     try {
       const season_details = await axios.get(`${baseUrl}/tv/${body.id}/season/${response.seasons[i].season_number}?api_key=${process.env.MOVIEDB_API}`)
       response.seasons[i] = season_details.data

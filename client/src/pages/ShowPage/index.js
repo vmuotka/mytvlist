@@ -8,6 +8,7 @@ import Button from '../../components/Button'
 import tvlistService from '../../services/tvlistService'
 import Seasons from './Seasons'
 import Select from '../../components/Select'
+import Cast from './Cast'
 
 // icons
 import Star from '../../components/icons/Star'
@@ -26,12 +27,14 @@ const ShowPage = () => {
 
   useEffect(() => {
     searchService.showPage(id, authTokens).then(data => {
-      setCountry(Object.keys(data.providers)[0])
+      setCountry(Object.keys(data.providers).find(key => key === 'FI') ? 'FI' : Object.keys(data.providers)[0])
       setShow(data)
     }).catch(err => {
       console.error(err)
     })
   }, [id, authTokens])
+
+  console.log(show)
 
   const addToList = async () => {
     try {
@@ -45,15 +48,13 @@ const ShowPage = () => {
     }
   }
 
-  console.log(show)
-
   return (
     <div className='w-full md:w-2/3 mx-auto mt-3'>
       <Spinner className='mx-auto' color='bg-pink-500' show={!show} />
       {show &&
         <>
           <div
-            className='md:flex justify-center mt-4'
+            className='md:flex justify-center my-4'
           >
             <img
               alt='Show poster'
@@ -70,6 +71,7 @@ const ShowPage = () => {
                 {show.number_of_seasons && show.number_of_seasons} {show.number_of_seasons > 1 ? 'seasons' : 'season'},&nbsp;
                 {show.number_of_episodes} {show.number_of_episodes !== 1 ? 'episodes' : 'episode'}&nbsp;
                 {show.first_air_date && '(' + show.first_air_date.split('-')[0] + ' - '}{show.last_air_date && show.last_air_date.split('-')[0]}{show.first_air_date && ')'}
+                {show.status && ` (${show.status})`}
               </p>
 
               <p className='text-gray-600'>
@@ -120,9 +122,11 @@ const ShowPage = () => {
                 ) : <p className='text-gray-500'>No country selected</p>
                 }
               </div>
-              <span className='text-gray-600'>Data provided by JustWatch.</span>
+              <span className='text-gray-600'>Streaming data provided by JustWatch.</span>
             </div>
           </div>
+
+          <Cast cast={show.aggregate_credits.cast} />
 
           <Seasons show={show} />
         </>
