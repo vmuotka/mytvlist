@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 // project components
 import { Tr, Td } from '../../components/Table'
-import ExpandIcon from '../../components/icons/Expand'
+import DoubleUp from '../../components/icons/DoubleUp'
+import DoubleDown from '../../components/icons/DoubleDown'
 import Checkbox from '../../components/Checkbox/'
+import ProgressExpandedRow from './ProgressExpandedRow'
 
 // project services
 import userService from '../../services/userService'
@@ -15,11 +17,12 @@ import { useNotification } from '../../context/notification'
 
 import './ProgressTableRow.css'
 
-const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
+const ProgressTableRow = ({ show, editMode, handleSelect }) => {
   const [progress, setProgress] = useState(show.progress[show.progress.length - 1])
   const { authTokens } = useAuth()
   const { profile, setProfile } = useProfile()
   const { setNotifications } = useNotification()
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     setProgress(show.progress[show.progress.length - 1])
@@ -49,39 +52,43 @@ const ProgressTableRow = ({ show, handleModal, editMode, handleSelect }) => {
     }
   }
   return (
-    <Tr className='text-sm sm:text-lg md:text-xl table-row'>
-      <Td colSpan='4' className='flex items-center md:w-8/12'>
-        {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
-          <div
-            className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
-            style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
-          >
-            {myProfile &&
-              <button onClick={handleModal(show)} className='modal-btn text-lg text-white p-1'>
-                <ExpandIcon className='w-full' />
-              </button>
-            }
-          </div>
-        }
-        <span className='ml-6 break-all'>{show.tv_info.name}</span>
-      </Td>
-      <Td className='hidden sm:table-cell md:w-1/12'>
-        {(show.score && show.score > 0) && show.score}
-      </Td>
-      <Td className='md:w-1/12'>
-        {progress.season}/{show.tv_info.seasons.length}
-      </Td>
-      <Td className='md:w-2/12'>
-        {(myProfile && show.tv_info.seasons.length !== progress.season && show.watching) ?
-          <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
-            {progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
-          </button>
-          :
-          <>{progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
-          </>
-        }
-      </Td>
-    </Tr>
+    <>
+      <Tr className='text-sm sm:text-lg md:text-xl table-row'>
+        <Td colSpan='4' className='flex items-center md:w-8/12'>
+          {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
+            <div
+              className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
+              style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
+            >
+              {myProfile &&
+                <button onClick={() => setExpanded(!expanded)}
+                  className='modal-btn text-lg text-white p-1 focus:outline-none'>
+                  {expanded ? <DoubleUp /> : <DoubleDown />}
+                </button>
+              }
+            </div>
+          }
+          <span className='ml-6 break-all'>{show.tv_info.name}</span>
+        </Td>
+        <Td className='hidden sm:table-cell md:w-1/12'>
+          {(show.score && show.score > 0) && show.score}
+        </Td>
+        <Td className='md:w-1/12'>
+          {progress.season}/{show.tv_info.seasons.length}
+        </Td>
+        <Td className='md:w-2/12'>
+          {(myProfile && show.tv_info.seasons.length !== progress.season && show.watching) ?
+            <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
+              {progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
+            </button>
+            :
+            <>{progress.episode}/{show.tv_info.seasons[progress.season !== show.tv_info.seasons.length ? progress.season : show.tv_info.seasons.length - 1].episode_count}
+            </>
+          }
+        </Td>
+      </Tr>
+      {myProfile && <ProgressExpandedRow show={show} expanded={expanded} />}
+    </>
   )
 }
 
