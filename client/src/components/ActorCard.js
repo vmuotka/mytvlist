@@ -22,7 +22,7 @@ const ActorCard = ({ actor }) => {
         </span>
         <span className='flex flex-col' title={actor.roles.map(role => role.character).join('\n')}>
           {actor.roles.slice(0, 2).map(role =>
-            <span className='text-gray-600 text-sm'>
+            <span key={role.credit_id} className='text-gray-600 text-sm'>
               {role.character} ({role.episode_count}&nbsp;ep)
             </span>
           )}

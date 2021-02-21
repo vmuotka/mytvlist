@@ -42,8 +42,9 @@ const ProgressExpandedRow = ({ show, expanded }) => {
 
   const handleModalChange = e => {
     let progress = form.progress[show.progress.length - 1]
-    const value = +e.target.value
+    const value = +e.target.value < 0 ? 0 : +e.target.value
 
+    console.log(value)
 
     progress[e.target.name] = value
 
@@ -120,8 +121,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
             onChange={handleScore}
             type='number'
             name='score'
-            min='0'
-            max='100'
             className='text-center'
             value={form.score ? form.score : 0}
           />
@@ -129,7 +128,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
         <Td>
           <InputField
             onChange={handleModalChange}
-            min='0'
             max={form.tv_info.seasons.length}
             type='number'
             name='season'
@@ -141,7 +139,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
         <Td>
           <InputField
             onChange={handleModalChange}
-            min='0'
             max={form.tv_info.seasons[form.progress[form.progress.length - 1].season !== form.tv_info.seasons.length ? form.progress[show.progress.length - 1].season : form.tv_info.seasons.length - 1].episode_count}
 
             type='number'

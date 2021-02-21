@@ -177,7 +177,7 @@ usersRouter.post('/progress', async (req, res) => {
     if (obj.season <= show.seasons.length && obj.season > 0) {
       // there might be a new season
       if (obj.season === show.seasons.length && obj.episode !== show.seasons[show.seasons.length - 1].episode_count) {
-        obj.season = show_number_of_seasons - 1
+        obj.season = show.number_of_seasons - 1
       }
 
       if (obj.episode > show.seasons[obj.season - 1].episode_count) {

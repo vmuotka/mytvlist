@@ -21,7 +21,7 @@ const Cast = ({ cast }) => {
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 my-6' >
         {
           cast.slice(0, viewAll ? cast.length : 6).map(actor =>
-            <ActorCard actor={actor} />
+            <ActorCard key={actor.id} actor={actor} />
           )
         }
       </div>

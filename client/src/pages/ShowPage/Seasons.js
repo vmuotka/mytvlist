@@ -26,7 +26,7 @@ const Seasons = ({ show }) => {
           {season.name}
         </h3>
         {season.episodes ? <> {season.episodes.map(episode =>
-          <div className='w-full md:flex'>
+          <div key={episode.id} className='w-full md:flex'>
             <div
               className={'h-48 md:h-auto md:w-48 flex-none bg-cover bg-no-repeat rounded-t md:rounded-t-none md:rounded-l text-center overflow-hidden bg-pink-500'}
               style={{ backgroundImage: episode.still_path && `url('https://image.tmdb.org/t/p/w400${episode.still_path}')` }}
