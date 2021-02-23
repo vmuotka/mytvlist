@@ -14,7 +14,7 @@ import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
 import { useNotification } from '../../context/notification'
 
-const ProgressTable = ({ list, handleModal }) => {
+const ProgressTable = ({ list, handleModal, id }) => {
   const { profile, setProfile } = useProfile()
   const [editMode, setEditmode] = useState(false)
   const [selected, setSelected] = useState([])
@@ -105,7 +105,7 @@ const ProgressTable = ({ list, handleModal }) => {
               </span>
             }
           </div>}
-          <Table className='md:table-fixed max-w-full overflow-x-hidden'>
+          <Table id={id} className='md:table-fixed max-w-full overflow-x-hidden'>
             <Thead>
               <tr>
                 <Th>Show</Th>

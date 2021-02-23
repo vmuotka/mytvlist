@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Table = (props) => {
   return (
-    <table className='w-full border-collapse bg-pink-150'>
+    <table id={props.id} className='w-full border-collapse bg-pink-150'>
       {props.children}
     </table>
   )

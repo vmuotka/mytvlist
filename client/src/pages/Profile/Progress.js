@@ -5,6 +5,7 @@ import disableScroll from 'disable-scroll'
 import ProgressTable from './ProgressTable'
 import ProgressModal from './ProgressModal'
 import Spinner from '../../components/Spinner/'
+import Button from '../../components/Button'
 
 import './ProgressTableRow.css'
 
@@ -71,20 +72,39 @@ const Progress = () => {
       disableScroll.off()
   }
 
+  console.log(tvlist)
+
   return (
-    <div className='md:mx-10'>
-      {
-        tvlist ?
-          tvlist.map((list) =>
-            <ProgressTable key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
-          ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
-      }
-      {(tvlist && tvlist[0].array.length === 0 && tvlist[1].array.length === 0 && tvlist[2].array.length === 0 && tvlist[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
-      {
-        modal.show &&
-        <ProgressModal modal={modal} handleModal={handleModal} profile={profile} setProfile={setProfile} setModal={setModal} />
-      }
-    </div >
+    <div className='flex mx-4'>
+      <div className=' hidden md:block md:w-1/5'>
+        <ul className='sticky mx-4' style={{ top: '2rem' }}>
+          {
+            tvlist && tvlist.map(list =>
+              list.array.length > 0 &&
+              <li key={list.name} >
+                <Button
+                  onClick={() => document.getElementById(list.name).scrollIntoView({ block: 'start', behavior: 'smooth' })}
+                  className='px-2 py-1 my-1 w-full'
+                  value={`${list.name} (${list.array.length})`} />
+              </li>
+            )
+          }
+        </ul>
+      </div>
+      <div className='w-full md:w-4/5'>
+        {
+          tvlist ?
+            tvlist.map((list) =>
+              <ProgressTable id={list.name} key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
+            ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
+        }
+        {(tvlist && tvlist[0].array.length === 0 && tvlist[1].array.length === 0 && tvlist[2].array.length === 0 && tvlist[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
+        {
+          modal.show &&
+          <ProgressModal modal={modal} handleModal={handleModal} profile={profile} setProfile={setProfile} setModal={setModal} />
+        }
+      </div>
+    </div>
   )
 }
 
