@@ -117,7 +117,7 @@ usersRouter.post('/profile', async (req, res) => {
 
   let tvlistArr
   if (decodedToken !== undefined)
-    tvlistArr = await Tvlist.find({ user: decodedToken.id })
+    tvlistArr = await Tvlist.find({ user: decodedToken.id, listed: true })
 
   const requests = profile.tvlist.map(item => api(`${apiUrl}/tv/${item.tv_id}?api_key=${process.env.MOVIEDB_API}`))
 
@@ -129,7 +129,9 @@ usersRouter.post('/profile', async (req, res) => {
 
         if (tvlistArr) {
           if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
-            listItem.listed = tvlistArr.filter(item => item.tv_id === show.id)[0].listed
+            listItem.listed = true
+          } else {
+            listItem.listed = false
           }
         }
 

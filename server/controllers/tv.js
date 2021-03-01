@@ -81,7 +81,6 @@ tvRouter.post('/details', async (req, res) => {
 
   axios.all(requests)
     .then(axios.spread(async (...responses) => {
-      console.log(responses)
       response.seasons.forEach((season, index) => {
         response.seasons[index] = responses[index].data
       })
