@@ -7,7 +7,6 @@ const axiosCache = require('axios-cache-adapter')
 // mongoose models
 const User = require('../models/user')
 const Tvlist = require('../models/tvlist')
-const Tvshow = require('../models/tvshow')
 
 const apiUrl = `https://api.themoviedb.org/3`
 
