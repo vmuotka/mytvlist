@@ -93,7 +93,7 @@ const ProgressTable = ({ list, handleModal, id }) => {
     <>
       {
         (list.array.length > 0 && selected.length > 0) && <div key={list.name} className='mt-4'>
-          <p className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
+          <p id={id} className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
           {myProfile && <div className='flex text-gray-700 gap-1 my-1'>
             <Checkbox onChange={handleEditMode} checked={editMode} label='Edit mode' className='ml-1 py-1 mb-1' />
             {
@@ -105,7 +105,7 @@ const ProgressTable = ({ list, handleModal, id }) => {
               </span>
             }
           </div>}
-          <Table id={id} className='md:table-fixed max-w-full overflow-x-hidden'>
+          <Table className='md:table-fixed max-w-full overflow-x-hidden'>
             <Thead>
               <tr>
                 <Th>Show</Th>

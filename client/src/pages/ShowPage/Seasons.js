@@ -23,7 +23,7 @@ const Seasons = ({ show }) => {
       </div>
       <div className='mt-2 flex flex-col gap-2'>
         <h3 className='text-xl text-gray-700'>
-          {season.name}
+          {season.name} ({season.episodes.length} episodes)
         </h3>
         {season.episodes ? <> {season.episodes.map(episode =>
           <div key={episode.id} className='w-full md:flex'>
