@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 
 // project components
 import InputField from '../../components/InputField'
 import Select from '../../components/Select'
 import { Tr, Td } from '../../components/Table'
+import Button from '../../components/Button'
 
 // project services
 import userService from '../../services/userService'
@@ -21,14 +22,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
 
   const [form, setForm] = useState(show)
 
-  const firstUpdate = useRef(true)
-
-  useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false
-      return
-    }
-    console.log('rtee')
+  const handleSave = () => {
     setProfile({
       ...profile,
       tvlist: profile.tvlist.map(item => item.tv_id === form.tv_id ? form : item)
@@ -37,8 +31,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
       .catch(err => {
         setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
       })
-    // eslint-disable-next-line
-  }, [form])
+  }
 
   const handleModalChange = e => {
     let progress = form.progress[show.progress.length - 1]
@@ -103,11 +96,16 @@ const ProgressExpandedRow = ({ show, expanded }) => {
 
   return (
     <>
-      {/* Empty table row to not offset table row background colors */}
       <Tr></Tr>
       <Tr className={!expanded && 'hidden'}>
-        <Td>
+        <Td className='flex'>
+          <Button
+            className='px-3 py-1'
+            value='Save'
+            onClick={handleSave}
+          />
           <Select
+            className='w-full'
             onChange={handleWatching}
             options={[
               { value: true, name: ' Watching' },
@@ -121,7 +119,8 @@ const ProgressExpandedRow = ({ show, expanded }) => {
             onChange={handleScore}
             type='number'
             name='score'
-            className='text-center'
+            className='text-center w-16 py-1'
+            size={3}
             value={form.score ? form.score : 0}
           />
         </Td>
@@ -131,8 +130,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
             max={form.tv_info.seasons.length}
             type='number'
             name='season'
-            size='5'
-            className='text-center'
+            className='text-center w-16 py-1'
             value={form.progress[form.progress.length - 1].season}
           />
         </Td>
@@ -143,9 +141,9 @@ const ProgressExpandedRow = ({ show, expanded }) => {
 
             type='number'
             name='episode'
-            size='5'
+            size={3}
             value={form.progress[form.progress.length - 1].episode}
-            className='text-center' />
+            className='text-center w-16 py-1' />
         </Td>
       </Tr>
     </>

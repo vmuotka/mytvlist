@@ -62,7 +62,7 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
             >
               {myProfile &&
                 <button onClick={() => setExpanded(!expanded)}
-                  className='modal-btn text-lg text-white p-1 focus:outline-none'>
+                  className='w-full modal-btn text-lg text-white p-1 focus:outline-none'>
                   {expanded ? <DoubleUp /> : <DoubleDown />}
                 </button>
               }
