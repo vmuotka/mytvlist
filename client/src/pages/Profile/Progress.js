@@ -72,8 +72,6 @@ const Progress = () => {
       disableScroll.off()
   }
 
-  console.log(tvlist)
-
   return (
     <div className='flex mx-4'>
       <div className=' hidden md:block md:w-1/5'>

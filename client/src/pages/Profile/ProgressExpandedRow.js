@@ -33,27 +33,50 @@ const ProgressExpandedRow = ({ show, expanded }) => {
       })
   }
 
+  // console.log(form)
+
+  const handleRewatch = () => {
+    // console.log(form)
+    if (window.confirm(`Are you sure you want to rewatch ${form.tv_info.name}? You wont be able to edit your current watch progress after this.`)) {
+      setForm({
+        ...form,
+        progress: [...form.progress, { season: 0, episode: 0 }]
+      })
+    }
+  }
+
   const handleModalChange = e => {
     let progress = form.progress[show.progress.length - 1]
-    const value = +e.target.value < 0 ? 0 : +e.target.value
-
-    console.log(value)
-
+    let value = +e.target.value < 0 ? 0 : +e.target.value
     progress[e.target.name] = value
 
+    const episode = e.target.name === 'episode'
+
+    if (episode && form.tv_info.seasons.length === progress.season && form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count < value)
+      progress.episode = form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count
+
     // when episode count is lowered from the max in the final season
-    if (e.target.name === 'episode' && value !== form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count && form.progress[form.progress.length - 1].season === form.tv_info.seasons.length) {
+    if (episode && value < form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count && form.progress[form.progress.length - 1].season === form.tv_info.seasons.length) {
       progress.season = form.tv_info.seasons.length - 1
     }
     // when season counter fills the season count
-    if (e.target.name === 'season' && value === form.tv_info.seasons.length)
+    if (!episode && value === form.tv_info.seasons.length)
       progress.episode = form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count
 
-    // when episode counter fills the season episode count
-    if (e.target.name === 'episode' && value >= form.tv_info.seasons[progress.season].episode_count) {
-      progress.season += 1
-      if (progress.season !== form.tv_info.seasons.length)
-        progress.episode = 0
+    // if (episode && progress.season === form.tv_info.seasons.length) {
+    //   if (value >= form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count) {
+    //     progress.season += 1
+    //     if (progress.season !== form.tv_info.seasons.length)
+    //       progress.episode = 0
+    //   }
+    // }
+
+    if (episode && progress.season < form.tv_info.seasons.length) {
+      if (progress.episode >= form.tv_info.seasons[progress.season === form.tv_info.seasons.length ? progress.season - 1 : progress.season].episode_count) {
+        progress.season += 1
+        if (progress.season !== form.tv_info.seasons.length)
+          progress.episode = 0
+      }
     }
 
     // episode count is not allowed to be season max other than in the final season when the show is completed
@@ -71,8 +94,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
   }
 
   const handleWatching = e => {
-
-    console.log(form)
     const value = e.target.value === 'true'
     setForm({
       ...form,
@@ -98,11 +119,17 @@ const ProgressExpandedRow = ({ show, expanded }) => {
     <>
       <Tr></Tr>
       <Tr className={!expanded && 'hidden'}>
-        <Td className='flex'>
+        <Td className='flex gap-1'>
           <Button
             className='px-3 py-1'
             value='Save'
             onClick={handleSave}
+          />
+          <Button
+            className='px-3 py-1'
+            value='Rewatch'
+            color='bg-gradient-to-l from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-700'
+            onClick={handleRewatch}
           />
           <Select
             className='w-full'
@@ -137,7 +164,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
         <Td>
           <InputField
             onChange={handleModalChange}
-            max={form.tv_info.seasons[form.progress[form.progress.length - 1].season !== form.tv_info.seasons.length ? form.progress[show.progress.length - 1].season : form.tv_info.seasons.length - 1].episode_count}
+            // max={form.tv_info.seasons[form.progress[form.progress.length - 1].season !== form.tv_info.seasons.length ? form.progress[show.progress.length - 1].season : form.tv_info.seasons.length - 1].episode_count}
 
             type='number'
             name='episode'
