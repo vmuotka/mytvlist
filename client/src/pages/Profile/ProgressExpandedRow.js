@@ -33,10 +33,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
       })
   }
 
-  // console.log(form)
-
   const handleRewatch = () => {
-    // console.log(form)
     if (window.confirm(`Are you sure you want to rewatch ${form.tv_info.name}? You wont be able to edit your current watch progress after this.`)) {
       setForm({
         ...form,
@@ -46,7 +43,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
   }
 
   const handleModalChange = e => {
-    let progress = form.progress[show.progress.length - 1]
+    let [progress] = form.progress.slice(-1)
     let value = +e.target.value < 0 ? 0 : +e.target.value
     progress[e.target.name] = value
 
@@ -63,14 +60,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
     if (!episode && value === form.tv_info.seasons.length)
       progress.episode = form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count
 
-    // if (episode && progress.season === form.tv_info.seasons.length) {
-    //   if (value >= form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count) {
-    //     progress.season += 1
-    //     if (progress.season !== form.tv_info.seasons.length)
-    //       progress.episode = 0
-    //   }
-    // }
-
     if (episode && progress.season < form.tv_info.seasons.length) {
       if (progress.episode >= form.tv_info.seasons[progress.season === form.tv_info.seasons.length ? progress.season - 1 : progress.season].episode_count) {
         progress.season += 1
@@ -84,12 +73,12 @@ const ProgressExpandedRow = ({ show, expanded }) => {
       progress.episode = form.tv_info.seasons[progress.season].episode_count - 1
     }
 
-    let progressCopy = [...form.progress]
-    progressCopy[progressCopy.length - 1] = progress
+    // let progressCopy = [...form.progress]
+    // progressCopy[progressCopy.length - 1] = progress
 
     setForm({
       ...form,
-      progress: progressCopy
+      progress: [...form.progress.slice(0, form.progress.length - 1), progress]
     })
   }
 

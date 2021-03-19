@@ -14,12 +14,14 @@ const ProgressChart = () => {
       let genres = []
       profile.tvlist.forEach((show) => {
         let w = 0
-        const progress = { ...show.progress[show.progress.length - 1] }
-        for (let i = 0; i < progress.season; i++) {
-          w += show.tv_info.seasons[i].episode_count
-        }
-        if (progress.season !== show.tv_info.seasons.length)
-          w += progress.episode
+        const progressArray = [...show.progress]
+        progressArray.forEach(progress => {
+          for (let i = 0; i < progress.season; i++) {
+            w += show.tv_info.seasons[i].episode_count
+          }
+          if (progress.season !== show.tv_info.seasons.length)
+            w += progress.episode
+        })
 
         let minutes = w * +show.tv_info.episode_run_time[0]
         if (minutes > 0) {
@@ -41,6 +43,7 @@ const ProgressChart = () => {
             }
           }
         }
+
       })
       for (let i = 0; i < genres.length; i++) {
         genres[i].value = Math.floor(genres[i].minutes / 60)

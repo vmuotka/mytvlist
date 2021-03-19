@@ -15,7 +15,17 @@ const ProgressChart = () => {
       let total = { name: 'Not Watched', value: 0 }
       profile.tvlist.forEach((show) => {
         let w = 0
-        const progress = { ...show.progress[show.progress.length - 1] }
+        let sorted_progress = [...show.progress]
+        sorted_progress.sort((a, b) => {
+          if (a.season === b.season) {
+            return b.episode - a.episode
+          } else {
+            return b.season - a.season
+          }
+        })
+
+        const progress = sorted_progress[0]
+
         for (let i = 0; i < progress.season; i++) {
           w += show.tv_info.seasons[i].episode_count
         }
