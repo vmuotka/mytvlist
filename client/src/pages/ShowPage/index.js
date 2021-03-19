@@ -27,6 +27,10 @@ const ShowPage = () => {
 
   useEffect(() => {
     searchService.showPage(id, authTokens).then(data => {
+      Object.entries(data.providers).forEach(([key, value]) => {
+        if (!value.flatrate)
+          delete data.providers[key]
+      })
       Object.keys(data.providers).length > 0 && setCountry(Object.keys(data.providers).find(key => key === 'FI') ? 'FI' : Object.keys(data.providers)[0])
       setShow(data)
     }).catch(err => {
