@@ -12,7 +12,7 @@ const ActorCard = ({ actor }) => {
   return (
     <div className='w-full flex rounded'>
       <img
-        alt={`${actor.name}`}
+        alt={` `}
         className='h-auto w-24 flex-none object-cover rounded-l overflow-hidden bg-pink-500'
         src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
       />

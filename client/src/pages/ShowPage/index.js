@@ -24,6 +24,7 @@ const ShowPage = () => {
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
   const [country, setCountry] = useState(undefined)
+  const [countryList, setCountryList] = useState(undefined)
 
   useEffect(() => {
     searchService.showPage(id, authTokens).then(data => {
@@ -32,6 +33,11 @@ const ShowPage = () => {
           delete data.providers[key]
       })
       Object.keys(data.providers).length > 0 && setCountry(Object.keys(data.providers).find(key => key === 'FI') ? 'FI' : Object.keys(data.providers)[0])
+      let country_list = []
+      Object.entries(data.providers).forEach(([code, obj]) => {
+        country_list.push({ name: obj.name, value: code })
+      })
+      setCountryList(country_list)
       setShow(data)
     }).catch(err => {
       console.error(err)
@@ -60,10 +66,10 @@ const ShowPage = () => {
           >
             <img
               alt='Show poster'
-              className='w-full max-w-sm md:w-1/3 mx-auto shadow-lg rounded-lg'
+              className='w-full max-w-sm md:w-2/5 mx-auto shadow-lg rounded-lg object-cover'
               src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
             />
-            <div className='md:ml-6 w-full md-w-2/3'>
+            <div className='md:ml-6 w-full md:w-3/5'>
 
               <h1 className='text-gray-800 text-2xl font-bold my-2'>
                 {show.name} <span className='text-gray-600'>({show.original_language})</span>
@@ -106,7 +112,7 @@ const ShowPage = () => {
                     className='max-w-xs'
                     label='Country'
                     value={country}
-                    options={Object.keys(show.providers)}
+                    options={countryList}
                     onChange={(e) => setCountry(e.target.value)}
                   />
                   <div className='flex flex-row gap-4 mt-4'>

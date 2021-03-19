@@ -4,6 +4,8 @@ const Tvlist = require('../models/tvlist')
 const jwt = require('jsonwebtoken')
 const axiosCache = require('axios-cache-adapter')
 
+const countries = require('../static/countries.json')
+
 const cache = axiosCache.setupCache({
   maxAge: 60 * 60 * 1000
 })
@@ -73,6 +75,9 @@ tvRouter.post('/details', async (req, res) => {
   try {
     providers = await api(`${baseUrl}/tv/${body.id}/watch/providers?api_key=${process.env.MOVIEDB_API}`)
     response.providers = providers.data.results
+    Object.entries(response.providers).forEach(([key, value]) => {
+      response.providers[key].name = countries.find(country => country.code.toLowerCase() === key.toLowerCase()).name
+    })
   } catch (err) {
     response.providers = {}
   }
