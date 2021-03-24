@@ -28,4 +28,8 @@ const showPage = async (id, tokenObj) => {
   return res.data
 }
 
-export default { search, showPage }
+const getActorDetails = async (id) => {
+  return axios.get(`${baseUrl}/actor/${id}`)
+}
+
+export default { search, showPage, getActorDetails }

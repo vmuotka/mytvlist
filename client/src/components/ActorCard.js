@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const ActorCard = ({ actor }) => {
   actor.roles.sort((a, b) => {
@@ -18,7 +19,7 @@ const ActorCard = ({ actor }) => {
       />
       <div className='w-full flex flex-col border-b border-r border-t rounded-r border-pink-500 p-4 leading-tight'>
         <span className='text-gray-700 text-lg'>
-          {actor.name}
+          <Link to={`/actor/${actor.id}`} >{actor.name}</Link>
         </span>
         <span className='flex flex-col' title={actor.roles.map(role => role.character).join('\n')}>
           {actor.roles.slice(0, 2).map(role =>

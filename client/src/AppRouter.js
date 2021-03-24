@@ -10,6 +10,7 @@ import Profile from './pages/Profile/'
 import Discover from './pages/Discover'
 import LandingPage from './pages/LandingPage'
 import ShowPage from './pages/ShowPage/'
+import ActorPage from './pages/ActorPage'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -31,6 +32,10 @@ const publicRoutes = [
   {
     path: '/show/:id',
     component: ShowPage
+  },
+  {
+    path: '/actor/:id',
+    component: ActorPage
   },
   {
     path: '/search/users',

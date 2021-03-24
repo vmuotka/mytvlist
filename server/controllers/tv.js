@@ -105,4 +105,14 @@ tvRouter.post('/details', async (req, res) => {
     }))
 })
 
+tvRouter.get('/actor/:id', async (req, res) => {
+  axios.get(`${baseUrl}/person/${req.params.id}?api_key=${process.env.MOVIEDB_API}&append_to_response=tv_credits,images`)
+    .then(response => {
+      res.status(200).json(response.data)
+    })
+    .catch(err => {
+      res.status(500).json({ err })
+    })
+})
+
 module.exports = tvRouter
