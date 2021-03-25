@@ -89,7 +89,9 @@ const Navigation = ({ children }) => {
           </div>
         </div>
       </nav>
-      {children}
+      <div className='mb-24'>
+        {children}
+      </div>
     </>
   )
 }

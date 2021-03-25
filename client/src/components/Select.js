@@ -2,7 +2,7 @@ import React from 'react'
 
 const Select = (props) => {
   return (
-    <div className={`px-3 mb-6 md:mb-0  ${props.className}`}>
+    <div className={`px-3  ${props.className}`}>
       {props.label && <label className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none' htmlFor='label'>
         {props.label}
       </label>}

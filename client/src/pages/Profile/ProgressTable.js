@@ -105,21 +105,24 @@ const ProgressTable = ({ list, handleModal, id }) => {
               </span>
             }
           </div>}
-          <Table className='md:table-fixed max-w-full overflow-x-hidden'>
-            <Thead>
-              <tr>
-                <Th>Show</Th>
-                <Th className='hidden sm:table-cell'>Score</Th>
-                <Th>Season</Th>
-                <Th>Episode</Th>
-              </tr>
-            </Thead>
-            <Tbody>
-              {list.array.map((show) =>
-                <ProgressTableRow editMode={editMode} handleSelect={handleSelect} handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-              )}
-            </Tbody>
-          </Table>
+          <div className='overflow-auto'>
+            <Table className='md:table-fixed'>
+              <Thead>
+                <tr>
+                  <Th>Show</Th>
+                  <Th>Score</Th>
+                  <Th>Season</Th>
+                  <Th>Episode</Th>
+                </tr>
+              </Thead>
+              <Tbody>
+                {list.array.map((show) =>
+                  <ProgressTableRow editMode={editMode} handleSelect={handleSelect} handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
+                )}
+              </Tbody>
+            </Table>
+
+          </div>
         </div>
       }
     </>

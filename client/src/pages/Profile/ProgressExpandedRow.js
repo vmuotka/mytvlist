@@ -108,20 +108,19 @@ const ProgressExpandedRow = ({ show, expanded }) => {
     <>
       <Tr></Tr>
       <Tr className={!expanded && 'hidden'}>
-        <Td className='flex gap-1'>
+        <Td className='flex flex-row flex-grow-0 gap-1'>
           <Button
-            className='px-3 py-1'
+            className='px-3 py-1 self-center'
             value='Save'
             onClick={handleSave}
           />
           <Button
-            className='px-3 py-1'
+            className='px-3 py-1 self-center'
             value='Rewatch'
             color='bg-gradient-to-l from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-700'
             onClick={handleRewatch}
           />
           <Select
-            className='w-full'
             onChange={handleWatching}
             options={[
               { value: true, name: ' Watching' },
@@ -130,7 +129,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
             value={form.watching}
           />
         </Td>
-        <Td className='hidden sm:table-cell'>
+        <Td>
           <InputField
             onChange={handleScore}
             type='number'

@@ -54,7 +54,7 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
   return (
     <>
       <Tr className='text-sm sm:text-lg md:text-xl table-row'>
-        <Td colSpan='4' className='flex items-center md:w-8/12'>
+        <Td colSpan='4' className='flex items-center md:w-8/12 w-min'>
           {editMode ? <Checkbox onChange={handleSelect} className='text-lg' name={show.tv_id} /> :
             <div
               className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
@@ -68,9 +68,9 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
               }
             </div>
           }
-          <span className='ml-6 break-all'>{show.tv_info.name} {show.progress.length > 1 && `(${show.progress.length - 1}. rewatch)`}</span>
+          <span className='ml-6'>{show.tv_info.name} {show.progress.length > 1 && `(${show.progress.length - 1}. rewatch)`}</span>
         </Td>
-        <Td className='hidden sm:table-cell md:w-1/12'>
+        <Td className='md:w-1/12'>
           {(show.score && show.score > 0) && show.score}
         </Td>
         <Td className='md:w-1/12'>
