@@ -48,10 +48,11 @@ const App = () => {
               <Notification key={index} {...notification} />
             )}
           </div>
-          <Navigation />
-          <main className='mb-8 mx-4'>
-            <AppRouter />
-          </main>
+          <Navigation>
+            <main className='mb-8 mx-4'>
+              <AppRouter />
+            </main>
+          </Navigation>
         </NotificationContext.Provider>
       </AuthContext.Provider>
     </>

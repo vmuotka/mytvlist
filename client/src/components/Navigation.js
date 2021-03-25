@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom'
 
 // project hooks
 import { useAuth } from '../context/auth'
+import useOutsideListener from '../context/outsideListener'
 
 
 
-const Navigation = () => {
+const Navigation = ({ children }) => {
 
   const { authTokens, setAuthTokens } = useAuth()
   // hide or show nav when clicking the burger menu button
@@ -50,12 +51,14 @@ const Navigation = () => {
     history.push('/')
   }
 
+  const navRef = useRef(null)
+  useOutsideListener(navRef, () => { setShowNav(false) })
+
   return (
     <>
-      <nav className='flex items-center justify-between flex-wrap bg-pink-500 p-6 select-none'>
+      <nav ref={navRef} className='flex items-center justify-between flex-wrap bg-pink-500 p-6 select-none'>
         {/* Page Logo */}
         <Link className='flex items-center flex-shrink-0 text-white mr-6' to='/'>
-          {/* <svg className='fill-current h-8 w-8 mr-2' width='54' height='54' viewBox='0 0 54 54' xmlns='http://www.w3.org/2000/svg'><path d='M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z' /></svg> */}
           <span className='font-bold text-xl tracking-tight'>MyTvList</span>
         </Link>
         {/* Small Screen Width Hamburger Menu Button */}
@@ -85,6 +88,7 @@ const Navigation = () => {
           </div>
         </div>
       </nav>
+      {children}
     </>
   )
 }

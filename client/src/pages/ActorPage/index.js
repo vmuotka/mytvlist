@@ -56,6 +56,7 @@ const ActorPage = () => {
                 &nbsp; {actor.place_of_birth && `(${actor.place_of_birth})`}
               </span>
               {actor.deathday && <>
+                <br />
                 <span className='text-gray-700 text-semibold'>Died: </span>
                 <span className='text-gray-600'>{new Date(Date.parse(actor.deathday)).toLocaleDateString("en-GB", { month: 'long', day: 'numeric', year: 'numeric' })}</span>
               </>
