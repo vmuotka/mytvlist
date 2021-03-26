@@ -8,6 +8,7 @@ import userService from '../../services/userService'
 import { useAuth } from '../../context/auth'
 
 import Spinner from '../../components/Spinner'
+import ActivityFeed from '../../components/ActivityFeed'
 
 const Activity = () => {
   const { authTokens } = useAuth()
@@ -16,10 +17,8 @@ const Activity = () => {
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     if (authTokens) {
-      console.log(authTokens)
       userService.getActivities(authTokens)
         .then(data => {
-          console.log(data)
           setActivities(data.activities)
           setFollowing(data.following)
           setLoading(false)
@@ -32,15 +31,7 @@ const Activity = () => {
         <div className='flex flex-col-reverse md:flex-row'>
           <div className='md:w-4/5'>
             <h2 className='text-xl text-gray-700 text-semibold'>Activity Feed</h2>
-            <div className='mx-4 divide-y'>
-              {
-                activities.map(activity =>
-                  <p key={activity.id} className='text-gray-600 py-1 italic'>
-                    <Link className='font-semibold text-pink-500 not-italic' to={`/user/${activity.user.username}`}>{activity.user.username}</Link> {activity.desc}
-                  </p>
-                )
-              }
-            </div>
+            <ActivityFeed activities={activities} />
           </div>
           {following.length > 0 && <div>
             <h2 className='text-xl text-gray-700 text-semibold'>Following ({following.length})</h2>

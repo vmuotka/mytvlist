@@ -17,7 +17,8 @@ const ProfileNavigation = ({ active, onClick }) => {
   const navs = [
     'TvList',
     'Statistics',
-    'Progress'
+    'Progress',
+    'Activity'
   ]
 
   const handleFollow = () => {
@@ -27,8 +28,6 @@ const ProfileNavigation = ({ active, onClick }) => {
       followed: !profile.followed
     })
   }
-
-  console.log(profile)
 
   const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
   const myProfile = decodedToken ? decodedToken.id === profile.id : false

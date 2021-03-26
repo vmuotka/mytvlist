@@ -124,6 +124,8 @@ usersRouter.post('/profile', async (req, res) => {
       profile.followed = true
   }
 
+  profile.activity = await Activity.find({ user: profile.id })
+
   let tvlistArr
   if (decodedToken !== undefined)
     tvlistArr = await Tvlist.find({ user: decodedToken.id, listed: true })
@@ -214,7 +216,7 @@ usersRouter.post('/progress', async (req, res) => {
 
     handleActivity({
       tv_id: body.tv_id,
-      desc: `updated their progress on ${show.name}: Season ${progress[progress.length - 1].season}, Episode ${progress[progress.length - 1].episode}.`,
+      desc: `watched ${show.name}: Season ${progress[progress.length - 1].season + 1} Episode ${progress[progress.length - 1].episode}.`,
       user: decodedToken.id
     })
 
