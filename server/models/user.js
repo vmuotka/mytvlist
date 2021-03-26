@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: []
   },
+  tvlist: [{
+    user: { type: Schema.Types.ObjectId, ref: 'Tvlist' },
+  }]
 }, {
   timestamps: true,
 })

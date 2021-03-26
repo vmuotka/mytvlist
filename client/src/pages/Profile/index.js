@@ -10,6 +10,7 @@ import TvList from './TvList'
 import Progress from './Progress'
 import Statistics from './Statistics/'
 import Activity from './Activity'
+import Following from './Following'
 import Spinner from '../../components/Spinner'
 
 // project hooks
@@ -62,6 +63,7 @@ const Profile = () => {
                 {profileNav === 'Statistics' && <Statistics />}
                 {profileNav === 'Progress' && <Progress />}
                 {profileNav === 'Activity' && <Activity />}
+                {profileNav === 'Following' && <Following />}
               </>
               : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
           }

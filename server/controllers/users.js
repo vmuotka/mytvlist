@@ -126,6 +126,19 @@ usersRouter.post('/profile', async (req, res) => {
 
   profile.activity = await Activity.find({ user: profile.id })
 
+  profile.activity.sort((a, b) => {
+    return b.updatedAt - a.updatedAt
+  })
+
+  profile.following = await User.find({ _id: profile.following })
+
+  profile.following = users = JSON.parse(JSON.stringify(profile.following))
+
+  profile.following.forEach(async (user) => {
+    user.tvlist = await Tvlist.find({ user: user.id })
+    user.show_count = user.tvlist.length
+  })
+
   let tvlistArr
   if (decodedToken !== undefined)
     tvlistArr = await Tvlist.find({ user: decodedToken.id, listed: true })

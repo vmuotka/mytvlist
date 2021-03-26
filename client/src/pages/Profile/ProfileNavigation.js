@@ -18,7 +18,8 @@ const ProfileNavigation = ({ active, onClick }) => {
     'TvList',
     'Statistics',
     'Progress',
-    'Activity'
+    'Activity',
+    'Following'
   ]
 
   const handleFollow = () => {
@@ -42,7 +43,7 @@ const ProfileNavigation = ({ active, onClick }) => {
         <div className='w-full flex-grow md:flex md:items-center md:w-auto'>
           <div className='text-md md:flex-grow'>
             {navs.map(nav =>
-              <button key={nav} onClick={onClick(nav)} className={`${active === nav ? 'text-white' : 'text-indigo-200'} font-semibold hover:text-indigo-300 mr-4 focus:outline-none`}>{nav}</button>
+              <button key={nav} onClick={onClick(nav)} className={`${active === nav ? 'text-white' : 'text-indigo-200'} font-semibold hover:text-white mr-4 focus:outline-none`}>{nav}</button>
             )}
           </div>
         </div>
