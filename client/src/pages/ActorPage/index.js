@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 // project components
 import Spinner from '../../components/Spinner'
 import searchService from '../../services/searchService'
-import tvlistService from '../../services/tvlistService'
 import { useNotification } from '../../context/notification'
 import Button from '../../components/Button'
 import { Table, Thead, Th, Tbody, Tr } from '../../components/Table'
@@ -27,7 +26,7 @@ const ActorPage = () => {
       .catch(err => {
         setNotifications([{ title: 'Couln\'t find the actor', type: 'error' }])
       })
-  }, [id])
+  }, [id, setNotifications])
 
 
   return (

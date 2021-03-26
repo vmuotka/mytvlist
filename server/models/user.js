@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     uniqueCaseInsensitive: true,
     required: [true, 'Email required']
+  },
+  following: {
+    type: Array,
+    default: []
   }
 }, {
   timestamps: true,

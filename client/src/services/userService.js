@@ -65,4 +65,14 @@ const discoverScroll = async (startIndex, endIndex, tokenObj) => {
   return res.data
 }
 
-export default { login, register, profile, progress, search, discover, discoverScroll }
+const followUser = async (idToFollow, follow, tokenObj) => {
+  let config = {}
+  const token = `bearer ${tokenObj.token}`
+  config = {
+    headers: { Authorization: token }
+  }
+  const res = await axios.post(`${baseUrl}/follow`, { idToFollow, follow }, config)
+  return res.data
+}
+
+export default { login, register, profile, progress, search, discover, discoverScroll, followUser }

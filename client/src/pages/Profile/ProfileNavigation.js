@@ -2,14 +2,36 @@ import React from 'react'
 
 // project hooks
 import { useProfile } from '../../context/profile'
+import { useAuth } from '../../context/auth'
+
+// project components
+import Button from '../../components/Button'
+import Heart from '../../components/icons/Heart'
+
+// project services
+import userService from '../../services/userService'
 
 const ProfileNavigation = ({ active, onClick }) => {
-  const { profile } = useProfile()
+  const { profile, setProfile } = useProfile()
+  const { authTokens } = useAuth()
   const navs = [
     'TvList',
     'Statistics',
     'Progress'
   ]
+
+  const handleFollow = () => {
+    userService.followUser(profile.id, !profile.followed, authTokens)
+    setProfile({
+      ...profile,
+      followed: !profile.followed
+    })
+  }
+
+  console.log(profile)
+
+  const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
+  const myProfile = decodedToken ? decodedToken.id === profile.id : false
   return (
     <>
       <nav className='flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-700 to-indigo-500 rounded-sm shadow-lg p-4 select-none mb-2'>
@@ -25,6 +47,12 @@ const ProfileNavigation = ({ active, onClick }) => {
             )}
           </div>
         </div>
+        {!myProfile && <Button
+          onClick={handleFollow}
+          value={profile.followed ? 'Unfollow' : 'Follow'}
+          icon={<Heart filled={profile.followed} className='h-4 w-4 inline' />}
+          className='py-1 px-2 mt-2 md:mt-0'
+        />}
       </nav>
     </>
   )

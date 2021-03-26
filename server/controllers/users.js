@@ -99,7 +99,6 @@ usersRouter.post('/profile', async (req, res) => {
   if (!user)
     return res.status(404).json({ error: 'User not found' })
 
-
   let profile = JSON.parse(JSON.stringify(user))
   profile.email = undefined
 
@@ -114,6 +113,13 @@ usersRouter.post('/profile', async (req, res) => {
   let decodedToken
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  profile.followed = false
+  if (decodedToken && decodedToken.id !== user.id) {
+    const tokenUser = await User.findOne({ _id: decodedToken.id })
+    if (tokenUser.following && tokenUser.following.includes(user.id))
+      profile.followed = true
+  }
 
   let tvlistArr
   if (decodedToken !== undefined)
@@ -255,6 +261,27 @@ usersRouter.post('/discover/scroll', async (req, res) => {
   const recommendationList = await getRecommendations(body.startIndex, body.endIndex, decodedToken)
   return res.status(200).json({ recommendationList })
 })
+
+usersRouter.post('/follow', async (req, res) => {
+  const decodedToken = decodeToken(req.token)
+
+  const body = req.body
+
+  let user = await User.findOne({ _id: decodedToken.id })
+
+  if (body.follow)
+    user.following.push(body.idToFollow)
+  else
+    user.following = user.following.filter(id => body.idToFollow !== id)
+
+  user.save()
+
+  return res.status(200).json(user)
+})
+
+const decodeToken = (token) => {
+  return jwt.verify(token, process.env.SECRET)
+}
 
 const getRecommendations = async (startIndex, endIndex, decodedToken) => {
   let tvlist = await Tvlist.find({ user: decodedToken.id })
