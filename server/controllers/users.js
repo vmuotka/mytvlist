@@ -199,7 +199,7 @@ usersRouter.post('/progress', async (req, res) => {
         obj.season = show.number_of_seasons - 1
       }
 
-      if (obj.episode > show.seasons[obj.season - 1].episode_count) {
+      if (obj.season < show.seasons.length && obj.episode > show.seasons[obj.season].episode_count) {
         obj.episode = show.seasons[obj.season - 1].episode_count - 1
       }
     } else if (obj.season === 0) {
@@ -236,7 +236,9 @@ usersRouter.post('/progress', async (req, res) => {
     tvlist.progress = progress
     tvlist.watching = body.watching
     tvlist.score = body.score
-    tvlist.save()
+    // console.log('tvlistprogress', tvlist.progress)
+    // console.log('progress', progress)
+    await tvlist.save()
 
   } catch (err) {
     return res.status(503).json({ error: 'Database connection failed' })

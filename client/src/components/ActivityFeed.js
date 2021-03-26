@@ -26,7 +26,7 @@ const ActivityFeed = ({ activities }) => {
   })
   activity_feed.push({
     name: 'earlier',
-    entries: activities.filter(activity => new Date(activity.updatedAt) >= getDate(28) && new Date(activity.updatedAt) < getDate(28))
+    entries: activities.filter(activity => new Date(activity.updatedAt) < getDate(28))
   })
 
   return (

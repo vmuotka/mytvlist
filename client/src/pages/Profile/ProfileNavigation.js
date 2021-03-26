@@ -19,7 +19,8 @@ const ProfileNavigation = ({ active, onClick }) => {
     'Statistics',
     'Progress',
     'Activity',
-    'Following'
+    'Following',
+    'Achievements'
   ]
 
   const handleFollow = () => {

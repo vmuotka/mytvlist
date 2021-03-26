@@ -1,0 +1,61 @@
+{
+  "show_count": {
+    "name": "Collector",
+    "desc": "What fine specimens! (Number of shows on your list)",
+    "tiers": [
+      1,
+      10,
+      50,
+      150,
+      450
+    ]
+  },
+  "hours": {
+    "name": "Watchtastic",
+    "desc": "Who needs a life when you have TV? (Number of hours watched)",
+    "tiers": [
+      10,
+      100,
+      500,
+      1500,
+      4500,
+      9000
+    ]
+  },
+  "completed": {
+    "name": "Completionist",
+    "desc": "Gotta watch them all! (Number of shows completed)",
+    "tiers": [
+      1,
+      5,
+      25,
+      50,
+      150,
+      450,
+      1350
+    ]
+  },
+  "rewatches": {
+    "name": "Rewind Time",
+    "desc": "Ah, that's hot! (Number of rewatches)",
+    "tiers": [
+      1,
+      5,
+      15,
+      50,
+      150,
+      500
+    ]
+  },
+  "following": {
+    "name": "Social Butterfly",
+    "desc": "Woke up with my best friends hat. (Number of users followed)",
+    "tiers": [
+      1,
+      3,
+      9,
+      25,
+      75
+    ]
+  }
+}

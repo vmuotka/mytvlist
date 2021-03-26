@@ -11,6 +11,7 @@ import Progress from './Progress'
 import Statistics from './Statistics/'
 import Activity from './Activity'
 import Following from './Following'
+import Achievements from './Achievements'
 import Spinner from '../../components/Spinner'
 
 // project hooks
@@ -42,7 +43,7 @@ const Profile = () => {
             return 0
           })
         })
-        setProfileNav('TvList')
+        setProfileNav('Achievements')
       }).catch(err => {
         setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
       }
@@ -64,6 +65,7 @@ const Profile = () => {
                 {profileNav === 'Progress' && <Progress />}
                 {profileNav === 'Activity' && <Activity />}
                 {profileNav === 'Following' && <Following />}
+                {profileNav === 'Achievements' && <Achievements />}
               </>
               : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
           }
