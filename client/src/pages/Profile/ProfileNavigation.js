@@ -21,7 +21,7 @@ const ProfileNavigation = ({ active, onClick }) => {
   ]
 
   const handleFollow = () => {
-    userService.followUser(profile.id, !profile.followed, authTokens)
+    userService.followUser({ username: profile.username, id: profile.id }, !profile.followed, authTokens)
     setProfile({
       ...profile,
       followed: !profile.followed
@@ -47,7 +47,7 @@ const ProfileNavigation = ({ active, onClick }) => {
             )}
           </div>
         </div>
-        {!myProfile && <Button
+        {(!myProfile && authTokens) && <Button
           onClick={handleFollow}
           value={profile.followed ? 'Unfollow' : 'Follow'}
           icon={<Heart filled={profile.followed} className='h-4 w-4 inline' />}

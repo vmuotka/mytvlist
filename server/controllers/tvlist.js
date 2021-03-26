@@ -2,8 +2,11 @@ const tvlistRouter = require('express').Router()
 const Tvlist = require('../models/tvlist')
 const jwt = require('jsonwebtoken')
 
+const handleActivity = require('../functions/activities').handleActivity
+
 tvlistRouter.post('/addtolist', async (req, res) => {
   const tv_id = req.body.id
+  const show_name = req.body.show_name
 
   let decodedToken
   if (req.token)
@@ -38,6 +41,10 @@ tvlistRouter.post('/addtolist', async (req, res) => {
           episode: 0
         }
       ]
+    })
+    handleActivity({
+      user: decodedToken.id,
+      desc: `added ${show_name} to their list.`
     })
     try {
       await tvlist.save()

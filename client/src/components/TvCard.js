@@ -38,7 +38,7 @@ const TvCard = ({ show, className }) => {
   // handle adding show to users showlist
   const addToList = async () => {
     try {
-      await tvlistService.addToList({ id: tv_info.id }, authTokens)
+      await tvlistService.addToList({ id: tv_info.id, show_name: tv_info.name }, authTokens)
       setListed(!listed)
     } catch (err) {
       setNotifications([{ title: 'Listing failed', message: 'There was an error while processing request', type: 'error' }])

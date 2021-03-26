@@ -7,6 +7,9 @@ const axiosCache = require('axios-cache-adapter')
 // mongoose models
 const User = require('../models/user')
 const Tvlist = require('../models/tvlist')
+const Activity = require('../models/activity')
+
+const handleActivity = require('../functions/activities').handleActivity
 
 const apiUrl = `https://api.themoviedb.org/3`
 
@@ -192,8 +195,34 @@ usersRouter.post('/progress', async (req, res) => {
     }
 
   })
+
+  if (progress[progress.length - 1].season === show.number_of_seasons && progress[progress.length - 1].episode === show.seasons[show.seasons.length - 1].episode_count) {
+    handleActivity({
+      user: decodedToken.id,
+      desc: `finished ${show.name}`
+    })
+  }
+
   try {
-    await Tvlist.updateOne({ _id: body.id, user: decodedToken.id }, { $set: { progress: body.progress, watching: body.watching, score } })
+    let tvlist = await Tvlist.findOne({ _id: body.id, user: decodedToken.id })
+    if (progress.length > tvlist.progress.length) {
+      handleActivity({
+        desc: `started rewatching ${show.name}.`,
+        user: decodedToken.id
+      })
+    }
+
+    handleActivity({
+      tv_id: body.tv_id,
+      desc: `updated their progress on ${show.name}: Season ${progress[progress.length - 1].season}, Episode ${progress[progress.length - 1].episode}.`,
+      user: decodedToken.id
+    })
+
+    tvlist.progress = progress
+    tvlist.watching = body.watching
+    tvlist.score = body.score
+    tvlist.save()
+
   } catch (err) {
     return res.status(503).json({ error: 'Database connection failed' })
   }
@@ -270,14 +299,39 @@ usersRouter.post('/follow', async (req, res) => {
   let user = await User.findOne({ _id: decodedToken.id })
 
   if (body.follow)
-    user.following.push(body.idToFollow)
+    user.following.push(body.userToFollow.id)
   else
-    user.following = user.following.filter(id => body.idToFollow !== id)
+    user.following = user.following.filter(id => body.userToFollow.id !== id)
 
   user.save()
 
+  if (body.follow) {
+    handleActivity({
+      user: decodedToken.id,
+      desc: `started following ${body.userToFollow.username}.`
+    })
+  }
+
   return res.status(200).json(user)
 })
+
+usersRouter.post('/activity', async (req, res) => {
+  const decodedToken = decodeToken(req.token)
+  const user = await User.findOne({ _id: decodedToken.id })
+  const activities = await Activity.find({
+    user: user.following,
+    updatedAt: {
+      $gte: new Date(new Date() - 28 * 60 * 60 * 24 * 1000)
+    }
+  })
+  activities.sort((a, b) => {
+    return b.updatedAt - a.updatedAt
+  })
+  const following = await User.find({ _id: user.following }).select('username')
+  return res.status(200).json({ activities, following })
+})
+
+
 
 const decodeToken = (token) => {
   return jwt.verify(token, process.env.SECRET)

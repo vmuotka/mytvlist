@@ -65,14 +65,24 @@ const discoverScroll = async (startIndex, endIndex, tokenObj) => {
   return res.data
 }
 
-const followUser = async (idToFollow, follow, tokenObj) => {
+const followUser = async (userToFollow, follow, tokenObj) => {
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
     headers: { Authorization: token }
   }
-  const res = await axios.post(`${baseUrl}/follow`, { idToFollow, follow }, config)
+  const res = await axios.post(`${baseUrl}/follow`, { userToFollow, follow }, config)
   return res.data
 }
 
-export default { login, register, profile, progress, search, discover, discoverScroll, followUser }
+const getActivities = async (tokenObj) => {
+  let config = {}
+  const token = `bearer ${tokenObj.token}`
+  config = {
+    headers: { Authorization: token }
+  }
+  const res = await axios.post(`${baseUrl}/activity`, undefined, config)
+  return res.data
+}
+
+export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities }

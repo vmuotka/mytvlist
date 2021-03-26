@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
+const Schema = mongoose.Schema
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -22,10 +23,12 @@ const userSchema = new mongoose.Schema({
   following: {
     type: Array,
     default: []
-  }
+  },
 }, {
   timestamps: true,
 })
+
+userSchema.plugin(require('mongoose-autopopulate'))
 
 userSchema.plugin(uniqueValidator)
 

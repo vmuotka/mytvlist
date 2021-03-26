@@ -46,7 +46,7 @@ const ShowPage = () => {
 
   const addToList = async () => {
     try {
-      await tvlistService.addToList({ id: show.id }, authTokens)
+      await tvlistService.addToList({ id: show.id, show_name: show.name }, authTokens)
       setShow({
         ...show,
         listed: !show.listed
