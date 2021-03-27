@@ -57,8 +57,13 @@ const ProgressExpandedRow = ({ show, expanded }) => {
     const episode = e.target.name === 'episode'
     if (episode)
       progress.episode = value
-    else
+    else {
       progress.season = value
+      if (value >= form.tv_info.seasons.length)
+        progress.episode = form.tv_info.seasons[Math.min(value, form.tv_info.seasons.length - 1)].episode_count
+      else
+        progress.episode = Math.min(form.tv_info.seasons[Math.max(value, 0)].episode_count - 1, progress.episode)
+    }
 
     progress = validateProgress(progress, form.tv_info)
 
