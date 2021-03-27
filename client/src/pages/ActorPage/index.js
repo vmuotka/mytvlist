@@ -19,11 +19,18 @@ const ActorPage = () => {
     searchService.getActorDetails(id)
       .then(res => {
         res.data.tv_credits.cast.sort((a, b) => {
-          return +b.first_air_date.split('-')[0] - +a.first_air_date.split('-')[0]
+          if (a.first_air_date && b.first_air_date)
+            return +b.first_air_date.split('-')[0] - +a.first_air_date.split('-')[0]
+          if (!a.first_air_date && b.first_air_date)
+            return 1
+          if (a.first_air_date && !b.first_air_date)
+            return -1
+          return 0
         })
         setActor(res.data)
       })
       .catch(err => {
+        console.error(err)
         setNotifications([{ title: 'Couln\'t find the actor', type: 'error' }])
       })
   }, [id, setNotifications])
@@ -74,12 +81,12 @@ const ActorPage = () => {
               <Tbody>
                 {
                   actor.tv_credits.cast.map(credits =>
-                    <Tr key={credits.credits_id}>
+                    <Tr key={Math.random()}>
                       <td className='text-gray-700 font-semibold text-left text-md py-1 px-2 text-lg'>
                         <Link to={`/show/${credits.id}`}>{credits.name}</Link>
                         <span className='block font-medium text-gray-600 text-md'>{credits.character} ({credits.episode_count} episodes)</span>
                       </td>
-                      <td className='text-center text-gray-600 text-lg font-semibold'>{credits.first_air_date.split('-')[0]}</td>
+                      <td className='text-center text-gray-600 text-lg font-semibold'>{credits.first_air_date ? credits.first_air_date.split('-')[0] : 'Not found'}</td>
                     </Tr>
                   )
                 }

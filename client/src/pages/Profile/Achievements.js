@@ -35,7 +35,6 @@ const Achievements = () => {
   achievements.completed.value = stats.completed
   achievements.rewatches.value = stats.rewatches
   achievements.following.value = profile.following.length
-  console.log(Object.entries(achievements))
   return (
     <div className='mx-4 flex flex-col gap-4'>
       {

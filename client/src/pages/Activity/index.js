@@ -6,6 +6,7 @@ import userService from '../../services/userService'
 
 // project hooks
 import { useAuth } from '../../context/auth'
+import { useNotification } from '../../context/notification'
 
 import Spinner from '../../components/Spinner'
 import ActivityFeed from '../../components/ActivityFeed'
@@ -15,6 +16,7 @@ const Activity = () => {
   const [activities, setActivities] = useState([])
   const [following, setFollowing] = useState([])
   const [loading, setLoading] = useState(true)
+  const { setNotifications } = useNotification()
   useEffect(() => {
     if (authTokens) {
       userService.getActivities(authTokens)
@@ -23,8 +25,12 @@ const Activity = () => {
           setFollowing(data.following)
           setLoading(false)
         })
+        .catch(err => {
+          setNotifications([{ title: 'There was an error', message: 'Try again later', type: 'error' }])
+          setLoading(false)
+        })
     }
-  }, [authTokens])
+  }, [authTokens, setNotifications])
   return (
     <div className='w-full md:w-4/5 mx-auto mt-3'>
       {loading ? <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} /> :

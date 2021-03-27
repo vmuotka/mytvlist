@@ -236,8 +236,6 @@ usersRouter.post('/progress', async (req, res) => {
     tvlist.progress = progress
     tvlist.watching = body.watching
     tvlist.score = body.score
-    // console.log('tvlistprogress', tvlist.progress)
-    // console.log('progress', progress)
     await tvlist.save()
 
   } catch (err) {
