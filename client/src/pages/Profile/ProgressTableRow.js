@@ -9,6 +9,7 @@ import ProgressExpandedRow from './ProgressExpandedRow'
 
 // project services
 import userService from '../../services/userService'
+import { validateProgress } from '../../utils/progress-validation'
 
 // project hooks
 import { useAuth } from '../../context/auth'
@@ -33,13 +34,13 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
 
   const handleProgress = async () => {
     if (progress.season !== show.tv_info.number_of_seasons && progress.episode !== show.tv_info.seasons[progress.season].episode_count) {
-      const progg = {
-        season: progress.episode + 1 < show.tv_info.seasons[progress.season].episode_count ? progress.season : progress.season + 1,
-        episode: progress.episode + 1 < show.tv_info.seasons[progress.season].episode_count ? progress.episode + 1 : progress.season + 1 < show.tv_info.seasons.length ? 0 : show.tv_info.seasons[progress.season].episode_count
-      }
+      let progressCopy = { ...progress }
+      progressCopy.episode += 1
+      progressCopy = validateProgress(progressCopy, show.tv_info)
       let showCopy = { ...show }
-      showCopy.progress[showCopy.progress.length - 1] = progg
-      setProgress(progg)
+      showCopy.progress[showCopy.progress.length - 1] = progressCopy
+
+      setProgress(progressCopy)
       setProfile({
         ...profile,
         tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
@@ -51,6 +52,7 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
       }
     }
   }
+
   return (
     <>
       <Tr className='text-sm sm:text-lg md:text-xl table-row'>

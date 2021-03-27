@@ -5,9 +5,11 @@ import InputField from '../../components/InputField'
 import Select from '../../components/Select'
 import { Tr, Td } from '../../components/Table'
 import Button from '../../components/Button'
+import Dots from '../../components/icons/Dots'
 
 // project services
 import userService from '../../services/userService'
+import { validateProgress } from '../../utils/progress-validation'
 
 // project hooks
 import { useAuth } from '../../context/auth'
@@ -21,13 +23,18 @@ const ProgressExpandedRow = ({ show, expanded }) => {
   const { setNotifications } = useNotification()
 
   const [form, setForm] = useState(show)
+  const [saving, setSaving] = useState(false)
 
   const handleSave = () => {
+    setSaving(true)
     setProfile({
       ...profile,
       tvlist: profile.tvlist.map(item => item.tv_id === form.tv_id ? form : item)
     })
     userService.progress(form, authTokens)
+      .then(response => {
+        setSaving(false)
+      })
       .catch(err => {
         setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
       })
@@ -44,37 +51,16 @@ const ProgressExpandedRow = ({ show, expanded }) => {
 
   const handleModalChange = e => {
     let [progress] = form.progress.slice(-1)
-    let value = +e.target.value < 0 ? 0 : +e.target.value
+    const value = +e.target.value
     progress[e.target.name] = value
 
     const episode = e.target.name === 'episode'
+    if (episode)
+      progress.episode = value
+    else
+      progress.season = value
 
-    if (episode && form.tv_info.seasons.length === progress.season && form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count < value)
-      progress.episode = form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count
-
-    // when episode count is lowered from the max in the final season
-    if (episode && value < form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count && form.progress[form.progress.length - 1].season === form.tv_info.seasons.length) {
-      progress.season = form.tv_info.seasons.length - 1
-    }
-    // when season counter fills the season count
-    if (!episode && value === form.tv_info.seasons.length)
-      progress.episode = form.tv_info.seasons[form.tv_info.seasons.length - 1].episode_count
-
-    if (episode && progress.season < form.tv_info.seasons.length) {
-      if (progress.episode >= form.tv_info.seasons[progress.season === form.tv_info.seasons.length ? progress.season - 1 : progress.season].episode_count) {
-        progress.season += 1
-        if (progress.season !== form.tv_info.seasons.length)
-          progress.episode = 0
-      }
-    }
-
-    // episode count is not allowed to be season max other than in the final season when the show is completed
-    if (e.target.name === 'season' && progress.episode >= form.tv_info.seasons[value < form.tv_info.seasons.length ? value : value - 1].episode_count && progress.season !== form.tv_info.seasons.length) {
-      progress.episode = form.tv_info.seasons[progress.season].episode_count - 1
-    }
-
-    // let progressCopy = [...form.progress]
-    // progressCopy[progressCopy.length - 1] = progress
+    progress = validateProgress(progress, form.tv_info)
 
     setForm({
       ...form,
@@ -111,7 +97,7 @@ const ProgressExpandedRow = ({ show, expanded }) => {
         <Td className='flex flex-row flex-grow-0 gap-1'>
           <Button
             className='px-3 py-1 self-center'
-            value='Save'
+            value={!saving ? 'Save' : <Dots className='h-6' />}
             onClick={handleSave}
           />
           <Button
@@ -152,8 +138,6 @@ const ProgressExpandedRow = ({ show, expanded }) => {
         <Td>
           <InputField
             onChange={handleModalChange}
-            // max={form.tv_info.seasons[form.progress[form.progress.length - 1].season !== form.tv_info.seasons.length ? form.progress[show.progress.length - 1].season : form.tv_info.seasons.length - 1].episode_count}
-
             type='number'
             name='episode'
             size={3}

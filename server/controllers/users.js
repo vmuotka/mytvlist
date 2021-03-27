@@ -10,6 +10,7 @@ const Tvlist = require('../models/tvlist')
 const Activity = require('../models/activity')
 
 const handleActivity = require('../functions/activities').handleActivity
+const validateProgress = require('../utils/progress-validation').validateProgress
 
 const apiUrl = `https://api.themoviedb.org/3`
 
@@ -190,25 +191,7 @@ usersRouter.post('/progress', async (req, res) => {
   show.seasons = show.seasons.filter(season => season.name !== 'Specials')
 
   progress.forEach(obj => {
-    if (obj.episode < 0) {
-      obj.episode = 0
-    }
-    if (obj.season <= show.seasons.length && obj.season > 0) {
-      // there might be a new season
-      if (obj.season === show.seasons.length && obj.episode !== show.seasons[show.seasons.length - 1].episode_count) {
-        obj.season = show.number_of_seasons - 1
-      }
-
-      if (obj.season < show.seasons.length && obj.episode > show.seasons[obj.season].episode_count) {
-        obj.episode = show.seasons[obj.season - 1].episode_count - 1
-      }
-    } else if (obj.season === 0) {
-      if (obj.episode > show.seasons[0].episode_count)
-        obj.episode = show.seasons[0].episode_count - 1
-    } else {
-      return res.status(400).json({ error: 'Invalid progress given.' })
-    }
-
+    obj = validateProgress(obj, show)
   })
 
   if (progress[progress.length - 1].season === show.number_of_seasons && progress[progress.length - 1].episode === show.seasons[show.seasons.length - 1].episode_count) {
@@ -290,7 +273,7 @@ usersRouter.post('/discover', async (req, res) => {
   const discoverIdArr = discover.data.results.map(show => show.id)
   discover = await getDetails(discoverIdArr, decodedToken)
 
-  const recommendationList = await getRecommendations(0, 4, decodedToken)
+  const recommendationList = await getRecommendations(0, 6, decodedToken)
 
   return res.status(200).json({ discover, recommendationList })
 })
@@ -302,7 +285,7 @@ usersRouter.post('/discover/scroll', async (req, res) => {
 
   const body = req.body
 
-  const recommendationList = await getRecommendations(body.startIndex, body.endIndex, decodedToken)
+  const recommendationList = await getRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
   return res.status(200).json({ recommendationList })
 })
 
@@ -377,14 +360,16 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
 
       let recommendationDetails = []
       for (let i = 0; i < recommendations.length; i++) {
-        let obj = {}
-        const idArr = recommendations[i].map(show => show.id)
-        // get the name of the show that the recommendations are for
-        const tempArr = [tvlist[i].tv_id]
-        const show = await getDetails(tempArr, decodedToken)
-        obj.name = show[0].tv_info.name
-        obj.recommendations = await getDetails(idArr, decodedToken)
-        recommendationDetails.push(obj)
+        if (recommendations[i].length > 0) {
+          let obj = {}
+          const idArr = recommendations[i].map(show => show.id)
+          // get the name of the show that the recommendations are for
+          const tempArr = [tvlist[i].tv_id]
+          const show = await getDetails(tempArr, decodedToken)
+          obj.name = show[0].tv_info.name
+          obj.recommendations = await getDetails(idArr, decodedToken)
+          recommendationDetails.push(obj)
+        }
       }
       return recommendationDetails
     }))
