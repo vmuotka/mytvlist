@@ -344,7 +344,8 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
       return 1
     if (!b.score)
       return -1
-    return b.score - a.score
+    calculateScoreValue(b)
+    return calculateScoreValue(b) - calculateScoreValue(a)
   })
   tvlist = tvlist.slice(startIndex, endIndex)
 
@@ -373,6 +374,23 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
       }
       return recommendationDetails
     }))
+}
+
+const calculateScoreValue = (show) => {
+  let last_watched_modifier = 1
+  const modified_days_ago = Math.floor((new Date() - new Date(show.updatedAt)) / (24 * 60 * 60 * 1000))
+  if (modified_days_ago <= 7)
+    last_watched_modifier = 1
+  else if (modified_days_ago <= 14)
+    last_wathed_modifier = 0.95
+  else if (modified_days_ago <= 21)
+    last_watched_modifier = 0.9
+  else if (modified_days_ago <= 28)
+    last_watched_modifier = 0.85
+  else
+    last_watched_modifier = 0.8
+
+  return last_watched_modifier * show.score
 }
 
 const getDetails = async (showlist, decodedToken) => {

@@ -108,7 +108,7 @@ const Discover = () => {
           <h2 className='text-gray-700 text-xl'>Popular in the last 6 months</h2>
           <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
             {
-              discover.discover.slice(0, 4).map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
+              discover.discover.slice(0, 6).map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
             }
           </div>
           <div className='flex justify-end'>
