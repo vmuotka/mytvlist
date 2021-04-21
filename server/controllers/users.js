@@ -361,16 +361,16 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
 
       let recommendationDetails = []
       for (let i = 0; i < recommendations.length; i++) {
-        if (recommendations[i].length > 0) {
-          let obj = {}
-          const idArr = recommendations[i].map(show => show.id)
-          // get the name of the show that the recommendations are for
-          const tempArr = [tvlist[i].tv_id]
-          const show = await getDetails(tempArr, decodedToken)
-          obj.name = show[0].tv_info.name
-          obj.recommendations = await getDetails(idArr, decodedToken)
-          recommendationDetails.push(obj)
-        }
+        // if (recommendations[i].length > 0) {
+        let obj = {}
+        const idArr = recommendations[i].map(show => show.id)
+        // get the name of the show that the recommendations are for
+        const tempArr = [tvlist[i].tv_id]
+        const show = await getDetails(tempArr, decodedToken)
+        obj.name = show[0].tv_info.name
+        obj.recommendations = await getDetails(idArr, decodedToken)
+        recommendationDetails.push(obj)
+        // }
       }
       return recommendationDetails
     }))

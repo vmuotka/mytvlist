@@ -117,7 +117,7 @@ const Discover = () => {
         </>
       }
       {!subpage && discover &&
-        discover.recommendationList.map(obj =>
+        discover.recommendationList.filter(obj => obj.recommendations.length > 0).map(obj =>
           <div className='mt-10' key={obj.name}>
             <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
             <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>

@@ -5,6 +5,7 @@ import { Table, Thead, Tbody, Th } from '../../components/Table'
 import ProgressTableRow from './ProgressTableRow'
 import Checkbox from '../../components/Checkbox/'
 import Button from '../../components/Button'
+import Pagination from '../../components/Pagination'
 
 // project services
 import userService from '../../services/userService'
@@ -20,6 +21,8 @@ const ProgressTable = ({ list, handleModal, id }) => {
   const [selected, setSelected] = useState([])
   const { authTokens } = useAuth()
   const { setNotifications } = useNotification()
+  const [currentPage, setCurrentPage] = useState(1)
+  const showsPerPage = 10
 
   const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
   const myProfile = decodedToken ? decodedToken.id === profile.id : false
@@ -88,7 +91,6 @@ const ProgressTable = ({ list, handleModal, id }) => {
     })
   }
 
-
   return (
     <>
       {
@@ -116,13 +118,15 @@ const ProgressTable = ({ list, handleModal, id }) => {
                 </tr>
               </Thead>
               <Tbody>
-                {list.array.map((show) =>
+                {list.array.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show) =>
                   <ProgressTableRow editMode={editMode} handleSelect={handleSelect} handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
                 )}
               </Tbody>
             </Table>
-
           </div>
+          {Math.floor(list.array.length / showsPerPage) >= 1 &&
+            <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(list.array.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
+          }
         </div>
       }
     </>
