@@ -150,7 +150,7 @@ usersRouter.post('/profile', async (req, res) => {
     .then(axios.spread((...responses) => {
       profile.tvlist.forEach((listItem, index) => {
         let show = responses[index].data
-        show.seasons = show.seasons.filter(season => season.name !== 'Specials')
+        show.seasons = show.seasons.filter(season => season.name !== 'Specials' && season.episode_count > 0)
 
         if (tvlistArr) {
           if (tvlistArr.filter(item => item.tv_id === show.id).length > 0) {
@@ -212,7 +212,7 @@ usersRouter.post('/progress', async (req, res) => {
 
     handleActivity({
       tv_id: body.tv_id,
-      desc: `watched ${show.name}: Season ${progress[progress.length - 1].season + 1} Episode ${progress[progress.length - 1].episode}.`,
+      desc: `watched ${show.name}: Season ${Math.min(progress[progress.length - 1].season + 1, show.number_of_seasons)} Episode ${progress[progress.length - 1].episode}.`,
       user: decodedToken.id
     })
 
