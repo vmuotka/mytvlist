@@ -1,5 +1,6 @@
 module.exports.validateProgress = (progress, show) => {
   progress.season = Math.max(progress.season, 0)
+  show.seasons = show.seasons.filter(season => season.name !== 'Specials' && season.episode_count > 0)
 
   const season_index = Math.min(show.seasons.length - 1, Math.max(progress.season, 0))
   const season_count = show.seasons.length
