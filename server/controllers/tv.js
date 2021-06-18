@@ -35,6 +35,8 @@ tvRouter.post('/search', async (req, res) => {
     tvlistArr = await Tvlist.find({ user: decodedToken.id })
   }
 
+
+
   const requests = response.data.results.map(result => api(`${baseUrl}/tv/${result.id}?api_key=${process.env.MOVIEDB_API}`))
 
   const results = await axios.all(requests)
@@ -46,12 +48,15 @@ tvRouter.post('/search', async (req, res) => {
         show.tv_info.seasons = show.tv_info.seasons.filter(season => season.name !== 'Specials')
 
         if (tvlistArr && decodedToken) {
-          if (tvlistArr.filter(item => item.tv_id === show.tv_id).length > 0) {
+          if (tvlistArr.filter(item => item.tv_id === show.tv_info.id).length > 0) {
+            console.log('something foubnd')
             show.listed = tvlistArr.filter(item => item.tv_id === show.tv_info.id)[0].listed
           }
         } else {
           show.listed = false
         }
+
+        console.log(show)
 
         results.push(show)
       })
