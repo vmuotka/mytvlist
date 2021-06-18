@@ -21,7 +21,7 @@ export const validateProgress = (progress, show) => {
   }
 
   progress.season = Math.min(progress.season, season_count)
-  progress.episode = Math.min(progress.episode, show.seasons[Math.max(progress.season - 1, 0)].episode_count)
+  progress.episode = Math.min(progress.episode, show.seasons[Math.max(progress.season, 0)].episode_count)
   progress.episode = Math.max(progress.episode, 0)
   return progress
 }

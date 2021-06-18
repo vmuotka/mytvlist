@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import disableScroll from 'disable-scroll'
 
 // project components
 import ProgressTable from './ProgressTable'
-import ProgressModal from './ProgressModal'
 import Spinner from '../../components/Spinner/'
 import Button from '../../components/Button'
 
@@ -15,10 +13,6 @@ import { useProfile } from '../../context/profile'
 const Progress = () => {
 
   const { profile, setProfile } = useProfile()
-  const [modal, setModal] = useState({
-    hidden: true, progress: { season: 0, episode: 0 }, show: undefined
-  })
-
 
   const [tvlist, setTvlist] = useState(undefined)
 
@@ -53,25 +47,6 @@ const Progress = () => {
     }
   }, [setTvlist, profile.tvlist])
 
-  const handleModal = (show) => e => {
-    if (show === undefined) {
-      setModal({
-        ...modal,
-        hidden: !modal.hidden
-      })
-    } else {
-      setModal({
-        hidden: !modal.hidden,
-        show,
-        progress: show.progress[show.progress.length - 1]
-      })
-    }
-    if (modal.hidden)
-      disableScroll.on()
-    else
-      disableScroll.off()
-  }
-
   return (
     <div className='flex mx-4'>
       <div className=' hidden md:block md:w-1/5'>
@@ -93,14 +68,10 @@ const Progress = () => {
         {
           tvlist ?
             tvlist.map((list) =>
-              <ProgressTable id={list.name} key={list.name} list={list} profile={profile} setProfile={setProfile} handleModal={handleModal} />
+              <ProgressTable id={list.name} key={list.name} list={list} profile={profile} setProfile={setProfile} />
             ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
         }
         {(tvlist && tvlist[0].array.length === 0 && tvlist[1].array.length === 0 && tvlist[2].array.length === 0 && tvlist[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
-        {
-          modal.show &&
-          <ProgressModal modal={modal} handleModal={handleModal} profile={profile} setProfile={setProfile} setModal={setModal} />
-        }
       </div>
     </div>
   )

@@ -15,7 +15,7 @@ import { useAuth } from '../../context/auth'
 import { useProfile } from '../../context/profile'
 import { useNotification } from '../../context/notification'
 
-const ProgressTable = ({ list, handleModal, id }) => {
+const ProgressTable = ({ list, id }) => {
   const { profile, setProfile } = useProfile()
   const [editMode, setEditmode] = useState(false)
   const [selected, setSelected] = useState([])
@@ -119,7 +119,7 @@ const ProgressTable = ({ list, handleModal, id }) => {
               </Thead>
               <Tbody>
                 {list.array.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show) =>
-                  <ProgressTableRow editMode={editMode} handleSelect={handleSelect} handleModal={handleModal} key={show.id} show={show} profile={profile} setProfile={setProfile} />
+                  <ProgressTableRow editMode={editMode} handleSelect={handleSelect} key={show.id} show={show} profile={profile} setProfile={setProfile} />
                 )}
               </Tbody>
             </Table>
