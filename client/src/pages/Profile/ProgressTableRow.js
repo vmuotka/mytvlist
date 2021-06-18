@@ -79,12 +79,29 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
           {progress.season}/{show.tv_info.seasons.length}
         </Td>
         <Td className='md:w-2/12'>
-          {(myProfile && show.tv_info.seasons.length !== progress.season && show.watching) ?
-            <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
-              {progress.episode}/{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}
-            </button>
+          {myProfile ?
+            <>
+              {show.tv_info.seasons.length !== progress.season ?
+                <>
+                  {show.watching ?
+                    <button className='px-2 py-1 bg-pink-500 text-white rounded text-base hover:bg-pink-400' onClick={handleProgress} title='Increase episode progression'>
+                      {progress.episode}/{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}
+                    </button>
+                    :
+                    <>{progress.episode}/{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}</>
+                  }
+                </>
+                :
+                <>{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}</>
+              }
+            </>
             :
-            <>{progress.episode}/{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}
+            <>
+              {show.tv_info.seasons.length !== progress.season ?
+                <>{progress.episode}/{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}</>
+                :
+                <>{show.tv_info.seasons[Math.min(progress.season, show.tv_info.seasons.length - 1)].episode_count}</>
+              }
             </>
           }
         </Td>
