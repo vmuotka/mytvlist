@@ -4,17 +4,21 @@ import React, { useState, useEffect } from 'react'
 import ProgressTable from './ProgressTable'
 import Spinner from '../../components/Spinner/'
 import Button from '../../components/Button'
+import InputField from '../../components/InputField'
 
 import './ProgressTableRow.css'
 
 // project hooks
 import { useProfile } from '../../context/profile'
+import { array } from 'prop-types'
 
 const Progress = () => {
 
   const { profile, setProfile } = useProfile()
 
   const [tvlist, setTvlist] = useState(undefined)
+  const [filteredList, setFilteredList] = useState(undefined)
+  const [filter, setFilter] = useState('')
 
   useEffect(() => {
     if (profile.tvlist) {
@@ -47,12 +51,22 @@ const Progress = () => {
     }
   }, [setTvlist, profile.tvlist])
 
+  useEffect(() => {
+    if (tvlist) {
+      let tvlistCopy = JSON.parse(JSON.stringify(tvlist))
+      for (let i = 0; i < tvlistCopy.length; i++) {
+        tvlistCopy[i].array = tvlistCopy[i].array.filter(item => item.tv_info.name.toLowerCase().includes(filter.toLocaleLowerCase()))          
+      }
+      setFilteredList(tvlistCopy)
+    }
+  }, [filter, tvlist, setFilteredList])
+
   return (
     <div className='flex mx-4'>
       <div className=' hidden md:block md:w-1/5'>
         <ul className='sticky mx-4' style={{ top: '2rem' }}>
           {
-            tvlist && tvlist.map(list =>
+            filteredList && filteredList.map(list =>
               list.array.length > 0 &&
               <li key={list.name} >
                 <Button
@@ -62,16 +76,17 @@ const Progress = () => {
               </li>
             )
           }
+          <InputField className='w-full text-sm' value={filter} onChange={(e) => setFilter(e.target.value)} label='Filter' />
         </ul>
       </div>
       <div className='w-full md:w-4/5'>
         {
-          tvlist ?
-            tvlist.map((list) =>
+          filteredList ?
+          filteredList.map((list) =>
               <ProgressTable id={list.name} key={list.name} list={list} profile={profile} setProfile={setProfile} />
             ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
         }
-        {(tvlist && tvlist[0].array.length === 0 && tvlist[1].array.length === 0 && tvlist[2].array.length === 0 && tvlist[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
+        {(filteredList && filteredList[0].array.length === 0 && filteredList[1].array.length === 0 && filteredList[2].array.length === 0 && filteredList[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
       </div>
     </div>
   )
