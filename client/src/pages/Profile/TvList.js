@@ -5,9 +5,11 @@ import MultiSelect from 'react-multi-select-component'
 import Select from '../../components/Select'
 import TvCard from '../../components/TvCard'
 import InputField from '../../components/InputField'
+import Checkbox from '../../components/Checkbox'
 
 // project hooks
 import { useProfile } from '../../context/profile'
+import { useAuth } from '../../context/auth'
 
 const TvList = () => {
   const { profile } = useProfile()
@@ -17,6 +19,13 @@ const TvList = () => {
   const [tvlist, setTvlist] = useState([])
   const [filter, setFilter] = useState([])
   const [filterOptions, setFilterOptions] = useState([])
+  const [onlyListed, setOnlyListed] = useState(false)
+
+  
+  const { authTokens } = useAuth()
+  const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
+  const myProfile = decodedToken ? decodedToken.id === profile.id : false
+
   const changeOrderBy = e => {
     setOrderBy(e.target.value)
   }
@@ -43,6 +52,7 @@ const TvList = () => {
       }
       )
 
+
       genres.sort((a, b) => {
         if (a.label < b.label)
           return -1
@@ -58,7 +68,10 @@ const TvList = () => {
     if (profile.tvlist) {
       let tvcopy = [...profile.tvlist]
       tvcopy = JSON.parse(JSON.stringify(tvcopy))
+      if (onlyListed)
+        tvcopy = tvcopy.filter(tv => tv.listed)
       tvcopy = tvcopy.filter(tv => tv.tv_info.name.toLowerCase().includes(filtertext.toLowerCase()))
+
       switch (orderBy) {
         case 'alphabetical':
           tvcopy.sort((a, b) => {
@@ -111,12 +124,12 @@ const TvList = () => {
       }
       setTvlist(arr.length > 0 ? arr : tvcopy)
     }
-  }, [orderBy, filter, profile.tvlist, filtertext])
+  }, [orderBy, filter, profile.tvlist, filtertext, onlyListed])
 
   return (
     <div className='mx-2'>
       <div className='flex flex-row'>
-        <Select onChange={changeOrderBy} className='w-1/2' value={orderBy} options={orderByOptions} label='Sort' />
+        <Select onChange={changeOrderBy} className='w-1/2' value={orderBy} options={orderByOptions} label='Order' />
 
         <div className='w-1/2 px-3'>
           <label id='filter' className='block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-1 select-none'>Filter by genre</label>
@@ -132,6 +145,10 @@ const TvList = () => {
           className='w-full'
           label='Filter by name'
           placeholder='Start writing a name...' />
+      </div>
+
+      <div className='mt-2 px-3'>
+      {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
       </div>
 
 

@@ -10,7 +10,6 @@ import './ProgressTableRow.css'
 
 // project hooks
 import { useProfile } from '../../context/profile'
-import { array } from 'prop-types'
 
 const Progress = () => {
 

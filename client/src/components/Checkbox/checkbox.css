@@ -36,9 +36,6 @@
   width: 1em;
   height: 1em;
 }
-.checkbox__input input:focus + .checkbox__control {
-  box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
-}
 .checkbox__input input:checked + .checkbox__control svg {
   transform: scale(1);
 }
