@@ -61,6 +61,55 @@ usersRouter.post('/register', [
   return res.status(200).send({ token })
 })
 
+usersRouter.post('/save_settings', async (req, res) => {
+  const body = req.body
+  const decodedToken = decodeToken(req.token)
+
+  let messages = []
+
+  let user
+  try {
+    user = await User.findByIdAndUpdate(decodedToken.id, { quote: body.quote })
+  } catch (err) {
+    res.status(503).json({ error: 'Connection to database failed' })
+  }
+
+  if (body.new_password) {
+    let user
+    try {
+      user = await User.findById(decodedToken.id)
+    } catch (err) {
+      return res.status(503).json({ error: 'Database connection failed' })
+    }
+
+    const passwordCorrect = user === null
+      ? false
+      : await bcrypt.compare(body.new_password.old_password, user.passwordHash)
+
+    if (passwordCorrect) {
+      const passwordHash = await bcrypt.hash(body.new_password.value, 10)
+      await User.findByIdAndUpdate(decodedToken.id, { passwordHash: passwordHash })
+      messages.push({ title: 'Password changed', message: '' })
+    } else {
+      messages.push({ title: 'Password change failed', message: 'Old password was wrong', type: 'error' })
+    }
+  }
+  messages.push({ title: 'Settings saved' })
+
+  return res.status(200).json(messages)
+})
+
+usersRouter.post('/get_settings', async (req, res) => {
+  const decodedToken = decodeToken(req.token)
+  let user
+  try {
+    user = await User.findById(decodedToken.id)
+  } catch (err) {
+    res.status(503).json({ error: 'Connection to database failed' })
+  }
+  return res.status(200).json(user)
+})
+
 usersRouter.post('/login', [
   body('username').trim().escape(),
   body('password').trim().escape()

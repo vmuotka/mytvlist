@@ -12,6 +12,7 @@ import LandingPage from './pages/LandingPage'
 import ShowPage from './pages/ShowPage/'
 import ActorPage from './pages/ActorPage'
 import Activity from './pages/Activity'
+import UserSettings from './pages/UserSettings'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -57,6 +58,10 @@ const AppRouter = () => {
       path: '/discover',
       component: Discover
     },
+    {
+      path: '/user_settings',
+      component: UserSettings
+    }
   ]
 
   if (authTokens)

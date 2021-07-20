@@ -26,7 +26,12 @@ const userSchema = new mongoose.Schema({
   },
   tvlist: [{
     user: { type: Schema.Types.ObjectId, ref: 'Tvlist' },
-  }]
+  }],
+  quote: {
+    value: String,
+    character: String,
+    source: String
+  }
 }, {
   timestamps: true,
 })

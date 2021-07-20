@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 // project components
 import { Tr, Td } from '../../components/Table'
@@ -70,7 +71,7 @@ const ProgressTableRow = ({ show, editMode, handleSelect }) => {
               }
             </div>
           }
-          <span className='ml-6'>{show.tv_info.name} {show.progress.length > 1 && `(${show.progress.length - 1}. rewatch)`}</span>
+          <Link to={`/show/${show.tv_info.id}`} className='ml-6'>{show.tv_info.name} {show.progress.length > 1 && `(${show.progress.length - 1}. rewatch)`}</Link>
         </Td>
         <Td className='md:w-1/12'>
           {(show.score && show.score > 0) && show.score}

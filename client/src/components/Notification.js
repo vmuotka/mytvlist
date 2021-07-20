@@ -12,7 +12,7 @@ const Notification = ({ title, message, type, id }) => {
 
   setTimeout(() => {
     removeNotification(id)
-  }, 5 * 1000)
+  }, 10 * 1000)
 
   return (
     <div

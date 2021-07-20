@@ -49,14 +49,11 @@ tvRouter.post('/search', async (req, res) => {
 
         if (tvlistArr && decodedToken) {
           if (tvlistArr.filter(item => item.tv_id === show.tv_info.id).length > 0) {
-            console.log('something foubnd')
             show.listed = tvlistArr.filter(item => item.tv_id === show.tv_info.id)[0].listed
           }
         } else {
           show.listed = false
         }
-
-        console.log(show)
 
         results.push(show)
       })

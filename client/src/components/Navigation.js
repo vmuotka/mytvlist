@@ -5,7 +5,7 @@ import { Link, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import useOutsideListener from '../context/outsideListener'
 
-
+import Cog from './icons/Cog'
 
 const Navigation = ({ children }) => {
 
@@ -77,14 +77,23 @@ const Navigation = ({ children }) => {
               ))
             }
           </div>
-          <div className='border-t md:border-t-0'>
+          <div className='border-t md:border-t-0  mb-4 md:mb-0'>
             {
               authTokens ?
-                <button type='button' onClick={handleSignOut} value='Sign Out' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign Out</button> :
-                <>
+                <div className='flex gap-2 justify-center md:justify-start'>
+                  <Link
+                    to='/user_settings'
+                    className='inline-block focus:outline-none  self-center mt-4 md:mt-0'
+                    title='Settings'
+                  >
+                    <Cog className='h-6 text-white' />
+                  </Link>
+                  <button type='button' onClick={handleSignOut} value='Sign Out' className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0'>Sign Out</button>
+                </div> :
+                <div className='flex gap-2 justify-center md:justify-start'>
                   <Link to={{ pathname: '/signin', state: { referer: location } }} className='inline-block text-xs font-bold px-3 py-2 leading-none rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0 mr-1'>Sign In</Link>
                   <Link to={{ pathname: '/signup', state: { referer: location } }} className='inline-block text-xs font-bold px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-pink-500 hover:bg-white mt-4 md:mt-0  ml-2'>Sign Up</Link>
-                </>
+                </div>
             }
           </div>
         </div>

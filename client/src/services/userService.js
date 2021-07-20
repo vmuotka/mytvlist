@@ -85,4 +85,25 @@ const getActivities = async (tokenObj) => {
   return res.data
 }
 
-export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities }
+const saveSettings = async (settings, tokenObj) => {
+  let config = {}
+  const token = `bearer ${tokenObj.token}`
+  config = {
+    headers: { Authorization: token }
+  }
+  const res = await axios.post(`${baseUrl}/save_settings`, settings, config)
+  return res.data
+}
+
+const getSettings = async (tokenObj) => {
+  let config = {}
+  const token = `bearer ${tokenObj.token}`
+  config = {
+    headers: { Authorization: token }
+  }
+  const res = await axios.post(`${baseUrl}/get_settings`, undefined, config)
+  return res.data
+}
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities, saveSettings, getSettings }
