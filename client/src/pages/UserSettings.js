@@ -88,7 +88,7 @@ const UserSettings = () => {
             const res = await userService.saveSettings(settings, authTokens)
             setNotifications(res)
         } catch (e) {
-            setNotifications({ title: 'There was an error.', message: e.message, type: 'error' })
+            setNotifications({ title: 'There was an error.', type: 'error' })
         }
         setSaving(false)
     }

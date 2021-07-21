@@ -16,7 +16,8 @@
     "react-dom": "^16.13.1",
     "react-multi-select-component": "^3.0.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3"
+    "react-scripts": "4.0.3",
+    "react-textarea-autosize": "^8.3.3"
   },
   "scripts": {
     "start": "npm run watch:css && react-scripts start",

@@ -22,7 +22,7 @@
   transition: transform .2s;
   transform: scale(0);
   transform-origin: bottom left;
-  color: green;
+  color: var(--color);
 }
 .checkbox__input {
   display: grid;

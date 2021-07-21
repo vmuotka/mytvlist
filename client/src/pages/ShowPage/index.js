@@ -9,6 +9,7 @@ import tvlistService from '../../services/tvlistService'
 import Seasons from './Seasons'
 import Select from '../../components/Select'
 import Cast from './Cast'
+import Reviews from './Reviews'
 
 // icons
 import Star from '../../components/icons/Star'
@@ -143,6 +144,8 @@ const ShowPage = () => {
           <Cast cast={show.aggregate_credits.cast} />
 
           <Seasons show={show} />
+
+          <Reviews tv_id={show.id} data={show.reviews} />
         </>
       }
     </div>

@@ -3,6 +3,7 @@ const axios = require('axios')
 const Tvlist = require('../models/tvlist')
 const jwt = require('jsonwebtoken')
 const axiosCache = require('axios-cache-adapter')
+const Review = require('../models/review')
 
 const countries = require('../static/countries.json')
 
@@ -71,8 +72,10 @@ tvRouter.post('/details', async (req, res) => {
   } catch (err) {
     return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
   }
-
   response = response.data
+
+  response.reviews = await Review.find({ tv_id: response.id })
+
   let providers
   try {
     providers = await api(`${baseUrl}/tv/${body.id}/watch/providers?api_key=${process.env.MOVIEDB_API}`)
@@ -116,5 +119,32 @@ tvRouter.get('/actor/:id', async (req, res) => {
       res.status(500).json({ err })
     })
 })
+
+tvRouter.post('/save_review', async (req, res) => {
+  let body = req.body
+  const decodedToken = decodeToken(req.token)
+  body.user = decodedToken.id
+  let messages = []
+
+  const review_in_database = await Review.findOne({ user: body.user })
+  if (review_in_database) {
+    const updated_review = await Review.findOneAndUpdate({ user: body.user }, body)
+    messages.push({ title: 'Review changes saved' })
+  } else {
+    try {
+      const review = new Review(body)
+      await review.save()
+      messages.push({ title: 'Review saved' })
+    } catch (e) {
+      messages.push({ title: 'Saving review failed', type: 'error' })
+      res.status(200).json(messages)
+    }
+  }
+  res.status(200).json(messages)
+})
+
+const decodeToken = (token) => {
+  return jwt.verify(token, process.env.SECRET)
+}
 
 module.exports = tvRouter
