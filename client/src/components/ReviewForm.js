@@ -19,7 +19,7 @@ const ReviewForm = ({ tv_id, review }) => {
     const [isSaving, setIsSaving] = useState(false)
 
     useEffect(() => {
-        if (review.user) {
+        if (review) {
             setRecommend(review.recommended)
             setSpoilers(review.spoilers)
             setReviewContent(review.content)
