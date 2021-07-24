@@ -126,9 +126,9 @@ tvRouter.post('/save_review', async (req, res) => {
   body.user = decodedToken.id
   let messages = []
 
-  const review_in_database = await Review.findOne({ user: body.user })
+  const review_in_database = await Review.findOne({ user: body.user, tv_id: body.tv_id })
   if (review_in_database) {
-    const updated_review = await Review.findOneAndUpdate({ user: body.user }, body)
+    const updated_review = await Review.findOneAndUpdate({ user: body.user, tv_id: body.tv_id }, body)
     messages.push({ title: 'Review changes saved' })
   } else {
     try {
