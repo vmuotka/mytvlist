@@ -187,7 +187,7 @@ usersRouter.post('/profile', async (req, res) => {
   profile.following = users = JSON.parse(JSON.stringify(profile.following))
 
   profile.following.forEach(async (user) => {
-    user.tvlist = await Tvlist.find({ user: user.id })
+    user.tvlist = await Tvlist.find({ user: user.id, listed: true })
     user.show_count = user.tvlist.length
   })
 

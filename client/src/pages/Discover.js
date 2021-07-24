@@ -102,7 +102,7 @@ const Discover = () => {
       {!discover &&
         <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />
       }
-      { (!subpage && discover && discover.discover.length > 0) &&
+      {(!subpage && discover && discover.discover.length > 0) &&
         <>
           <Heading className='text-center'>Discover</Heading>
           <h2 className='text-gray-700 text-xl'>Popular in the last 6 months</h2>
@@ -126,8 +126,9 @@ const Discover = () => {
           </div>
         )
       }
+      {!subpage && discover && <Button className='py-3 w-full mt-3 mb-3' value='Back to top' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />}
       <Spinner className={`mx-auto mt-2 ${isFetching ? 'opacity-100' : 'opacity-0'}`} mt-4 color='bg-pink-500' show={true} />
-      { subpage &&
+      {subpage &&
         <DiscoverPage setSubpage={setSubpage}>
           {discover &&
             discover.discover.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
