@@ -10,7 +10,7 @@ import searchService from '../services/searchService'
 import { useNotification } from '../context/notification'
 import Dots from './icons/Dots'
 
-const ReviewForm = ({ tv_id, review }) => {
+const ReviewForm = ({ tv_id, title, review }) => {
     const { authTokens } = useAuth()
     const [reviewContent, setReviewContent] = useState('')
     const [recommend, setRecommend] = useState(true)
@@ -33,7 +33,8 @@ const ReviewForm = ({ tv_id, review }) => {
             content: reviewContent,
             spoilers,
             recommended: recommend,
-            tv_id
+            tv_id,
+            title
         }
 
         try {

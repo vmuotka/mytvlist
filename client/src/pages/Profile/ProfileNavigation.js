@@ -20,6 +20,7 @@ const ProfileNavigation = ({ active, onClick }) => {
     'Progress',
     'Activity',
     'Following',
+    'Reviews',
     'Achievements'
   ]
 

@@ -13,6 +13,10 @@ const reviewSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     tv_id: {
         type: Number,
         required: true

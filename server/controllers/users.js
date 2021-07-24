@@ -8,6 +8,7 @@ const axiosCache = require('axios-cache-adapter')
 const User = require('../models/user')
 const Tvlist = require('../models/tvlist')
 const Activity = require('../models/activity')
+const Review = require('../models/review')
 
 const handleActivity = require('../functions/activities').handleActivity
 const validateProgress = require('../utils/progress-validation').validateProgress
@@ -175,6 +176,7 @@ usersRouter.post('/profile', async (req, res) => {
   }
 
   profile.activity = await Activity.find({ user: profile.id })
+  profile.reviews = await Review.find({ user: profile.id })
 
   profile.activity.sort((a, b) => {
     return b.updatedAt - a.updatedAt

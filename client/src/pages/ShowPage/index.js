@@ -145,7 +145,7 @@ const ShowPage = () => {
 
           <Seasons show={show} />
 
-          <Reviews tv_id={show.id} data={show.reviews} />
+          <Reviews tv_id={show.id} title={show.name} data={show.reviews} />
         </>
       }
     </div>

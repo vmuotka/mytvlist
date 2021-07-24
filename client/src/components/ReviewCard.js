@@ -19,7 +19,7 @@ const Spoiler = ({ review }) => {
                     </button>
                 </div>
                 :
-                <span className='text-lg text-gray-700'>{review.content}</span>
+                <span className='text-lg text-gray-700 whitespace-pre-line'>{review.content}</span>
             }
         </>
     )
@@ -44,6 +44,7 @@ const ReviewCard = ({ review }) => {
                         <span className='block w-max font-semibold text-lg'>doesn't recommend <ThumbDown className='h-8 inline' /></span>
                     </div>
                 }
+                <Link className='block mt-1 w-max' to={`/show/${review.tv_id}`}>{review.title}</Link>
             </div>
             <div className='p-3'>
                 <Spoiler review={review} />

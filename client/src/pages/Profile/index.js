@@ -11,6 +11,7 @@ import Progress from './Progress'
 import Statistics from './Statistics/'
 import Activity from './Activity'
 import Following from './Following'
+import Reviews from './Reviews'
 import Achievements from './Achievements'
 import Spinner from '../../components/Spinner'
 
@@ -65,6 +66,7 @@ const Profile = () => {
                 {profileNav === 'Progress' && <Progress />}
                 {profileNav === 'Activity' && <Activity />}
                 {profileNav === 'Following' && <Following />}
+                {profileNav === 'Reviews' && <Reviews reviews={profile.reviews} />}
                 {profileNav === 'Achievements' && <Achievements />}
               </>
               : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
