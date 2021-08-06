@@ -1,6 +1,10 @@
 import axios from 'axios'
 const baseUrl = '/api/user'
 
+const getToken = () => {
+  return JSON.parse(localStorage.getItem('tokens'))
+}
+
 const login = async credentials => {
   const res = await axios.post(`${baseUrl}/login`, credentials)
   return res.data
@@ -11,7 +15,14 @@ const register = async credentials => {
   return res.data
 }
 
-const profile = async (username, tokenObj) => {
+const checkProfileOwnership = (profile_id) => {
+  const token = getToken()
+  const decodedToken = token ? JSON.parse(window.atob(token.token.split('.')[1])) : null
+  return decodedToken ? decodedToken.id === profile_id : false
+}
+
+const profile = async (username) => {
+  const tokenObj = getToken()
   let config = {}
   // if user is logged in, send their token with the request
   if (tokenObj) {
@@ -24,7 +35,8 @@ const profile = async (username, tokenObj) => {
   return res.data
 }
 
-const progress = async (progress, tokenObj) => {
+const progress = async (progress) => {
+  const tokenObj = getToken()
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
@@ -39,7 +51,8 @@ const search = async (searchObj) => {
   return res.data
 }
 
-const discover = async (tokenObj) => {
+const discover = async () => {
+  const tokenObj = getToken()
   let config = {}
   // if user is logged in, send their token with the request
   if (tokenObj) {
@@ -52,7 +65,8 @@ const discover = async (tokenObj) => {
   return res.data
 }
 
-const discoverScroll = async (startIndex, endIndex, tokenObj) => {
+const discoverScroll = async (startIndex, endIndex) => {
+  const tokenObj = getToken()
   let config = {}
   // if user is logged in, send their token with the request
   if (tokenObj) {
@@ -65,7 +79,8 @@ const discoverScroll = async (startIndex, endIndex, tokenObj) => {
   return res.data
 }
 
-const followUser = async (userToFollow, follow, tokenObj) => {
+const followUser = async (userToFollow, follow) => {
+  const tokenObj = getToken()
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
@@ -75,7 +90,8 @@ const followUser = async (userToFollow, follow, tokenObj) => {
   return res.data
 }
 
-const getActivities = async (tokenObj) => {
+const getActivities = async () => {
+  const tokenObj = getToken()
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
@@ -85,7 +101,8 @@ const getActivities = async (tokenObj) => {
   return res.data
 }
 
-const saveSettings = async (settings, tokenObj) => {
+const saveSettings = async (settings) => {
+  const tokenObj = getToken()
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
@@ -95,7 +112,8 @@ const saveSettings = async (settings, tokenObj) => {
   return res.data
 }
 
-const getSettings = async (tokenObj) => {
+const getSettings = async () => {
+  const tokenObj = getToken()
   let config = {}
   const token = `bearer ${tokenObj.token}`
   config = {
@@ -106,4 +124,4 @@ const getSettings = async (tokenObj) => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities, saveSettings, getSettings }
+export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities, saveSettings, getSettings, checkProfileOwnership }

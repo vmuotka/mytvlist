@@ -118,4 +118,29 @@ moviesRouter.post('/addtolist', async (req, res) => {
     res.status(200).json({ message: 'success' })
 })
 
+moviesRouter.post('/update_score', async (req, res) => {
+    const body = req.body
+    const decodedToken = decodeToken(req.token)
+    let score = body.score
+    if (score <= 0)
+        score = undefined
+    if (score > 100)
+        score = 100
+
+    if (decodedToken) {
+        const movie = await MovieList.findOneAndUpdate({ user: decodedToken.id, movie_id: body.movie_id }, { score }, { new: true })
+        res.status(200).json(movie)
+    } else {
+        res.status(500).json({ message: 'User has not logged in' })
+    }
+
+})
+
+const decodeToken = (token) => {
+    if (token)
+        return jwt.verify(token, process.env.SECRET)
+    else
+        return undefined
+}
+
 module.exports = moviesRouter

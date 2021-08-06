@@ -8,6 +8,7 @@ import userService from '../../services/userService'
 import ProfileNavigation from './ProfileNavigation'
 import TvList from './TvList'
 import Progress from './Progress'
+import Movies from './Movies/'
 import Statistics from './Statistics/'
 import Activity from './Activity'
 import Following from './Following'
@@ -44,7 +45,7 @@ const Profile = () => {
             return 0
           })
         })
-        setProfileNav('TvList')
+        setProfileNav('Movies')
       }).catch(err => {
         setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
       }
@@ -63,7 +64,8 @@ const Profile = () => {
                 <ProfileNavigation active={profileNav} onClick={onNavClick} />
                 {profileNav === 'TvList' && <TvList />}
                 {profileNav === 'Statistics' && <Statistics />}
-                {profileNav === 'Progress' && <Progress />}
+                {profileNav === 'Tv' && <Progress />}
+                {profileNav === 'Movies' && <Movies />}
                 {profileNav === 'Activity' && <Activity />}
                 {profileNav === 'Following' && <Following />}
                 {profileNav === 'Reviews' && <Reviews reviews={profile.reviews} />}

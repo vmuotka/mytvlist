@@ -6,7 +6,7 @@ import SearchTv from './SearchTv'
 import SearchMovies from './SearchMovies'
 
 const Search = () => {
-    const [searchPage, setSearchPage] = useState('movies')
+    const [searchPage, setSearchPage] = useState('tv')
 
     return (
         <>

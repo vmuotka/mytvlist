@@ -7,6 +7,7 @@ const axiosCache = require('axios-cache-adapter')
 // mongoose models
 const User = require('../models/user')
 const Tvlist = require('../models/tvlist')
+const Movielist = require('../models/movielist')
 const Activity = require('../models/activity')
 const Review = require('../models/review')
 
@@ -164,6 +165,14 @@ usersRouter.post('/profile', async (req, res) => {
   }
   profile.tvlist = JSON.parse(JSON.stringify(tvlist))
 
+  let movielist
+  try {
+    movielist = await Movielist.find({ user: profile.id, listed: true })
+  } catch (err) {
+    return res.status(503).json({ error: 'Database connection failed' })
+  }
+  profile.movielist = JSON.parse(JSON.stringify(movielist))
+
   let decodedToken
   if (req.token)
     decodedToken = jwt.verify(req.token, process.env.SECRET)
@@ -197,7 +206,7 @@ usersRouter.post('/profile', async (req, res) => {
 
   const requests = profile.tvlist.map(item => api(`${apiUrl}/tv/${item.tv_id}?api_key=${process.env.MOVIEDB_API}`))
 
-  axios.all(requests)
+  await axios.all(requests)
     .then(axios.spread((...responses) => {
       profile.tvlist.forEach((listItem, index) => {
         let show = responses[index].data
@@ -213,9 +222,33 @@ usersRouter.post('/profile', async (req, res) => {
 
         listItem.tv_info = show
       })
-
-      return res.status(200).json(profile)
     }))
+
+  let movielistArr
+  if (decodedToken !== undefined)
+    movielistArr = await Movielist.find({ user: decodedToken.id, listed: true })
+
+
+  const movie_requests = profile.movielist.map(item => api(`${apiUrl}/movie/${item.movie_id}?api_key=${process.env.MOVIEDB_API}`))
+
+  await axios.all(movie_requests)
+    .then(axios.spread((...responses) => {
+      profile.movielist.forEach((listItem, index) => {
+        let movie = responses[index].data
+        if (movielistArr) {
+          if (movielistArr.filter(item => item.movie_id === movie.id).length > 0) {
+            listItem.listed = true
+          } else {
+            listItem.listed = false
+          }
+        }
+        listItem.info = movie
+      })
+    }))
+
+
+
+  return res.status(200).json(profile)
 })
 
 usersRouter.post('/progress', async (req, res) => {
