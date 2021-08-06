@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 
 // project components
-import Form from '../components/Form'
-import InputField from '../components/InputField'
-import Heading from '../components/Heading'
-import UserCard from '../components/UserCard'
-import Spinner from '../components/Spinner'
+import Form from '../../components/Form'
+import InputField from '../../components/InputField'
+import Heading from '../../components/Heading'
+import UserCard from '../../components/UserCard'
+import Spinner from '../../components/Spinner'
 
 // project services
-import userService from '../services/userService'
+import userService from '../../services/userService'
 
 // project hooks
-import { useAuth } from '../context/auth'
-import { useNotification } from '../context/notification'
+import { useAuth } from '../../context/auth'
+import { useNotification } from '../../context/notification'
 
 const SearchUsers = () => {
   const [form, setForm] = useState({ username: '' })

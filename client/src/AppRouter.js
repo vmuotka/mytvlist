@@ -4,8 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 // project pages
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
-import SearchTv from './pages/SearchTv'
-import SearchUsers from './pages/SearchUsers'
+import Search from './pages/Search'
 import Profile from './pages/Profile/'
 import Discover from './pages/Discover'
 import LandingPage from './pages/LandingPage'
@@ -24,10 +23,6 @@ const AppRouter = () => {
   const { authTokens } = useAuth()
   const publicRoutes = [
     {
-      path: '/search/tv',
-      component: SearchTv
-    },
-    {
       path: '/show/:id',
       component: ShowPage
     },
@@ -36,8 +31,8 @@ const AppRouter = () => {
       component: ActorPage
     },
     {
-      path: '/search/users',
-      component: SearchUsers
+      path: '/search',
+      component: Search
     },
     {
       path: '/signup',

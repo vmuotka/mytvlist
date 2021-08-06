@@ -27,12 +27,8 @@ const Navigation = ({ children }) => {
       hidden: authTokens ? false : true
     },
     {
-      title: 'Search Tv',
-      href: '/search/tv'
-    },
-    {
-      title: 'Search Users',
-      href: '/search/users'
+      title: 'Search',
+      href: '/search'
     },
     {
       title: 'My Profile',

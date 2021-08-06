@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 
 // project components
-import Form from '../components/Form'
-import InputField from '../components/InputField'
-import Heading from '../components/Heading'
-import TvCard from '../components/TvCard'
-import Spinner from '../components/Spinner'
-import Pagination from '../components/Pagination'
+import Form from '../../components/Form'
+import InputField from '../../components/InputField'
+import Heading from '../../components/Heading'
+import TvCard from '../../components/TvCard'
+import Spinner from '../../components/Spinner'
+import Pagination from '../../components/Pagination'
 
 // project services
-import searchService from '../services/searchService'
+import searchService from '../../services/searchService'
 
 // project hooks
-import { useAuth } from '../context/auth'
-import { useNotification } from '../context/notification'
+import { useAuth } from '../../context/auth'
+import { useNotification } from '../../context/notification'
 
-const Search = () => {
+const SearchTv = () => {
   const [form, setForm] = useState({ searchword: '' })
   const { authTokens } = useAuth()
   const [response, setResponse] = useState({ results: [], total_results: 0 })
@@ -88,4 +88,4 @@ const Search = () => {
   )
 }
 
-export default Search
+export default SearchTv
