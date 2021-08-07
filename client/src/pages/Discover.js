@@ -73,17 +73,15 @@ const Discover = () => {
   useEffect(() => {
     if (isFetching && !subpage) {
       userService.discoverScroll(
-        discover.recommendationList.length,
-        discover.recommendationList.length + 4,
-        authTokens
+        type === 'tv' ? discover.recommendationList.tv.length : discover.recommendationList.movie.length,
+        type
       ).then(data => {
         setIsFetching(false)
+        let recommendationListCopy = { ...discover.recommendationList }
+        recommendationListCopy[type].push(...data)
         setDiscover({
           ...discover,
-          recommendationList: [
-            ...discover.recommendationList,
-            ...data.recommendationList
-          ]
+          recommendationList: recommendationListCopy
         })
       })
         .catch(err => {
@@ -92,14 +90,13 @@ const Discover = () => {
     } else {
       setIsFetching(false)
     }
-  }, [isFetching, discover, authTokens, subpage])
+  }, [isFetching, discover, authTokens, subpage, type])
 
   const handleSeeAll = () => {
     window.scrollTo(0, 0)
     setSubpage(true)
   }
 
-  console.log(discover)
 
   return (
     <div className='w-full mb-5 md:w-4/5 mx-auto'>
@@ -124,11 +121,11 @@ const Discover = () => {
           <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
             {
               type === 'tv' &&
-              discover.tv.slice(0, 6).map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
+              discover.tv.slice(0, 6).map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)
             }
             {
               type === 'movie' &&
-              discover.movie.slice(0, 6).map(movie => <MovieCard movie={movie} />)
+              discover.movie.slice(0, 6).map(movie => <MovieCard key={Math.random()} movie={movie} />)
             }
           </div>
           <div className='flex justify-end'>
@@ -136,12 +133,22 @@ const Discover = () => {
           </div>
         </>
       }
-      {!subpage && discover &&
-        discover.recommendationList.filter(obj => obj.recommendations.length > 0).map(obj =>
-          <div className='mt-10' key={obj.name}>
+      {!subpage && discover && type === 'tv' &&
+        discover.recommendationList.tv.filter(obj => obj.recommendations.length > 0).map(obj =>
+          <div className='mt-10' key={Math.random()}>
             <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
             <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
-              {obj.recommendations.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)}
+              {obj.recommendations.map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)}
+            </div>
+          </div>
+        )
+      }
+      {!subpage && discover && type === 'movie' &&
+        discover.recommendationList.movie.filter(obj => obj.recommendations.length > 0).map(obj =>
+          <div className='mt-10' key={Math.random()}>
+            <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
+            <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
+              {obj.recommendations.map(movie => <MovieCard className='w-1/2' key={Math.random()} movie={movie} />)}
             </div>
           </div>
         )
@@ -151,10 +158,10 @@ const Discover = () => {
       {subpage &&
         <DiscoverPage setSubpage={setSubpage}>
           {discover && type === 'tv' &&
-            discover.tv.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
+            discover.tv.map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)
           }
           {discover && type === 'movie' &&
-            discover.movie.map(movie => <MovieCard movie={movie} />)
+            discover.movie.map(movie => <MovieCard key={Math.random()} movie={movie} />)
           }
         </DiscoverPage>
       }

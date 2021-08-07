@@ -361,9 +361,10 @@ usersRouter.post('/discover', async (req, res) => {
   const movieDiscoverIdArr = movie.data.results.map(movie => movie.id)
   movie = await getMovieDetails(movieDiscoverIdArr, decodedToken)
 
-  const recommendationList = await getRecommendations(0, 6, decodedToken)
+  const recommendedTv = await getRecommendations(0, 6, decodedToken)
+  const recommendedMovies = await getMovieRecommendations(0, 6, decodedToken)
 
-  return res.status(200).json({ tv, movie, recommendationList })
+  return res.status(200).json({ tv, movie, recommendationList: { tv: recommendedTv, movie: recommendedMovies } })
 })
 
 usersRouter.post('/discover/scroll', async (req, res) => {
@@ -373,8 +374,15 @@ usersRouter.post('/discover/scroll', async (req, res) => {
 
   const body = req.body
 
-  const recommendationList = await getRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
-  return res.status(200).json({ recommendationList })
+  let recommendationList
+  if (body.type === 'tv')
+    recommendationList = await getRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
+  else
+    recommendationList = await getMovieRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
+
+
+
+  return res.status(200).json(recommendationList)
 })
 
 usersRouter.post('/follow', async (req, res) => {
@@ -462,6 +470,50 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
       }
       return recommendationDetails
     }))
+}
+
+const getMovieRecommendations = async (startIndex, endIndex, decodedToken) => {
+  let movielist = await Movielist.find({ user: decodedToken.id })
+  movielist.sort((a, b) => {
+    if (!a.score && !b.score)
+      return 0
+    if (!a.score)
+      return 1
+    if (!b.score)
+      return -1
+    calculateScoreValue(b)
+    return calculateScoreValue(b) - calculateScoreValue(a)
+  })
+  movielist = movielist.slice(startIndex, endIndex)
+
+  const movieIdArr = movielist.map(movie => movie.movie_id)
+  let recommendations = []
+  const requests = movieIdArr.map(id => api(`${apiUrl}/movie/${id}/recommendations?api_key=${process.env.MOVIEDB_API}`))
+
+  return axios.all(requests)
+    .then(axios.spread(async (...responses) => {
+      responses.forEach(response => {
+        recommendations.push(response.data.results.slice(0, 4))
+      })
+
+      let recommendationDetails = []
+      for (let i = 0; i < recommendations.length; i++) {
+        // if (recommendations[i].length > 0) {
+        let obj = {}
+        const idArr = recommendations[i].map(show => show.id)
+        // get the name of the show that the recommendations are for
+        const tempArr = [movielist[i].movie_id]
+        const movie = await getMovieDetails(tempArr, decodedToken)
+        obj.name = movie[0].info.title
+        obj.recommendations = await getMovieDetails(idArr, decodedToken)
+        recommendationDetails.push(obj)
+        // }
+      }
+      return recommendationDetails
+    }))
+    .catch(err => {
+      console.error(err)
+    })
 }
 
 const calculateScoreValue = (show) => {
