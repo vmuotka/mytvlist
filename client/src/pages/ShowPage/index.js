@@ -9,6 +9,7 @@ import tvlistService from '../../services/tvlistService'
 import Seasons from './Seasons'
 import Select from '../../components/Select'
 import Cast from './Cast'
+import ReviewForm from '../../components/ReviewForm'
 import Reviews from './Reviews'
 
 // icons
@@ -26,6 +27,7 @@ const ShowPage = () => {
   const { setNotifications } = useNotification()
   const [country, setCountry] = useState(undefined)
   const [countryList, setCountryList] = useState(undefined)
+  const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : undefined
 
   useEffect(() => {
     searchService.showPage(id, authTokens).then(data => {
@@ -145,6 +147,7 @@ const ShowPage = () => {
 
           <Seasons show={show} />
 
+          {decodedToken && <ReviewForm title={show.name} tv_id={show.id} review={show.reviews.find(review => review.user.id === decodedToken.id)} />}
           <Reviews tv_id={show.id} title={show.name} data={show.reviews} />
         </>
       }

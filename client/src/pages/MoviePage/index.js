@@ -3,13 +3,12 @@ import { useParams } from 'react-router'
 
 // project components
 import Spinner from '../../components/Spinner'
-import searchService from '../../services/searchService'
 import Button from '../../components/Button'
-import tvlistService from '../../services/tvlistService'
 import movieService from '../../services/movieService'
 import Select from '../../components/Select'
 import Cast from '../ShowPage/Cast'
 import Reviews from '../ShowPage/Reviews'
+import ReviewForm from '../../components/ReviewForm'
 
 // icons
 import Star from '../../components/icons/Star'
@@ -17,15 +16,14 @@ import Star from '../../components/icons/Star'
 
 // project hooks
 import { useAuth } from '../../context/auth'
-import { useNotification } from '../../context/notification'
 
 const MoviePage = () => {
     const { id } = useParams()
     const [movie, setMovie] = useState(undefined)
     const { authTokens } = useAuth()
-    const { setNotifications } = useNotification()
     const [country, setCountry] = useState(undefined)
     const [countryList, setCountryList] = useState(undefined)
+    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : undefined
 
     useEffect(() => {
         movieService.getMoviePage(id)
@@ -43,7 +41,7 @@ const MoviePage = () => {
                 setCountryList(country_list)
                 setMovie(data)
             })
-    }, [id, authTokens])
+    }, [id])
 
     const addToList = async () => {
         movieService.addToList({ id: movie.id, title: movie.title })
@@ -145,7 +143,8 @@ const MoviePage = () => {
 
                     <Cast cast={movie.credits.cast} />
 
-                    {/* <Reviews tv_id={movie.id} title={movie.title} data={movie.reviews} /> */}
+                    {decodedToken && <ReviewForm title={movie.title} movie_id={movie.id} review={movie.reviews.find(review => review.user.id === decodedToken.id)} />}
+                    <Reviews tv_id={movie.id} title={movie.title} data={movie.reviews} />
                 </>
             }
         </div>
