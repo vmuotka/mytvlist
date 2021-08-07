@@ -12,6 +12,7 @@ import ShowPage from './pages/ShowPage/'
 import ActorPage from './pages/ActorPage'
 import Activity from './pages/Activity'
 import UserSettings from './pages/UserSettings'
+import MoviePage from './pages/MoviePage'
 
 // project components
 import PrivateRoute from './PrivateRoute'
@@ -25,6 +26,10 @@ const AppRouter = () => {
     {
       path: '/show/:id',
       component: ShowPage
+    },
+    {
+      path: '/movie/:id',
+      component: MoviePage
     },
     {
       path: '/actor/:id',

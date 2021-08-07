@@ -19,7 +19,9 @@ const reviewSchema = new mongoose.Schema({
     },
     tv_id: {
         type: Number,
-        required: true
+    },
+    movie_id: {
+        type: Number
     },
     user: {
         type: Schema.Types.ObjectId, ref: 'User',
