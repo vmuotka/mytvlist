@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const ActorCard = ({ actor }) => {
-  actor.roles.sort((a, b) => {
+  actor.roles && actor.roles.sort((a, b) => {
     if (a.episode_count > b.episode_count)
       return -1
     if (a.episode_count < b.episode_count)
@@ -21,13 +21,20 @@ const ActorCard = ({ actor }) => {
         <span className='text-gray-700 text-lg'>
           <Link to={`/actor/${actor.id}`} >{actor.name}</Link>
         </span>
-        <span className='flex flex-col' title={actor.roles.map(role => role.character).join('\n')}>
-          {actor.roles.slice(0, 2).map(role =>
-            <span key={role.credit_id} className='text-gray-600 text-sm'>
-              {role.character} ({role.episode_count}&nbsp;ep)
-            </span>
-          )}
-        </span>
+        {actor.roles &&
+          <span className='flex flex-col' title={actor.roles.map(role => role.character).join('\n')}>
+            {actor.roles.slice(0, 2).map(role =>
+              <span key={role.credit_id} className='text-gray-600 text-sm'>
+                {role.character} ({role.episode_count}&nbsp;ep)
+              </span>
+            )}
+          </span>}
+        {
+          actor.character &&
+          <span className='text-gray-600 text-sm'>
+            {actor.character}
+          </span>
+        }
       </div>
     </div>
   )

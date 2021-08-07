@@ -60,7 +60,7 @@ const deleteWatchTime = async (obj) => {
     return res.data
 }
 
-const showPage = async (id) => {
+const getMoviePage = async (id) => {
     const tokenObj = getToken()
     let config = {}
     // if user is logged in, send their token with the request
@@ -90,4 +90,4 @@ const saveReview = async (review) => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { search, showPage, getActorDetails, saveReview, addToList, updateScore, saveWatchTime, deleteWatchTime }
+export default { search, getMoviePage, getActorDetails, saveReview, addToList, updateScore, saveWatchTime, deleteWatchTime }

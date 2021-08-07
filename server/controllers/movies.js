@@ -4,9 +4,9 @@ const axiosCache = require('axios-cache-adapter')
 const jwt = require('jsonwebtoken')
 const MovieList = require('../models/movielist')
 const handleActivity = require('../functions/activities').handleActivity
-const mongoose = require('mongoose')
+const Review = require('../models/review')
 
-// const countries = require('../static/countries.json')
+const countries = require('../static/countries.json')
 
 const baseUrl = `https://api.themoviedb.org/3`
 
@@ -146,8 +146,6 @@ moviesRouter.post('/save_watchtime', async (req, res) => {
         date: body.timestamp
     }
 
-    console.log(body)
-
     if (decodedToken) {
         let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })
         if (movie.watch_times.find(item => item._id.toString() === body.id)) {
@@ -178,6 +176,38 @@ moviesRouter.post('/delete_watchtime', async (req, res) => {
     } else {
         res.status(500).json({ message: 'User has not logged in' })
     }
+})
+
+moviesRouter.post('/details', async (req, res) => {
+    const body = req.body
+    let response
+    try {
+        response = await api(`${baseUrl}/movie/${body.id}?api_key=${process.env.MOVIEDB_API}&append_to_response=credits`)
+    } catch (err) {
+        return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
+    }
+    response = response.data
+
+    response.reviews = await Review.find({ movie_id: response.id })
+
+    let providers
+    try {
+        providers = await api(`${baseUrl}/movie/${body.id}/watch/providers?api_key=${process.env.MOVIEDB_API}`)
+        response.providers = providers.data.results
+        Object.entries(response.providers).forEach(([key, value]) => {
+            response.providers[key].name = countries.find(country => country.code.toLowerCase() === key.toLowerCase()).name
+        })
+    } catch (err) {
+        response.providers = {}
+    }
+
+    const decodedToken = decodeToken(req.token)
+    if (decodedToken) {
+        const movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.id })
+        response.listed = movie ? movie.listed : false
+    }
+
+    return res.status(200).json(response)
 })
 
 const decodeToken = (token) => {
