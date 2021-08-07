@@ -17,8 +17,8 @@ const movielistSchema = new mongoose.Schema({
     },
     watch_times: [
         {
-            // timestamps, when the movie was watched
-            type: String
+            date: String,
+            id: Number
         }
     ]
 }, {

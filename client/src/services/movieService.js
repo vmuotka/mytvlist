@@ -40,6 +40,26 @@ const updateScore = async (obj) => {
     return res.data
 }
 
+const saveWatchTime = async (obj) => {
+    const tokenObj = getToken()
+    const token = `bearer ${tokenObj.token}`
+    const config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/save_watchtime`, obj, config)
+    return res.data
+}
+
+const deleteWatchTime = async (obj) => {
+    const tokenObj = getToken()
+    const token = `bearer ${tokenObj.token}`
+    const config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/delete_watchtime`, obj, config)
+    return res.data
+}
+
 const showPage = async (id) => {
     const tokenObj = getToken()
     let config = {}
@@ -70,4 +90,4 @@ const saveReview = async (review) => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { search, showPage, getActorDetails, saveReview, addToList, updateScore }
+export default { search, showPage, getActorDetails, saveReview, addToList, updateScore, saveWatchTime, deleteWatchTime }
