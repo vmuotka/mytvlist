@@ -146,11 +146,14 @@ moviesRouter.post('/save_watchtime', async (req, res) => {
         date: body.timestamp
     }
 
+    console.log(body)
+
     if (decodedToken) {
         let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })
-        if (movie.watch_times.find(item => item._id === body.id))
-            movie.watch_times = movie.watch_times.map(item => item._id === body.id ? watchtime : item)
-        else
+        if (movie.watch_times.find(item => item._id.toString() === body.id)) {
+            console.log('ree')
+            movie.watch_times = movie.watch_times.map(item => item._id.toString() === body.id ? watchtime : item)
+        } else
             movie.watch_times.push(watchtime)
 
         await movie.save()
@@ -163,7 +166,6 @@ moviesRouter.post('/save_watchtime', async (req, res) => {
 moviesRouter.post('/delete_watchtime', async (req, res) => {
     const body = req.body
     const decodedToken = decodeToken(req.token)
-    console.log(body.id)
 
     if (decodedToken) {
         let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })

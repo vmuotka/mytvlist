@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { enGB } from 'date-fns/esm/locale'
 
 // project components
 import InputField from '../../../components/InputField'
@@ -9,9 +12,11 @@ import userService from '../../../services/userService'
 import DoubleUp from '../../../components/icons/DoubleUp'
 import DoubleDown from '../../../components/icons/DoubleDown'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
-
+import EditIcon from '../../../components/icons/EditIcon';
 
 import '../ProgressTableRow.css'
+
+registerLocale('enGB', enGB)
 
 const TableRow = ({ movie, odd }) => {
     const { profile, setProfile } = useProfile()
@@ -50,11 +55,8 @@ const TableRow = ({ movie, odd }) => {
                     ...profile,
                     movielist
                 })
-                console.log(data)
             })
     }
-
-    console.log(profile.movielist)
     return (
         <>
             <tr
@@ -86,7 +88,7 @@ const TableRow = ({ movie, odd }) => {
                             type='number'
                             name='score'
                             size={3}
-                            className='text-center w-16 py-1'
+                            className='text-center py-1'
                             value={movie.score > 0 ? movie.score : undefined} /> :
                         movie.score && movie.score
                     }
@@ -118,6 +120,33 @@ const ExpandedTableRow = ({ watchtime, movie, odd }) => {
 
     const handleDelete = () => {
         movieService.deleteWatchTime({ id: watchtime._id, movie_id: movie.info.id })
+            .then(data => {
+                let movielist = [...profile.movielist]
+                movielist = movielist.map(item => item.movie_id !== data.movie_id ? item : { ...item, watch_times: data.watch_times })
+                setProfile({
+                    ...profile,
+                    movielist
+                })
+            })
+    }
+
+    const handleDateChange = (date) => {
+        const timestamp = date
+        const data = {
+            timestamp,
+            movie_id: movie.info.id,
+            id: watchtime._id
+        }
+
+        movieService.saveWatchTime(data)
+            .then(data => {
+                let movielist = [...profile.movielist]
+                movielist = movielist.map(item => item.movie_id !== data.movie_id ? item : { ...item, watch_times: data.watch_times })
+                setProfile({
+                    ...profile,
+                    movielist
+                })
+            })
     }
     return (
         <tr
@@ -127,7 +156,18 @@ const ExpandedTableRow = ({ watchtime, movie, odd }) => {
             }}
         >
             <td className='p-2 text-left flex items-center'>
-                {new Date(watchtime.date).toDateString()}
+                {myProfile ?
+                    <>
+                        <EditIcon className='h-6' />
+                        <DatePicker
+                            onChange={handleDateChange}
+                            className='ml-6 bg-transparent focus:outline-none cursor-pointer w-min'
+                            selected={new Date(watchtime.date)}
+                            locale='enGB'
+                        />
+                    </> :
+                    new Date(watchtime.date).toLocaleDateString('en-GB')
+                }
             </td>
             {myProfile &&
                 <td className='flex justify-center items-center'>
