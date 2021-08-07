@@ -4,6 +4,7 @@ const axiosCache = require('axios-cache-adapter')
 const jwt = require('jsonwebtoken')
 const MovieList = require('../models/movielist')
 const handleActivity = require('../functions/activities').handleActivity
+const mongoose = require('mongoose')
 
 // const countries = require('../static/countries.json')
 
@@ -117,5 +118,73 @@ moviesRouter.post('/addtolist', async (req, res) => {
 
     res.status(200).json({ message: 'success' })
 })
+
+moviesRouter.post('/update_score', async (req, res) => {
+    const body = req.body
+    const decodedToken = decodeToken(req.token)
+    let score = body.score
+    if (score <= 0)
+        score = undefined
+    if (score > 100)
+        score = 100
+
+    if (decodedToken) {
+        const movie = await MovieList.findOneAndUpdate({ user: decodedToken.id, movie_id: body.movie_id }, { score }, { new: true })
+        res.status(200).json(movie)
+    } else {
+        res.status(500).json({ message: 'User has not logged in' })
+    }
+
+})
+
+moviesRouter.post('/save_watchtime', async (req, res) => {
+    const body = req.body
+    const decodedToken = decodeToken(req.token)
+
+    const watchtime = {
+        _id: body.id,
+        date: body.timestamp
+    }
+
+    console.log(body)
+
+    if (decodedToken) {
+        let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })
+        if (movie.watch_times.find(item => item._id.toString() === body.id)) {
+            console.log('ree')
+            movie.watch_times = movie.watch_times.map(item => item._id.toString() === body.id ? watchtime : item)
+        } else
+            movie.watch_times.push(watchtime)
+
+        await movie.save()
+        res.status(200).json(movie)
+    } else {
+        res.status(500).json({ message: 'User has not logged in' })
+    }
+})
+
+moviesRouter.post('/delete_watchtime', async (req, res) => {
+    const body = req.body
+    const decodedToken = decodeToken(req.token)
+
+    if (decodedToken) {
+        let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })
+        let watch_times = [...movie.watch_times]
+        watch_times = watch_times.filter(item => item._id.toString() !== body.id)
+
+        movie.watch_times = watch_times
+        movie.save()
+        res.status(200).json(movie)
+    } else {
+        res.status(500).json({ message: 'User has not logged in' })
+    }
+})
+
+const decodeToken = (token) => {
+    if (token)
+        return jwt.verify(token, process.env.SECRET)
+    else
+        return undefined
+}
 
 module.exports = moviesRouter

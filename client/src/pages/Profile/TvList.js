@@ -4,6 +4,7 @@ import MultiSelect from 'react-multi-select-component'
 // project components
 import Select from '../../components/Select'
 import TvCard from '../../components/TvCard'
+import MovieCard from '../../components/MovieCard'
 import InputField from '../../components/InputField'
 import Checkbox from '../../components/Checkbox'
 
@@ -21,7 +22,10 @@ const TvList = () => {
   const [filterOptions, setFilterOptions] = useState([])
   const [onlyListed, setOnlyListed] = useState(false)
 
-  
+  const [selectedList, setSelectedList] = useState('tvlist')
+  const [movielist, setMovielist] = useState([])
+
+
   const { authTokens } = useAuth()
   const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
   const myProfile = decodedToken ? decodedToken.id === profile.id : false
@@ -51,8 +55,6 @@ const TvList = () => {
         }
       }
       )
-
-
       genres.sort((a, b) => {
         if (a.label < b.label)
           return -1
@@ -126,6 +128,101 @@ const TvList = () => {
     }
   }, [orderBy, filter, profile.tvlist, filtertext, onlyListed])
 
+  useEffect(() => {
+    if (profile.movielist) {
+
+      let genres = []
+      profile.movielist.forEach((show) => {
+        for (let i = 0; i < show.info.genres.length; i++) {
+          let genreFound = false
+          for (let j = 0; j < genres.length; j++) {
+            if (genres[j].value === show.info.genres[i].id) {
+              genreFound = true
+            }
+          }
+          if (!genreFound) {
+            genres.push(
+              {
+                label: show.info.genres[i].name,
+                value: show.info.genres[i].id,
+              })
+          }
+        }
+      }
+      )
+      genres.sort((a, b) => {
+        if (a.label < b.label)
+          return -1
+        if (a.label > b.label)
+          return 1
+        return 0
+      })
+      setFilterOptions(genres)
+    }
+  }, [profile.movielist])
+
+  useEffect(() => {
+    if (profile.movielist) {
+      let tvcopy = [...profile.movielist]
+      tvcopy = JSON.parse(JSON.stringify(tvcopy))
+      if (onlyListed)
+        tvcopy = tvcopy.filter(tv => tv.listed)
+      tvcopy = tvcopy.filter(tv => tv.info.title.toLowerCase().includes(filtertext.toLowerCase()))
+
+      switch (orderBy) {
+        case 'alphabetical':
+          tvcopy.sort((a, b) => {
+            if (a.info.title < b.info.title)
+              return -1
+            if (a.info.title > b.info.title)
+              return 1
+            return 0
+          })
+          break;
+        case 'newest':
+          tvcopy.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt)
+          })
+          break;
+        case 'oldest':
+          tvcopy.sort((a, b) => {
+            return new Date(a.createdAt) - new Date(b.createdAt)
+          })
+          break;
+        case 'score':
+          tvcopy.sort((a, b) => {
+            if (a.score === undefined)
+              a.score = 0
+            if (b.score === undefined)
+              b.score = 0
+            if (a.score > b.score)
+              return -1
+            if (a.score < b.score)
+              return 1
+            return 0
+          })
+          break;
+        default: break;
+      }
+
+      let arr = []
+      if (filter.length > 0) {
+        tvcopy.forEach(show => {
+          let showFound = false
+          for (let i = 0; i < show.info.genres.length; i++) {
+            for (let j = 0; j < filter.length; j++) {
+              if (filter[j].value === show.info.genres[i].id && !showFound) {
+                arr.push(show)
+                showFound = true
+              }
+            }
+          }
+        })
+      }
+      setMovielist(arr.length > 0 ? arr : tvcopy)
+    }
+  }, [orderBy, filter, profile.movielist, filtertext, onlyListed])
+
   return (
     <div className='mx-2'>
       <div className='flex flex-row'>
@@ -147,16 +244,36 @@ const TvList = () => {
           placeholder='Start writing a name...' />
       </div>
 
+      <div className='flex justify-center my-4'>
+        <button
+          className={`border border-pink-500 rounded-l py-1 w-24 font-semibold focus:outline-none ${selectedList === 'tvlist' ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'}`}
+          onClick={(e) => { setSelectedList('tvlist') }}
+        >Tv</button>
+        <button
+          className={`border border-pink-500 py-1 rounded-r w-24 font-semibold focus:outline-none ${selectedList === 'movies' ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'}`}
+          onClick={(e) => { setSelectedList('movies') }}
+        >Movies</button>
+      </div>
+
       <div className='mt-2 px-3'>
-      {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
+        {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
       </div>
 
 
-      {tvlist &&
+      {(tvlist && selectedList === 'tvlist') &&
         <>
           <div className='xl:col-span-2'><p className='text-gray-600 text-lg my-4 xl:mx-2'>{tvlist.length} shows</p></div>
           <div className='grid xl:grid-cols-2 gap-5 xl:mx-2'>
             {tvlist.map(show => <TvCard key={show.tv_id} show={show} />)}
+          </div>
+        </>
+      }
+
+      {(movielist && selectedList === 'movies') &&
+        <>
+          <div className='xl:col-span-2'><span className='text-gray-600 text-lg my-4 xl:mx-2'>{movielist.length} movies</span></div>
+          <div className='grid xl:grid-cols-2 gap-5 xl:mx-2'>
+            {movielist.map(movie => <MovieCard key={movie.movie_id} movie={movie} />)}
           </div>
         </>
       }

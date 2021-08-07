@@ -17,7 +17,8 @@ const ProfileNavigation = ({ active, onClick }) => {
   const navs = [
     'TvList',
     'Statistics',
-    'Progress',
+    'Tv',
+    'Movies',
     'Activity',
     'Following',
     'Reviews',

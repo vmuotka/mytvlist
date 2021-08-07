@@ -1,8 +1,13 @@
 import axios from 'axios'
 const baseUrl = '/api/movie'
 
+const getToken = () => {
+    return JSON.parse(localStorage.getItem('tokens'))
+}
 
-const search = async (searchObj, tokenObj) => {
+
+const search = async (searchObj) => {
+    const tokenObj = getToken()
     let config = {}
     // if user is logged in, send their token with the request
     if (tokenObj) {
@@ -15,7 +20,8 @@ const search = async (searchObj, tokenObj) => {
     return res.data
 }
 
-const addToList = async (obj, tokenObj) => {
+const addToList = async (obj) => {
+    const tokenObj = getToken()
     const token = `bearer ${tokenObj.token}`
     const config = {
         headers: { Authorization: token }
@@ -24,7 +30,38 @@ const addToList = async (obj, tokenObj) => {
     return res.data
 }
 
-const showPage = async (id, tokenObj) => {
+const updateScore = async (obj) => {
+    const tokenObj = getToken()
+    const token = `bearer ${tokenObj.token}`
+    const config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/update_score`, obj, config)
+    return res.data
+}
+
+const saveWatchTime = async (obj) => {
+    const tokenObj = getToken()
+    const token = `bearer ${tokenObj.token}`
+    const config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/save_watchtime`, obj, config)
+    return res.data
+}
+
+const deleteWatchTime = async (obj) => {
+    const tokenObj = getToken()
+    const token = `bearer ${tokenObj.token}`
+    const config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/delete_watchtime`, obj, config)
+    return res.data
+}
+
+const showPage = async (id) => {
+    const tokenObj = getToken()
     let config = {}
     // if user is logged in, send their token with the request
     if (tokenObj) {
@@ -41,7 +78,8 @@ const getActorDetails = async (id) => {
     return axios.get(`${baseUrl}/actor/${id}`)
 }
 
-const saveReview = async (review, tokenObj) => {
+const saveReview = async (review) => {
+    const tokenObj = getToken()
     let config = {}
     const token = `bearer ${tokenObj.token}`
     config = {
@@ -52,4 +90,4 @@ const saveReview = async (review, tokenObj) => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { search, showPage, getActorDetails, saveReview, addToList }
+export default { search, showPage, getActorDetails, saveReview, addToList, updateScore, saveWatchTime, deleteWatchTime }
