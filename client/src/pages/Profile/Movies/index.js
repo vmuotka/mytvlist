@@ -53,10 +53,8 @@ const Movies = () => {
                             <h2 className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} movies)</h2>
                             <MovieProgressTable movielist={list.array} />
                         </div>
-
                     )
                 }
-
             </div>
         </div>
     )
