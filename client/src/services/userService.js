@@ -65,7 +65,7 @@ const discover = async () => {
   return res.data
 }
 
-const discoverScroll = async (startIndex, endIndex) => {
+const discoverScroll = async (startIndex, type) => {
   const tokenObj = getToken()
   let config = {}
   // if user is logged in, send their token with the request
@@ -75,7 +75,7 @@ const discoverScroll = async (startIndex, endIndex) => {
       headers: { Authorization: token }
     }
   }
-  const res = await axios.post(`${baseUrl}/discover/scroll`, { startIndex, endIndex }, config)
+  const res = await axios.post(`${baseUrl}/discover/scroll`, { startIndex, type }, config)
   return res.data
 }
 

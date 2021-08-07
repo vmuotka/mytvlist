@@ -6,6 +6,7 @@ import TvCard from '../components/TvCard'
 import Button from '../components/Button'
 import ArrowLeft from '../components/icons/ArrowLeft'
 import Spinner from '../components/Spinner/'
+import MovieCard from '../components/MovieCard'
 
 // project services
 import userService from '../services/userService'
@@ -44,6 +45,7 @@ const Discover = () => {
   const [discover, setDiscover] = useState(null)
 
   const [subpage, setSubpage] = useState(false)
+  const [type, setType] = useState('tv')
 
   // get user's recommendations
   useEffect(() => {
@@ -71,17 +73,15 @@ const Discover = () => {
   useEffect(() => {
     if (isFetching && !subpage) {
       userService.discoverScroll(
-        discover.recommendationList.length,
-        discover.recommendationList.length + 4,
-        authTokens
+        type === 'tv' ? discover.recommendationList.tv.length : discover.recommendationList.movie.length,
+        type
       ).then(data => {
         setIsFetching(false)
+        let recommendationListCopy = { ...discover.recommendationList }
+        recommendationListCopy[type].push(...data)
         setDiscover({
           ...discover,
-          recommendationList: [
-            ...discover.recommendationList,
-            ...data.recommendationList
-          ]
+          recommendationList: recommendationListCopy
         })
       })
         .catch(err => {
@@ -90,25 +90,42 @@ const Discover = () => {
     } else {
       setIsFetching(false)
     }
-  }, [isFetching, discover, authTokens, subpage])
+  }, [isFetching, discover, authTokens, subpage, type])
 
   const handleSeeAll = () => {
     window.scrollTo(0, 0)
     setSubpage(true)
   }
 
+
   return (
     <div className='w-full mb-5 md:w-4/5 mx-auto'>
       {!discover &&
         <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />
       }
-      {(!subpage && discover && discover.discover.length > 0) &&
+      {(!subpage && discover && discover[type].length > 0) &&
         <>
-          <Heading className='text-center'>Discover</Heading>
+          <div className='flex justify-center my-4'>
+            <button
+              className={`border border-pink-500 rounded-l py-1 w-24 font-semibold focus:outline-none ${type === 'tv' ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'}`}
+              onClick={(e) => { setType('tv') }}
+            >Tv</button>
+            <button
+              className={`border border-pink-500 py-1 rounded-r w-24 font-semibold focus:outline-none ${type === 'movie' ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'}`}
+              onClick={(e) => { setType('movie') }}
+            >Movies</button>
+          </div>
+
+          <Heading className='text-center'>Discover {type === 'tv' ? 'TV' : 'Movies'}</Heading>
           <h2 className='text-gray-700 text-xl'>Popular in the last 6 months</h2>
           <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
             {
-              discover.discover.slice(0, 6).map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
+              type === 'tv' &&
+              discover.tv.slice(0, 6).map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)
+            }
+            {
+              type === 'movie' &&
+              discover.movie.slice(0, 6).map(movie => <MovieCard key={Math.random()} movie={movie} />)
             }
           </div>
           <div className='flex justify-end'>
@@ -116,12 +133,22 @@ const Discover = () => {
           </div>
         </>
       }
-      {!subpage && discover &&
-        discover.recommendationList.filter(obj => obj.recommendations.length > 0).map(obj =>
-          <div className='mt-10' key={obj.name}>
+      {!subpage && discover && type === 'tv' &&
+        discover.recommendationList.tv.filter(obj => obj.recommendations.length > 0).map(obj =>
+          <div className='mt-10' key={Math.random()}>
             <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
             <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
-              {obj.recommendations.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)}
+              {obj.recommendations.map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)}
+            </div>
+          </div>
+        )
+      }
+      {!subpage && discover && type === 'movie' &&
+        discover.recommendationList.movie.filter(obj => obj.recommendations.length > 0).map(obj =>
+          <div className='mt-10' key={Math.random()}>
+            <h2 className='text-gray-700 text-xl'>Because you watched <span className='font-semibold'>{obj.name}</span></h2>
+            <div className='grid xl:grid-cols-2 gap-3 mt-4 xl:mx-2'>
+              {obj.recommendations.map(movie => <MovieCard className='w-1/2' key={Math.random()} movie={movie} />)}
             </div>
           </div>
         )
@@ -130,8 +157,11 @@ const Discover = () => {
       <Spinner className={`mx-auto mt-2 ${isFetching ? 'opacity-100' : 'opacity-0'}`} mt-4 color='bg-pink-500' show={true} />
       {subpage &&
         <DiscoverPage setSubpage={setSubpage}>
-          {discover &&
-            discover.discover.map(show => <TvCard className='w-1/2' key={show.tv_id} show={show} />)
+          {discover && type === 'tv' &&
+            discover.tv.map(show => <TvCard className='w-1/2' key={Math.random()} show={show} />)
+          }
+          {discover && type === 'movie' &&
+            discover.movie.map(movie => <MovieCard key={Math.random()} movie={movie} />)
           }
         </DiscoverPage>
       }

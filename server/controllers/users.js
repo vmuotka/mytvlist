@@ -353,13 +353,18 @@ usersRouter.post('/discover', async (req, res) => {
     date[1] = '0' + date[1]
   date = date[2] + '-' + date[0] + '-' + date[1]
 
-  let discover = await api(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}`)
-  const discoverIdArr = discover.data.results.map(show => show.id)
-  discover = await getDetails(discoverIdArr, decodedToken)
+  let tv = await api(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}&with_watch_monetization_types=flatrate`)
+  const discoverIdArr = tv.data.results.map(show => show.id)
+  tv = await getDetails(discoverIdArr, decodedToken)
 
-  const recommendationList = await getRecommendations(0, 6, decodedToken)
+  let movie = await api(`${apiUrl}/discover/movie?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&with_watch_monetization_types=flatrate&primary_release_date.gte${new Date().getYear()}`)
+  const movieDiscoverIdArr = movie.data.results.map(movie => movie.id)
+  movie = await getMovieDetails(movieDiscoverIdArr, decodedToken)
 
-  return res.status(200).json({ discover, recommendationList })
+  const recommendedTv = await getRecommendations(0, 6, decodedToken)
+  const recommendedMovies = await getMovieRecommendations(0, 6, decodedToken)
+
+  return res.status(200).json({ tv, movie, recommendationList: { tv: recommendedTv, movie: recommendedMovies } })
 })
 
 usersRouter.post('/discover/scroll', async (req, res) => {
@@ -369,8 +374,15 @@ usersRouter.post('/discover/scroll', async (req, res) => {
 
   const body = req.body
 
-  const recommendationList = await getRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
-  return res.status(200).json({ recommendationList })
+  let recommendationList
+  if (body.type === 'tv')
+    recommendationList = await getRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
+  else
+    recommendationList = await getMovieRecommendations(body.startIndex, body.startIndex + 8, decodedToken)
+
+
+
+  return res.status(200).json(recommendationList)
 })
 
 usersRouter.post('/follow', async (req, res) => {
@@ -460,6 +472,50 @@ const getRecommendations = async (startIndex, endIndex, decodedToken) => {
     }))
 }
 
+const getMovieRecommendations = async (startIndex, endIndex, decodedToken) => {
+  let movielist = await Movielist.find({ user: decodedToken.id })
+  movielist.sort((a, b) => {
+    if (!a.score && !b.score)
+      return 0
+    if (!a.score)
+      return 1
+    if (!b.score)
+      return -1
+    calculateScoreValue(b)
+    return calculateScoreValue(b) - calculateScoreValue(a)
+  })
+  movielist = movielist.slice(startIndex, endIndex)
+
+  const movieIdArr = movielist.map(movie => movie.movie_id)
+  let recommendations = []
+  const requests = movieIdArr.map(id => api(`${apiUrl}/movie/${id}/recommendations?api_key=${process.env.MOVIEDB_API}`))
+
+  return axios.all(requests)
+    .then(axios.spread(async (...responses) => {
+      responses.forEach(response => {
+        recommendations.push(response.data.results.slice(0, 4))
+      })
+
+      let recommendationDetails = []
+      for (let i = 0; i < recommendations.length; i++) {
+        // if (recommendations[i].length > 0) {
+        let obj = {}
+        const idArr = recommendations[i].map(show => show.id)
+        // get the name of the show that the recommendations are for
+        const tempArr = [movielist[i].movie_id]
+        const movie = await getMovieDetails(tempArr, decodedToken)
+        obj.name = movie[0].info.title
+        obj.recommendations = await getMovieDetails(idArr, decodedToken)
+        recommendationDetails.push(obj)
+        // }
+      }
+      return recommendationDetails
+    }))
+    .catch(err => {
+      console.error(err)
+    })
+}
+
 const calculateScoreValue = (show) => {
   let last_watched_modifier = 1
   const modified_days_ago = Math.floor((new Date() - new Date(show.updatedAt)) / (24 * 60 * 60 * 1000))
@@ -501,6 +557,35 @@ const getDetails = async (showlist, decodedToken) => {
           }
           show.tv_id = show.tv_info.id
           results.push(show)
+        }
+      })
+      return results
+    }))
+}
+
+const getMovieDetails = async (movielist, decodedToken) => {
+  let movielistArr
+  if (decodedToken !== undefined) {
+    movielistArr = await Movielist.find({ user: decodedToken.id })
+  }
+
+  const requests = movielist.map(listItem => api(`${apiUrl}/movie/${listItem}?api_key=${process.env.MOVIEDB_API}`))
+  return axios.all(requests)
+    .then(axios.spread((...responses) => {
+      let results = []
+      movielist.forEach((listItem, index) => {
+        let movie = {}
+        movie.info = responses[index].data
+        if (decodedToken.id) {
+          if (movielistArr) {
+            if (movielistArr.find(item => item.tv_id === movie.info.id)) {
+              movie.listed = movielistArr.find(item => item.tv_id === movie.info.id).listed
+            }
+          } else {
+            movie.listed = false
+          }
+          movie.movie_id = movie.info.id
+          results.push(movie)
         }
       })
       return results

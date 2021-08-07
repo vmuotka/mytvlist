@@ -18,7 +18,6 @@ const Movies = () => {
 
     useEffect(() => {
         let list = [...profile.movielist]
-        console.log(list)
         list = list.filter(movie => movie.info.title.toLowerCase().includes(filter.trim().toLowerCase()))
         list = categorizeList(list)
         setMovielist(list)

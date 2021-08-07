@@ -149,7 +149,6 @@ moviesRouter.post('/save_watchtime', async (req, res) => {
     if (decodedToken) {
         let movie = await MovieList.findOne({ user: decodedToken.id, movie_id: body.movie_id })
         if (movie.watch_times.find(item => item._id.toString() === body.id)) {
-            console.log('ree')
             movie.watch_times = movie.watch_times.map(item => item._id.toString() === body.id ? watchtime : item)
         } else
             movie.watch_times.push(watchtime)
