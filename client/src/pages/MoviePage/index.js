@@ -28,7 +28,6 @@ const MoviePage = () => {
     useEffect(() => {
         movieService.getMoviePage(id)
             .then(data => {
-                console.log(data)
                 Object.entries(data.providers).forEach(([key, value]) => {
                     if (!value.flatrate)
                         delete data.providers[key]

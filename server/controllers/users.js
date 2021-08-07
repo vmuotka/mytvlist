@@ -353,13 +353,17 @@ usersRouter.post('/discover', async (req, res) => {
     date[1] = '0' + date[1]
   date = date[2] + '-' + date[0] + '-' + date[1]
 
-  let discover = await api(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}`)
-  const discoverIdArr = discover.data.results.map(show => show.id)
-  discover = await getDetails(discoverIdArr, decodedToken)
+  let tv = await api(`${apiUrl}/discover/tv?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&air_date.gte=${date}&with_watch_monetization_types=flatrate`)
+  const discoverIdArr = tv.data.results.map(show => show.id)
+  tv = await getDetails(discoverIdArr, decodedToken)
+
+  let movie = await api(`${apiUrl}/discover/movie?api_key=${process.env.MOVIEDB_API}&sort_by=popularity.desc&with_watch_monetization_types=flatrate&primary_release_date.gte${new Date().getYear()}`)
+  const movieDiscoverIdArr = movie.data.results.map(movie => movie.id)
+  movie = await getMovieDetails(movieDiscoverIdArr, decodedToken)
 
   const recommendationList = await getRecommendations(0, 6, decodedToken)
 
-  return res.status(200).json({ discover, recommendationList })
+  return res.status(200).json({ tv, movie, recommendationList })
 })
 
 usersRouter.post('/discover/scroll', async (req, res) => {
@@ -501,6 +505,35 @@ const getDetails = async (showlist, decodedToken) => {
           }
           show.tv_id = show.tv_info.id
           results.push(show)
+        }
+      })
+      return results
+    }))
+}
+
+const getMovieDetails = async (movielist, decodedToken) => {
+  let movielistArr
+  if (decodedToken !== undefined) {
+    movielistArr = await Movielist.find({ user: decodedToken.id })
+  }
+
+  const requests = movielist.map(listItem => api(`${apiUrl}/movie/${listItem}?api_key=${process.env.MOVIEDB_API}`))
+  return axios.all(requests)
+    .then(axios.spread((...responses) => {
+      let results = []
+      movielist.forEach((listItem, index) => {
+        let movie = {}
+        movie.info = responses[index].data
+        if (decodedToken.id) {
+          if (movielistArr) {
+            if (movielistArr.find(item => item.tv_id === movie.info.id)) {
+              movie.listed = movielistArr.find(item => item.tv_id === movie.info.id).listed
+            }
+          } else {
+            movie.listed = false
+          }
+          movie.movie_id = movie.info.id
+          results.push(movie)
         }
       })
       return results
