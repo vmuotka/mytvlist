@@ -36,9 +36,6 @@ const ActorPage = () => {
             })
     }, [id, setNotifications])
 
-    console.log(actor)
-
-
     return (
         <div className='w-full md:w-2/3 mx-auto mt-3'>
             {!actor && <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />}

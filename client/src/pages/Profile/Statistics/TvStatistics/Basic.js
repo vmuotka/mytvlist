@@ -1,7 +1,7 @@
 import React from 'react'
 
 // project hooks
-import { useProfile } from '../../../context/profile'
+import { useProfile } from '../../../../context/profile'
 
 const Basic = () => {
   const { profile } = useProfile()
