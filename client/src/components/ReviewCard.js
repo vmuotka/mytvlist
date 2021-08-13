@@ -44,7 +44,13 @@ const ReviewCard = ({ review }) => {
                         <span className='block w-max font-semibold text-lg'>doesn't recommend <ThumbDown className='h-8 inline' /></span>
                     </div>
                 }
-                <Link className='block mt-1 w-max' to={`/show/${review.tv_id}`}>{review.title}</Link>
+                {review.tv_id &&
+                    <Link className='block mt-1 w-max' to={`/show/${review.tv_id}`}>{review.title}</Link>
+                }
+                {review.movie_id &&
+                    <Link className='block mt-1 w-max' to={`/movie/${review.movie_id}`}>{review.title}</Link>
+
+                }
             </div>
             <div className='p-3'>
                 <Spoiler review={review} />
