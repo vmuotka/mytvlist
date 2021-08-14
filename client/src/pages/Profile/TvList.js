@@ -235,6 +235,11 @@ const TvList = () => {
                     placeholder='Start writing a name...' />
             </div>
 
+
+            <div className='mt-2 px-3'>
+                {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
+            </div>
+
             <div className='flex justify-center my-4'>
                 <button
                     className={`border border-pink-500 rounded-l py-1 w-24 font-semibold focus:outline-none ${selectedList === 'tvlist' ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'}`}
@@ -245,11 +250,6 @@ const TvList = () => {
                     onClick={(e) => { setSelectedList('movies') }}
                 >Movies</button>
             </div>
-
-            <div className='mt-2 px-3'>
-                {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
-            </div>
-
 
             {(tvlist && selectedList === 'tvlist') &&
                 <>

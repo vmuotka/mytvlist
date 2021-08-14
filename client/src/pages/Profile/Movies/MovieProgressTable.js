@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { enGB } from 'date-fns/esm/locale'
 
 // project components
 import InputField from '../../../components/InputField'
@@ -15,8 +13,6 @@ import DeleteIcon from '../../../components/icons/DeleteIcon'
 import EditIcon from '../../../components/icons/EditIcon';
 
 import '../ProgressTableRow.css'
-
-registerLocale('enGB', enGB)
 
 const TableRow = ({ movie, odd }) => {
     const { profile, setProfile } = useProfile()
@@ -41,7 +37,7 @@ const TableRow = ({ movie, odd }) => {
     }
 
     const handleWatchBtn = () => {
-        const timestamp = new Date()
+        const timestamp = new Date().toISOString().split('T')[0]
         const data = {
             timestamp,
             movie_id: movie.info.id,
@@ -80,15 +76,14 @@ const TableRow = ({ movie, odd }) => {
                     </div>
                     <Link to={`/movie/${movie.info.id}`} className='ml-6'>{movie.info.title}</Link>
                 </td>
-                <td className='flex justify-center items-center'>{movie.watch_times.length}</td>
-                <td className='flex justify-center items-center'>
+                <td className='flex justify-center items-center '>{movie.watch_times.length}</td>
+                <td className='justify-center items-center flex'>
                     {myProfile ?
                         <InputField
                             onChange={handleScore}
                             type='number'
                             name='score'
-                            size={3}
-                            className='text-center py-1'
+                            className='text-center py-1 w-16'
                             value={movie.score > 0 ? movie.score : undefined} /> :
                         movie.score && movie.score
                     }
@@ -117,6 +112,7 @@ const TableRow = ({ movie, odd }) => {
 const ExpandedTableRow = ({ watchtime, movie, odd }) => {
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
+    const [date, setDate] = useState(watchtime.date)
 
     const handleDelete = () => {
         movieService.deleteWatchTime({ id: watchtime._id, movie_id: movie.info.id })
@@ -130,13 +126,15 @@ const ExpandedTableRow = ({ watchtime, movie, odd }) => {
             })
     }
 
-    const handleDateChange = (date) => {
-        const timestamp = date
+    const handleDateChange = (e) => {
+        const timestamp = e.target.value
         const data = {
             timestamp,
             movie_id: movie.info.id,
             id: watchtime._id
         }
+
+        setDate(timestamp)
 
         movieService.saveWatchTime(data)
             .then(data => {
@@ -148,6 +146,7 @@ const ExpandedTableRow = ({ watchtime, movie, odd }) => {
                 })
             })
     }
+
     return (
         <tr
             className={`grid text-sm sm:text-lg md:text-xl ${odd && 'bg-pink-100'} hover:bg-pink-300`}
@@ -159,12 +158,7 @@ const ExpandedTableRow = ({ watchtime, movie, odd }) => {
                 {myProfile ?
                     <>
                         <EditIcon className='h-6' />
-                        <DatePicker
-                            onChange={handleDateChange}
-                            className='ml-6 bg-transparent focus:outline-none cursor-pointer w-min'
-                            selected={new Date(watchtime.date)}
-                            locale='enGB'
-                        />
+                        <input type='date' className='bg-transparent focus:outline-none' value={date} onChange={handleDateChange} />
                     </> :
                     new Date(watchtime.date).toLocaleDateString('en-GB')
                 }
@@ -186,26 +180,28 @@ const MovieProgressTable = ({ movielist }) => {
     const { profile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
     return (
-        <table className='w-full'>
-            <thead className='bg-pink-400 text-white md:text-xl'>
-                <tr
-                    className='grid  py-2'
-                    style={{
-                        gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr'
-                    }}
-                >
-                    <th>Title</th>
-                    <th>Times watched</th>
-                    <th>Score</th>
-                    {myProfile && <th>Action</th>}
-                </tr>
-            </thead>
-            <tbody className='text-gray-700 bg-pink-150'>
-                {movielist.map((movie, index) =>
-                    <TableRow key={movie.info.id} odd={index % 2 === 0} movie={movie} />
-                )}
-            </tbody>
-        </table>
+        <div className='overflow-x-auto'>
+            <table className='w-full table-auto' style={{ minWidth: '500px' }}>
+                <thead className='bg-pink-400 text-white md:text-xl'>
+                    <tr
+                        className='grid py-2'
+                        style={{
+                            gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr'
+                        }}
+                    >
+                        <th className='flex items-center justify-center'>Title</th>
+                        <th className='flex items-center justify-center'>Times watched</th>
+                        <th className='flex items-center justify-center'>Score</th>
+                        {myProfile && <th className='flex items-center justify-center'>Action</th>}
+                    </tr>
+                </thead>
+                <tbody className='text-gray-700 bg-pink-150'>
+                    {movielist.map((movie, index) =>
+                        <TableRow key={movie.info.id} odd={index % 2 === 0} movie={movie} />
+                    )}
+                </tbody>
+            </table>
+        </div>
     )
 }
 

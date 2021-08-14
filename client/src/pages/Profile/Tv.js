@@ -85,7 +85,7 @@ const Tv = () => {
                             <ProgressTable id={list.name} key={list.name} list={list} profile={profile} setProfile={setProfile} />
                         ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
                 }
-                {(filteredList && filteredList[0].array.length === 0 && filteredList[1].array.length === 0 && filteredList[2].array.length === 0 && filteredList[3].array.length === 0) ? <p className='text-lg text-gray-700 text-center'>This user has no shows on their list.</p> : null}
+                {(filteredList && filteredList[0].array.length === 0 && filteredList[1].array.length === 0 && filteredList[2].array.length === 0 && filteredList[3].array.length === 0) ? <p className='text-lg text-gray-700'>This user has no shows on their list.</p> : null}
             </div>
         </div>
     )

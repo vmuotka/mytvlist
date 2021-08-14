@@ -38,23 +38,28 @@ const Movies = () => {
     }
     return (
         <div className='mx-4'>
-            <InputField
-                label='Filter'
-                className='my-2'
-                value={filter}
-                onChange={(e) => { setFilter(e.target.value) }}
-            />
-            <div className='flex flex-col gap-4'>
-                {
-                    movielist.map(list =>
-                        list.array.length > 0 &&
-                        <div key={list.name}>
-                            <h2 className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} movies)</h2>
-                            <MovieProgressTable movielist={list.array} />
-                        </div>
-                    )
-                }
-            </div>
+            {(profile.movielist.length > 0) ?
+                <>
+                    <InputField
+                        label='Filter'
+                        className='my-2'
+                        value={filter}
+                        onChange={(e) => { setFilter(e.target.value) }}
+                    />
+                    <div className='flex flex-col gap-4'>
+                        {
+                            movielist.map(list =>
+                                list.array.length > 0 &&
+                                <div key={list.name}>
+                                    <h2 className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} movies)</h2>
+                                    <MovieProgressTable movielist={list.array} />
+                                </div>
+                            )
+                        }
+                    </div>
+                </> :
+                <span className='text-lg text-gray-700'>This user has no movies on their list.</span>
+            }
         </div>
     )
 }
