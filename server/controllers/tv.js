@@ -4,6 +4,8 @@ const Tvlist = require('../models/tvlist')
 const jwt = require('jsonwebtoken')
 const axiosCache = require('axios-cache-adapter')
 const Review = require('../models/review')
+const MovieDbApi = require('../helpers/MovieDbApi')
+const UserHelper = require('../helpers/UserHelper')
 
 const countries = require('../static/countries.json')
 
@@ -26,40 +28,14 @@ tvRouter.post('/search', async (req, res) => {
         return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
     }
 
-    // return array of shows the user is following
-    let decodedToken
-    if (req.token)
-        decodedToken = jwt.verify(req.token, process.env.SECRET)
+    const decodedToken = UserHelper.decodeToken(req.token)
 
     let tvlistArr
     if (decodedToken !== undefined) {
         tvlistArr = await Tvlist.find({ user: decodedToken.id })
     }
 
-
-
-    const requests = response.data.results.map(result => api(`${baseUrl}/tv/${result.id}?api_key=${process.env.MOVIEDB_API}`))
-
-    const results = await axios.all(requests)
-        .then(axios.spread((...responses) => {
-            let results = []
-            responses.forEach((response) => {
-                let show = {}
-                show.tv_info = response.data
-                show.tv_info.seasons = show.tv_info.seasons.filter(season => season.name !== 'Specials')
-
-                if (tvlistArr && decodedToken) {
-                    if (tvlistArr.filter(item => item.tv_id === show.tv_info.id).length > 0) {
-                        show.listed = tvlistArr.filter(item => item.tv_id === show.tv_info.id)[0].listed
-                    }
-                } else {
-                    show.listed = false
-                }
-
-                results.push(show)
-            })
-            return results
-        }))
+    const results = await MovieDbApi.getTvDetails(response.data.results.map(item => item.id), decodedToken)
 
     return res.status(200).json({ results, total_results: response.data.total_results, total_pages: response.data.total_pages, searchword: body.searchword })
 })
