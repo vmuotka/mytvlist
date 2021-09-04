@@ -1,0 +1,32 @@
+{
+    "name": "mytvlist-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "cross-env NODE_ENV=production node server/index.js",
+        "dev": "cross-env NODE_ENV=development nodemon server/index.js",
+        "build": "cd client/ && npm install && npm run build"
+    },
+    "cacheDirectories": [
+        "node_modules",
+        "react-ui/node_modules"
+    ],
+    "author": "Vili Muotka",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "axios-cache-adapter": "^2.7.1",
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-validator": "^6.6.1",
+        "json-stringify-safe": "^5.0.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.10.9",
+        "mongoose-autopopulate": "^0.12.3",
+        "mongoose-unique-validator": "^2.0.3"
+    }
+}
