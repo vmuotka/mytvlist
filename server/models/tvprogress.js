@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const tvprogressSchema = new mongoose.Schema({
     user: {
@@ -20,26 +21,15 @@ const tvprogressSchema = new mongoose.Schema({
                 required: true
             },
             episodes: [
-                {
-                    episode_id: {
-                        type: Number,
-                        required: true
-                    },
-                    watched: {
-                        type: Boolean,
-                        required: true
-                    },
-                    watch_date: {
-                        type: Date,
-                        required: true
-                    }
-                }
+                { type: Schema.Types.ObjectId, ref: 'Episode' }
             ]
         }
     ]
 }, {
     timestamps: true,
 })
+
+userSchema.plugin(require('mongoose-autopopulate'))
 
 tvprogressSchema.set('toJSON', {
     transform: (document, returnedObject) => {
