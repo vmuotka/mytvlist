@@ -19,14 +19,19 @@ const tvlistSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    progress: [],
-    watch_progress: [{
-        user: { type: Schema.Types.ObjectId, ref: 'Tvprogress' },
-    }]
+    // progress: [],
+    watch_progress: [
+        {
+            type: Schema.Types.ObjectId, ref: 'Tvprogress',
+            // required: true,
+            autopopulate: true
+        },
+    ]
 }, {
-    timestamps: true,
+    timestamps: true
 })
 
+tvlistSchema.plugin(require('mongoose-autopopulate'))
 tvlistSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()

@@ -52,9 +52,6 @@ const Profile = () => {
         // eslint-disable-next-line
     }, [username, setProfile, authTokens])
 
-    if (profile)
-        console.log(profile.tvlist[0])
-
     return (
         <>
             <ProfileContext.Provider value={{ profile, setProfile }} >

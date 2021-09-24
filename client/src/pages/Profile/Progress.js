@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
 // project components
-import Tv from './Tv'
 import Movies from './Movies/'
+import Shows from './Shows/'
 import TabButtons from '../../components/TabButtons'
 
 const Progress = () => {
@@ -14,7 +14,7 @@ const Progress = () => {
                 value={tab}
                 onChange={setTab}
             />
-            {tab === 'tv' && <Tv />}
+            {tab === 'tv' && <Shows />}
             {tab === 'movies' && <Movies />}
         </>
     )

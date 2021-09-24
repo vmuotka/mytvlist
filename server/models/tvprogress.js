@@ -6,6 +6,11 @@ const tvprogressSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    tvlist_id: {
+        type: String,
+        required: true
+    }
+    ,
     tv_id: {
         type: Number,
         required: true
@@ -14,22 +19,14 @@ const tvprogressSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    seasons: [
-        {
-            season_id: {
-                type: Number,
-                required: true
-            },
-            episodes: [
-                { type: Schema.Types.ObjectId, ref: 'Episode' }
-            ]
-        }
+    episodes: [
+        { type: Schema.Types.ObjectId, ref: 'Episode', autopopulate: true },
     ]
 }, {
     timestamps: true,
 })
 
-userSchema.plugin(require('mongoose-autopopulate'))
+tvprogressSchema.plugin(require('mongoose-autopopulate'))
 
 tvprogressSchema.set('toJSON', {
     transform: (document, returnedObject) => {

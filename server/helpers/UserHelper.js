@@ -6,6 +6,7 @@ const Tvlist = require('../models/tvlist')
 const Movielist = require('../models/movielist')
 const Activity = require('../models/activity')
 const Review = require('../models/review')
+const Episode = require('../models/episode')
 
 const baseUrl = `https://api.themoviedb.org/3`
 const MovieDbApi = require('../helpers/MovieDbApi')
@@ -27,6 +28,7 @@ const getTvList = async (profile, decodedToken) => {
     try {
         tvlist = await Tvlist.find({ user: profile.id, listed: true })
     } catch (err) {
+        console.error(err)
         return res.status(503).json({ error: 'Database connection failed' })
     }
 

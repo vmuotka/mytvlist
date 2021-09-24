@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const schema = new mongoose.Schema({
+const episodeSchema = new mongoose.Schema({
     user: {
         type: String,
         required: true
@@ -17,21 +17,23 @@ const schema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    watch_date: {
-        type: Date,
-        required: true
-    }
+    // watch_date: {
+    //     type: Date,
+    //     // required: true
+    // }
 }, {
     timestamps: true,
 })
 
-schema.set('toJSON', {
+episodeSchema.plugin(require('mongoose-autopopulate'))
+
+episodeSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
     }
 })
 
-const Episode = mongoose.model('Episode', schema)
+const Episode = mongoose.model('Episode', episodeSchema)
 
 module.exports = Episode
