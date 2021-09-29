@@ -46,16 +46,6 @@ const progress = async (progress) => {
     return res.data
 }
 
-const saveEpisode = async (episode) => {
-    const tokenObj = getToken()
-    let config = {}
-    const token = `bearer ${tokenObj.token}`
-    config = {
-        headers: { Authorization: token }
-    }
-    const res = await axios.post(`${baseUrl}/save_episode`, episode, config)
-}
-
 const search = async (searchObj) => {
     const res = await axios.post(`${baseUrl}/search`, searchObj)
     return res.data
@@ -134,4 +124,4 @@ const getSettings = async () => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities, saveSettings, getSettings, checkProfileOwnership, saveEpisode }
+export default { login, register, profile, progress, search, discover, discoverScroll, followUser, getActivities, saveSettings, getSettings, checkProfileOwnership }

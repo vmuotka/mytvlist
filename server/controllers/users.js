@@ -9,8 +9,6 @@ const User = require('../models/user')
 const Tvlist = require('../models/tvlist')
 const Activity = require('../models/activity')
 const Review = require('../models/review')
-const Episode = require('../models/episode')
-const Tvprogress = require('../models/tvprogress')
 
 const handleActivity = require('../functions/activities').handleActivity
 const validateProgress = require('../utils/progress-validation').validateProgress
@@ -188,32 +186,6 @@ usersRouter.post('/profile', async (req, res) => {
     profile.movielist = await UserHelper.getMovieList(profile, decodedToken)
 
     return res.status(200).json(profile)
-})
-
-usersRouter.post('/save_episode', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
-    const body = { ...req.body, user: decodedToken.id }
-
-    console.log(body)
-
-    const query = {
-        tvprogress_id: body.tvprogress_id,
-        episode_id: body.episode_id,
-        user: decodedToken.id
-    }
-
-    const episode_in_database = await Episode.findOne(query)
-    console.log(episode_in_database)
-
-    if (episode_in_database) {
-        const episode = await Episode.findByIdAndUpdate(episode_in_database.id, body, { new: true })
-        res.status(200).json(episode)
-    } else {
-        const episode = new Episode(body)
-        await episode.save().catch(err => console.error(err))
-        await Tvprogress.findByIdAndUpdate(body.tvprogress_id, { "$push": { "episodes": episode.id } }, { new: true })
-        res.status(200).json(episode)
-    }
 })
 
 usersRouter.post('/progress', async (req, res) => {

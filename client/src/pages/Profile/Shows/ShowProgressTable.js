@@ -1,23 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 
 import { useProfile } from '../../../context/profile'
 import userService from '../../../services/userService'
+import tvlistService from '../../../services/tvlistService'
 import DoubleUp from '../../../components/icons/DoubleUp'
 import DoubleDown from '../../../components/icons/DoubleDown'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
+import InputField from '../../../components/InputField'
 
 import '../ProgressTableRow.css'
 
-const EpisodeRow = ({ episode, show, odd }) => {
+const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
 
-    const watchtime = 0
+    const [toggled, setToggled] = useState(false)
 
-    const [toggled, setToggled] = useState(show.watch_progress[watchtime].episodes.some(x => x.episode_id === episode.id) ? show.watch_progress[watchtime].episodes.find(x => x.episode_id === episode.id).watched : false)
+    useEffect(() => {
+        setToggled(show.watch_progress[watchtime].episodes.some(x => x.episode_id === episode.id) ? show.watch_progress[watchtime].episodes.find(x => x.episode_id === episode.id).watched : false)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [watchtime, episode.id])
 
     const handleEpisode = (e) => {
         const episodeObj = {
@@ -25,7 +30,7 @@ const EpisodeRow = ({ episode, show, odd }) => {
             episode_id: episode.id,
             watched: !toggled,
         }
-        userService.saveEpisode(episodeObj)
+        tvlistService.saveEpisode(episodeObj)
 
         let showCopy = { ...show }
         if (showCopy.watch_progress[watchtime].episodes.some(ep => ep.tv_id === episode.id))
@@ -64,25 +69,90 @@ const EpisodeRow = ({ episode, show, odd }) => {
 const ExpandedTable = ({ show, odd }) => {
     const [season, setSeason] = useState(0)
     const { profile, setProfile } = useProfile()
+    const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
     const myProfile = userService.checkProfileOwnership(profile.id)
+    const [scoreField, setScoreField] = useState(show.score)
+    let watchtimeSelectOptions = []
+    for (let i = 0; i < show.watch_progress.length; i++)
+        watchtimeSelectOptions.push({ name: i + 1, value: i })
+
+    const handleScore = (e) => {
+        const score = getScore(+e.target.value)
+        tvlistService.saveScore(score, show.id)
+        let showCopy = { ...show }
+        showCopy.score = score
+
+        setProfile({
+            ...profile,
+            tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
+        })
+    }
+
+    const getScore = (score) => {
+        if (score > 100)
+            score = 100
+        if (score < 0)
+            score = 0
+        return score
+    }
+
+    const handleRewatch = () => {
+        if (window.confirm(`Are you sure you want to rewatch ${show.name}? You cannot delete the rewatch.`)) {
+            tvlistService.rewatch(show.watch_progress[show.watch_progress.length - 1])
+                .then(data => {
+                    let showCopy = { ...show }
+                    showCopy.watch_progress.push(data)
+                    setProfile({
+                        ...profile,
+                        tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
+                    })
+                })
+        }
+    }
+
     return (
         <>
             <tr
                 className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
                 style={{
-                    gridTemplateColumns: myProfile ? '6fr' : '6fr'
+                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '6fr'
                 }}
             >
-                <th>
+                <td className='flex justify-center items-center'>
                     <Select
+                        className='w-full'
                         value={season}
                         options={show.tv_info.seasons.map((x, i) => Object({ name: x.name, value: i }))}
                         onChange={(e) => { setSeason(+e.target.value) }}
                     />
-                </th>
+                </td>
+                <td className='flex justify-center items-center'>
+                    <Select
+                        value={watchtime}
+                        options={watchtimeSelectOptions}
+                        onChange={(e) => { setWatchtime(+e.target.value) }}
+                    />
+                </td>
+                <td className='flex justify-center items-center'>
+                    <InputField
+                        className='w-full text-center'
+                        type='number'
+                        value={scoreField}
+                        onBlur={handleScore}
+                        onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
+                    />
+                </td>
+                <td className='flex justify-center items-center'>
+                    <button
+                        onClick={handleRewatch}
+                        className='px-2 py-1 bg-indigo-500 text-white font-semibold rounded text-base hover:bg-indigo-600'
+                    >
+                        Rewatch
+                    </button>
+                </td>
             </tr>
             {
-                show.tv_info.seasons[season].episodes.map(episode => <EpisodeRow show={show} episode={episode} key={episode.id} odd={odd} />)
+                show.tv_info.seasons[season].episodes.map(episode => <EpisodeRow show={show} watchtime={watchtime} episode={episode} key={episode.id} odd={odd} />)
             }
         </>
     )
@@ -92,6 +162,7 @@ const TableRow = ({ show, odd }) => {
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
     const [expanded, setExpanded] = useState(false)
+    console.log(show)
     return (
         <>
             <tr
