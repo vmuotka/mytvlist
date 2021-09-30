@@ -41,7 +41,20 @@ const Shows = () => {
             //     }
             // })
 
-            planning.array = list
+            for (const show of list) {
+                const last = show.watch_progress[show.watch_progress.length - 1]
+
+                if (!show.watching)
+                    paused.array.push(show)
+                else if (last.episodes.every(ep => !ep.watched))
+                    planning.array.push(show)
+                else if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
+                    completed.array.push(show)
+                else if (last.episodes.filter(ep => ep.watched).length < show.tv_info.number_of_episodes)
+                    watching.array.push(show)
+            }
+
+            // planning.array = list
 
             setTvlist([
                 watching,
@@ -50,7 +63,7 @@ const Shows = () => {
                 paused
             ])
         }
-    }, [setTvlist, profile.tvlist])
+    }, [profile])
 
     useEffect(() => {
         if (tvlist) {

@@ -32,17 +32,21 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
         }
         tvlistService.saveEpisode(episodeObj)
 
+
         let showCopy = { ...show }
-        if (showCopy.watch_progress[watchtime].episodes.some(ep => ep.tv_id === episode.id))
-            showCopy.watch_progress[watchtime].episodes.map(ep => ep.tv_id === episode.id ? episodeObj : ep)
-        else
+        if (showCopy.watch_progress[watchtime].episodes.some(ep => ep.episode_id === episode.id))
+            showCopy.watch_progress[watchtime].episodes = showCopy.watch_progress[watchtime].episodes.map(ep => ep.episode_id === episode.id ? episodeObj : ep)
+        else {
             showCopy.watch_progress[watchtime].episodes.push(episodeObj)
+        }
 
         setProfile({
             ...profile,
-            tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
+            tvlist: profile.tvlist.map(list => +list.tv_info.id === +show.tv_info.id ? showCopy : list)
         })
         setToggled(episodeObj.watched)
+
+        console.log(show.watch_progress[watchtime].episodes.filter(ep => ep.watched).length)
     }
 
     return (
@@ -66,10 +70,9 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     )
 }
 
-const ExpandedTable = ({ show, odd }) => {
+const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
     const [season, setSeason] = useState(0)
     const { profile, setProfile } = useProfile()
-    const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
     const myProfile = userService.checkProfileOwnership(profile.id)
     const [scoreField, setScoreField] = useState(show.score)
     let watchtimeSelectOptions = []
@@ -115,7 +118,7 @@ const ExpandedTable = ({ show, odd }) => {
             <tr
                 className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
                 style={{
-                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '6fr'
+                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                 }}
             >
                 <td className='flex justify-center items-center'>
@@ -134,21 +137,21 @@ const ExpandedTable = ({ show, odd }) => {
                     />
                 </td>
                 <td className='flex justify-center items-center'>
-                    <InputField
+                    {myProfile && <InputField
                         className='w-full text-center'
                         type='number'
                         value={scoreField}
                         onBlur={handleScore}
                         onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
-                    />
+                    />}
                 </td>
                 <td className='flex justify-center items-center'>
-                    <button
+                    {myProfile && <button
                         onClick={handleRewatch}
                         className='px-2 py-1 bg-indigo-500 text-white font-semibold rounded text-base hover:bg-indigo-600'
                     >
                         Rewatch
-                    </button>
+                    </button>}
                 </td>
             </tr>
             {
@@ -162,13 +165,14 @@ const TableRow = ({ show, odd }) => {
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
     const [expanded, setExpanded] = useState(false)
-    console.log(show)
+    const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
+    // console.log(show)
     return (
         <>
             <tr
                 className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
                 style={{
-                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr'
+                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                 }}
             >
                 <td className='p-2 text-left flex items-center'>
@@ -187,20 +191,20 @@ const TableRow = ({ show, odd }) => {
                 <td className='justify-center items-center flex'>
                     {show.score}
                 </td>
-                {myProfile &&
-                    <td className='flex justify-center items-center'>
+                <td className='flex justify-center items-center'>
+                    {myProfile &&
                         <button
                             // onClick={handleWatchBtn}
                             className='px-2 py-1 bg-pink-500 text-white font-semibold rounded text-base hover:bg-pink-400'
                         >
                             Watch
                         </button>
-                    </td>
-                }
+                    }
+                </td>
             </tr>
             {
                 expanded &&
-                <ExpandedTable show={show} odd={odd} />
+                <ExpandedTable show={show} odd={odd} watchtime={watchtime} setWatchtime={setWatchtime} />
             }
         </>
     )
@@ -218,13 +222,13 @@ const ShowProgressTable = ({ tvlist }) => {
                         <tr
                             className='grid py-2'
                             style={{
-                                gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr'
+                                gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                             }}
                         >
                             <th className='flex items-center justify-center'>Title</th>
-                            <th className='flex items-center justify-center'>Times watched</th>
+                            <th className='flex items-center justify-center'>Watchtimes</th>
                             <th className='flex items-center justify-center'>Score</th>
-                            {myProfile && <th className='flex items-center justify-center'>Action</th>}
+                            <th className='flex items-center justify-center'>{myProfile ? 'Action' : 'Watched'}</th>
                         </tr>
                     </thead>
                     <tbody className='text-gray-700 bg-pink-150'>

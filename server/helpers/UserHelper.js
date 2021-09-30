@@ -34,8 +34,6 @@ const getTvList = async (profile, decodedToken) => {
 
     tvlist = JSON.parse(JSON.stringify(tvlist))
 
-    console.log(tvlist[0].watch_progress)
-
     for (let list of tvlist) {
         list.watch_progress.sort((a, b) => {
             return a.watch_time - b.watch_time
