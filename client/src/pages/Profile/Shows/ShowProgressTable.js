@@ -22,7 +22,7 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     useEffect(() => {
         setToggled(show.watch_progress[watchtime].episodes.some(x => x.episode_id === episode.id) ? show.watch_progress[watchtime].episodes.find(x => x.episode_id === episode.id).watched : false)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [watchtime, episode.id])
+    }, [watchtime, episode.id, show])
 
     const handleEpisode = (e) => {
         const episodeObj = {
@@ -45,8 +45,6 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
             tvlist: profile.tvlist.map(list => +list.tv_info.id === +show.tv_info.id ? showCopy : list)
         })
         setToggled(episodeObj.watched)
-
-        console.log(show.watch_progress[watchtime].episodes.filter(ep => ep.watched).length)
     }
 
     return (
@@ -166,7 +164,49 @@ const TableRow = ({ show, odd }) => {
     const myProfile = userService.checkProfileOwnership(profile.id)
     const [expanded, setExpanded] = useState(false)
     const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
-    // console.log(show)
+
+
+    const getNextEpisode = () => {
+        let last = show.watch_progress[watchtime]
+        let showCopy = { ...show }
+        let episodes = []
+        for (const season of showCopy.tv_info.seasons)
+            episodes = episodes.concat(season.episodes)
+
+        // just hope you never have to change anything in here
+        // in short, it searches if the user has watched each episode
+        episodes = episodes.map(ep => last.episodes.some(wep => wep.episode_id === ep.id) ? { ...ep, watched: last.episodes.find(wep => wep.episode_id === ep.id).watched } : { ...ep, watched: false })
+
+        episodes.reverse()
+
+        const nextEpisode = episodes[episodes.findIndex(ep => ep.watched) - 1]
+        return nextEpisode
+    }
+
+    const handleWatchNext = () => {
+        const episodeObj = {
+            tvprogress_id: show.watch_progress[watchtime].id,
+            episode_id: nextEpisode.id,
+            watched: true,
+        }
+        tvlistService.saveEpisode(episodeObj)
+
+
+        let showCopy = { ...show }
+        if (showCopy.watch_progress[watchtime].episodes.some(ep => ep.episode_id === nextEpisode.id))
+            showCopy.watch_progress[watchtime].episodes = showCopy.watch_progress[watchtime].episodes.map(ep => ep.episode_id === nextEpisode.id ? episodeObj : ep)
+        else {
+            showCopy.watch_progress[watchtime].episodes.push(episodeObj)
+        }
+
+        setProfile({
+            ...profile,
+            tvlist: profile.tvlist.map(list => +list.tv_info.id === +show.tv_info.id ? showCopy : list)
+        })
+    }
+
+    const nextEpisode = getNextEpisode()
+
     return (
         <>
             <tr
@@ -192,12 +232,12 @@ const TableRow = ({ show, odd }) => {
                     {show.score}
                 </td>
                 <td className='flex justify-center items-center'>
-                    {myProfile &&
+                    {(myProfile && nextEpisode) &&
                         <button
-                            // onClick={handleWatchBtn}
-                            className='px-2 py-1 bg-pink-500 text-white font-semibold rounded text-base hover:bg-pink-400'
+                            onClick={handleWatchNext}
+                            className='px-2 py-1 bg-indigo-500 text-white font-semibold rounded text-base hover:bg-indigo-600 flex justify-center items-center'
                         >
-                            Watch
+                            {nextEpisode && `S${nextEpisode.season_number} E${nextEpisode.episode_number}`}
                         </button>
                     }
                 </td>

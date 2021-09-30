@@ -26,20 +26,6 @@ const Shows = () => {
             let watching = { name: 'Watching', array: [] }
             let completed = { name: 'Completed', array: [] }
             let paused = { name: 'Paused', array: [] }
-            // list.forEach(show => {
-            //     if (show.progress[show.progress.length - 1].season >= show.tv_info.seasons.length && show.progress[show.progress.length - 1].episode < show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count) {
-            //         show.progress.season = show.tv_info.seasons.length - 1
-            //     }
-            //     if (show.progress[show.progress.length - 1].season === 0 && show.progress[show.progress.length - 1].episode === 0 && show.watching) {
-            //         planning.array.push(show)
-            //     } else if (show.watching && show.progress[show.progress.length - 1].season !== show.tv_info.seasons.length)
-            //         watching.array.push(show)
-            //     else if (show.progress[show.progress.length - 1].season === show.tv_info.seasons.length) {
-            //         completed.array.push(show)
-            //     } else if (!show.watching) {
-            //         paused.array.push(show)
-            //     }
-            // })
 
             for (const show of list) {
                 const last = show.watch_progress[show.watch_progress.length - 1]
@@ -53,8 +39,6 @@ const Shows = () => {
                 else if (last.episodes.filter(ep => ep.watched).length < show.tv_info.number_of_episodes)
                     watching.array.push(show)
             }
-
-            // planning.array = list
 
             setTvlist([
                 watching,
