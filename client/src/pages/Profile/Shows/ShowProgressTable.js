@@ -128,14 +128,14 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
                     />
                 </td>
                 <td className='flex justify-center items-center'>
-                    <Select
+                    {myProfile && <Select
                         value={show.watching}
                         options={[
                             { name: 'Watching', value: true },
                             { name: 'Paused', value: false }
                         ]}
                         onChange={handleWatchingChange}
-                    />
+                    />}
                 </td>
                 <td className='flex justify-center items-center'>
                     {myProfile && <button
