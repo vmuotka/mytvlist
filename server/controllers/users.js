@@ -198,7 +198,8 @@ usersRouter.post('/progress', async (req, res) => {
     else if (score > 100)
         score = 100
 
-    let progress = body.progress
+    // let progress = body.progress
+    let watch_progress = body.watch_progress
 
     let show
     try {
@@ -209,33 +210,33 @@ usersRouter.post('/progress', async (req, res) => {
     }
     show.seasons = show.seasons.filter(season => season.name !== 'Specials')
 
-    progress.forEach(obj => {
-        obj = validateProgress(obj, show)
-    })
+    // progress.forEach(obj => {
+    //     obj = validateProgress(obj, show)
+    // })
 
-    if (progress[progress.length - 1].season === show.number_of_seasons && progress[progress.length - 1].episode === show.seasons[show.seasons.length - 1].episode_count) {
-        handleActivity({
-            user: decodedToken.id,
-            desc: `finished ${show.name}`
-        })
-    }
+    // if (progress[progress.length - 1].season === show.number_of_seasons && progress[progress.length - 1].episode === show.seasons[show.seasons.length - 1].episode_count) {
+    //     handleActivity({
+    //         user: decodedToken.id,
+    //         desc: `finished ${show.name}`
+    //     })
+    // }
 
     try {
         let tvlist = await Tvlist.findOne({ _id: body.id, user: decodedToken.id })
-        if (progress.length > tvlist.progress.length) {
-            handleActivity({
-                desc: `started rewatching ${show.name}.`,
-                user: decodedToken.id
-            })
-        }
+        // if (progress.length > tvlist.progress.length) {
+        //     handleActivity({
+        //         desc: `started rewatching ${show.name}.`,
+        //         user: decodedToken.id
+        //     })
+        // }
 
-        handleActivity({
-            tv_id: body.tv_id,
-            desc: `watched ${show.name}: Season ${Math.min(progress[progress.length - 1].season + 1, show.number_of_seasons)} Episode ${progress[progress.length - 1].episode}.`,
-            user: decodedToken.id
-        })
+        // handleActivity({
+        //     tv_id: body.tv_id,
+        //     desc: `watched ${show.name}: Season ${Math.min(progress[progress.length - 1].season + 1, show.number_of_seasons)} Episode ${progress[progress.length - 1].episode}.`,
+        //     user: decodedToken.id
+        // })
 
-        tvlist.progress = progress
+        // tvlist.progress = progress
         tvlist.watching = body.watching
         tvlist.score = body.score
         await tvlist.save()

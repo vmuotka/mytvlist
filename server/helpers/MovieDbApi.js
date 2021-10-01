@@ -153,7 +153,7 @@ const getTvDetails = async (showlist, decodedToken) => {
 }
 
 const getTvDetailsWithProgress = async (tvlist, decodedToken) => {
-    const requests = tvlist.map(item => api(`${baseUrl}/tv/${item.tv_id}?api_key=${process.env.MOVIEDB_API}`))
+    const requests = tvlist.map(item => api(`${baseUrl}/tv/${item.tv_id}?append_to_response=season&api_key=${API_KEY}`))
 
     let tvlistArr
     if (decodedToken !== undefined)
@@ -176,6 +176,19 @@ const getTvDetailsWithProgress = async (tvlist, decodedToken) => {
                 listItem.tv_info = show
             })
         }))
+
+    for await (const listItem of tvlist) {
+        const season_requests = listItem.tv_info.seasons.map(season => api(`${baseUrl}/tv/${listItem.tv_id}/season/${season.season_number}?api_key=${API_KEY}`))
+
+        await axios.all(season_requests)
+            .then(axios.spread(async (...responses) => {
+                const seasons = responses.map(response => response.data)
+                listItem.tv_info.seasons = seasons
+            }))
+            .catch(err => {
+                console.error(err)
+            })
+    }
 
     return tvlist
 }
