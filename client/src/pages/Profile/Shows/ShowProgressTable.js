@@ -72,30 +72,10 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
     const [season, setSeason] = useState(0)
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
-    const [scoreField, setScoreField] = useState(show.score)
     let watchtimeSelectOptions = []
     for (let i = 0; i < show.watch_progress.length; i++)
         watchtimeSelectOptions.push({ name: i + 1, value: i })
 
-    const handleScore = (e) => {
-        const score = getScore(+e.target.value)
-        tvlistService.saveScore(score, show.id)
-        let showCopy = { ...show }
-        showCopy.score = score
-
-        setProfile({
-            ...profile,
-            tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
-        })
-    }
-
-    const getScore = (score) => {
-        if (score > 100)
-            score = 100
-        if (score < 0)
-            score = 0
-        return score
-    }
 
     const handleRewatch = () => {
         if (window.confirm(`Are you sure you want to rewatch ${show.name}? You cannot delete the rewatch.`)) {
@@ -109,6 +89,19 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
                     })
                 })
         }
+    }
+
+    const handleWatchingChange = (e) => {
+        const value = JSON.parse(e.target.value)
+        tvlistService.saveWatching(value, show.tv_id)
+            .then(data => {
+                let showCopy = { ...show }
+                showCopy.watching = data.watching
+                setProfile({
+                    ...profile,
+                    tvlist: profile.tvlist.map(list => list.tv_id === showCopy.tv_id ? showCopy : list)
+                })
+            })
     }
 
     return (
@@ -135,13 +128,14 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
                     />
                 </td>
                 <td className='flex justify-center items-center'>
-                    {myProfile && <InputField
-                        className='w-full text-center'
-                        type='number'
-                        value={scoreField}
-                        onBlur={handleScore}
-                        onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
-                    />}
+                    <Select
+                        value={show.watching}
+                        options={[
+                            { name: 'Watching', value: true },
+                            { name: 'Paused', value: false }
+                        ]}
+                        onChange={handleWatchingChange}
+                    />
                 </td>
                 <td className='flex justify-center items-center'>
                     {myProfile && <button
@@ -164,6 +158,28 @@ const TableRow = ({ show, odd }) => {
     const myProfile = userService.checkProfileOwnership(profile.id)
     const [expanded, setExpanded] = useState(false)
     const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
+    const [scoreField, setScoreField] = useState(show.score)
+
+
+    const handleScore = (e) => {
+        const score = getScore(+e.target.value)
+        tvlistService.saveScore(score, show.id)
+        let showCopy = { ...show }
+        showCopy.score = score
+
+        setProfile({
+            ...profile,
+            tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? showCopy : list)
+        })
+    }
+
+    const getScore = (score) => {
+        if (score > 100)
+            score = 100
+        if (score < 0)
+            score = 0
+        return score
+    }
 
 
     const getNextEpisode = () => {
@@ -229,7 +245,13 @@ const TableRow = ({ show, odd }) => {
                 </td>
                 <td className='flex justify-center items-center '>{show.watch_progress.length}</td>
                 <td className='justify-center items-center flex'>
-                    {show.score}
+                    {myProfile && <InputField
+                        className='w-full text-center'
+                        type='number'
+                        value={scoreField}
+                        onBlur={handleScore}
+                        onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
+                    />}
                 </td>
                 <td className='flex justify-center items-center'>
                     {(myProfile && nextEpisode) &&

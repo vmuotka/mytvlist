@@ -47,10 +47,22 @@ const rewatch = async (watch_progress) => {
     return res.data
 }
 
+const saveWatching = async (watching, tv_id) => {
+    const tokenObj = getToken()
+    let config = {}
+    const token = `bearer ${tokenObj.token}`
+    config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/save_watching`, { watching, tv_id }, config)
+    return res.data
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     addToList,
     saveEpisode,
     saveScore,
-    rewatch
+    rewatch,
+    saveWatching
 }
