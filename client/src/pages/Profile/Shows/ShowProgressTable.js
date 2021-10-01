@@ -160,6 +160,10 @@ const TableRow = ({ show, odd }) => {
     const [watchtime, setWatchtime] = useState(show.watch_progress.length - 1)
     const [scoreField, setScoreField] = useState(show.score)
 
+    useEffect(() => {
+        setWatchtime(show.watch_progress.length - 1)
+    }, [show.watch_progress.length])
+
 
     const handleScore = (e) => {
         const score = getScore(+e.target.value)
@@ -195,7 +199,9 @@ const TableRow = ({ show, odd }) => {
 
         episodes.reverse()
 
-        const nextEpisode = episodes[episodes.findIndex(ep => ep.watched) - 1]
+        console.log(episodes.findIndex(ep => ep.watched) - 1)
+
+        const nextEpisode = (episodes.findIndex(ep => ep.watched) - 1) > -2 ? episodes[episodes.findIndex(ep => ep.watched) - 1] : episodes[episodes.length - 1]
         return nextEpisode
     }
 
