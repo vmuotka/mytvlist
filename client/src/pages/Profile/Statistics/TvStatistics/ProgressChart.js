@@ -17,15 +17,18 @@ const ProgressChart = () => {
             let completed = { name: 'Completed', value: 0 }
             let paused = { name: 'Paused', value: 0 }
             list.forEach(show => {
-                if (show.progress[0].season === 0 && show.progress[0].episode === 0 && show.watching) {
-                    planning.value += 1
-                } else if (show.watching && show.progress[show.progress.length - 1].season !== show.tv_info.seasons.length)
-                    watching.value += 1
-                else if (show.progress[show.progress.length - 1].season === show.tv_info.seasons.length) {
+                const watchtime = show.watch_progress[show.watch_progress.length - 1]
+                const progress = watchtime.episodes.filter(ep => ep.watched)
+
+                if (progress.length === show.tv_info.number_of_episodes)
                     completed.value += 1
-                } else if (!show.watching) {
+                else if (!show.watching)
                     paused.value += 1
-                }
+                else if (progress.length === 0)
+                    planning.value += 1
+                else if (progress.length < show.tv_info.number_of_episodes)
+                    watching.value += 1
+
             })
 
             setProgress([

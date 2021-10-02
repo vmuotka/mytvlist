@@ -14,13 +14,9 @@ const ProgressChart = () => {
             let genres = []
             profile.tvlist.forEach((show) => {
                 let w = 0
-                const progressArray = [...show.progress]
+                const progressArray = [...show.watch_progress]
                 progressArray.forEach(progress => {
-                    for (let i = 0; i < progress.season; i++) {
-                        w += show.tv_info.seasons[i].episode_count
-                    }
-                    if (progress.season !== show.tv_info.seasons.length)
-                        w += progress.episode
+                    w += progress.episodes.filter(ep => ep.watched).length
                 })
 
                 let minutes = w * +show.tv_info.episode_run_time[0]
