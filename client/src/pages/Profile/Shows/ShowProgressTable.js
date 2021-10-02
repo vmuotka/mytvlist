@@ -311,29 +311,35 @@ const ShowProgressTable = ({ tvlist, name }) => {
     }
 
     const handleEditModeComplete = (complete) => {
+        let tvlistCopy = [...profile.tvlist]
         for (const show of editSelection) {
             for (const season of show.tv_info.seasons) {
                 for (const episode of season.episodes) {
-                    saveEpisode(show, episode, complete)
+                    const showCopy = saveEpisode(show, episode, complete)
+                    tvlistCopy = tvlistCopy.map(list => list.tv_id === showCopy.tv_id ? showCopy : list)
                 }
             }
         }
+        setProfile({
+            ...profile,
+            tvlist: tvlistCopy
+        })
         setEditSelection([])
         setEditMode(false)
     }
 
-    const handleEditModeWatching = () => {
+    const handleEditModeWatching = async () => {
+        let tvlistCopy = [...profile.tvlist]
         for (const show of editSelection) {
-            tvlistService.saveWatching(!show.watching, show.tv_id)
-                .then(data => {
-                    let showCopy = { ...show }
-                    showCopy.watching = data.watching
-                    setProfile({
-                        ...profile,
-                        tvlist: profile.tvlist.map(list => list.tv_id === showCopy.tv_id ? showCopy : list)
-                    })
-                })
+            const data = await tvlistService.saveWatching(!show.watching, show.tv_id)
+            let showCopy = { ...show }
+            showCopy.watching = data.watching
+            tvlistCopy = tvlistCopy.map(list => list.tv_id === showCopy.tv_id ? showCopy : list)
         }
+        setProfile({
+            ...profile,
+            tvlist: tvlistCopy
+        })
         setEditSelection([])
         setEditMode(false)
     }
@@ -354,11 +360,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
         else {
             showCopy.watch_progress[watchtime].episodes.push(episodeObj)
         }
-
-        setProfile({
-            ...profile,
-            tvlist: profile.tvlist.map(list => +list.tv_info.id === +show.tv_info.id ? showCopy : list)
-        })
+        return showCopy
     }
 
     if (tvlist.length > 0)
