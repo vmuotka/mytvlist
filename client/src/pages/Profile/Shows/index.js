@@ -30,12 +30,13 @@ const Shows = () => {
             for (const show of list) {
                 const last = show.watch_progress[show.watch_progress.length - 1]
 
-                if (!show.watching)
+                if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
+                    completed.array.push(show)
+                else if (!show.watching)
                     paused.array.push(show)
                 else if (last.episodes.every(ep => !ep.watched))
                     planning.array.push(show)
-                else if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
-                    completed.array.push(show)
+
                 else if (last.episodes.filter(ep => ep.watched).length < show.tv_info.number_of_episodes)
                     watching.array.push(show)
             }
@@ -81,7 +82,7 @@ const Shows = () => {
                 {
                     (filteredList) ?
                         filteredList.map((list) =>
-                            <ShowProgressTable id={list.name} key={list.name} tvlist={list.array} />
+                            <ShowProgressTable name={list.name} key={list.name} tvlist={list.array} />
                         ) : <Spinner className='mx-auto mt-10' color='bg-pink-500' show={true} />
                 }
                 {(filteredList && filteredList[0].array.length === 0 && filteredList[1].array.length === 0 && filteredList[2].array.length === 0 && filteredList[3].array.length === 0) ? <p className='text-lg text-gray-700'>This user has no shows on their list.</p> : null}
