@@ -11,6 +11,7 @@ import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
 import Button from '../../../components/Button'
+import Pagination from '../../../components/Pagination'
 
 import '../ProgressTableRow.css'
 
@@ -293,6 +294,9 @@ const ShowProgressTable = ({ tvlist, name }) => {
     const [editMode, setEditMode] = useState(false)
     const [editSelection, setEditSelection] = useState([])
 
+    const [currentPage, setCurrentPage] = useState(1)
+    const showsPerPage = 10
+
     const handleEditSelect = (show) => {
         const found = editSelection.some(sel => sel.tv_id === show.tv_id)
         if (!found) {
@@ -359,45 +363,50 @@ const ShowProgressTable = ({ tvlist, name }) => {
 
     if (tvlist.length > 0)
         return (
-            <div className='overflow-x-auto'>
-                <div className='my-1'>
-                    <h2 className='text-gray-600 text-xl mr-4' id={name}>{name} ({tvlist.length} show{tvlist.length > 1 && 's'})</h2>
-                    {myProfile && <div className='flex gap-4'>
-                        <span className='flex gap-2'>
-                            <ToggleButton
-                                toggled={editMode}
-                                onClick={() => { setEditMode(!editMode) }}
-                            />
-                            <span className='flex items-center'>EditMode</span>
-                        </span>
-                        <div className={`flex gap-2 max-w-0 overflow-hidden transition-all duration-200 delay-100 ${editMode && 'max-w-full'}`}>
-                            <Button className='px-2 py-1' value='Complete' onClick={() => { handleEditModeComplete(true) }} />
-                            <Button className='px-2 py-1' value='Reset' onClick={() => { handleEditModeComplete(false) }} />
-                            <Button className='px-2 py-1' value='Pause/Unpause' onClick={handleEditModeWatching} />
-                        </div>
-                    </div>}
+            <>
+                <div className='overflow-x-auto'>
+                    <div className='my-1'>
+                        <h2 className='text-gray-600 text-xl mr-4' id={name}>{name} ({tvlist.length} show{tvlist.length > 1 && 's'})</h2>
+                        {myProfile && <div className='flex gap-4'>
+                            <span className='flex gap-2'>
+                                <ToggleButton
+                                    toggled={editMode}
+                                    onClick={() => { setEditMode(!editMode) }}
+                                />
+                                <span className='flex items-center'>EditMode</span>
+                            </span>
+                            <div className={`flex gap-2 max-w-0 overflow-hidden transition-all duration-200 delay-100 ${editMode && 'max-w-full'}`}>
+                                <Button className='px-2 py-1' value='Complete' onClick={() => { handleEditModeComplete(true) }} />
+                                <Button className='px-2 py-1' value='Reset' onClick={() => { handleEditModeComplete(false) }} />
+                                <Button className='px-2 py-1' value='Pause/Unpause' onClick={handleEditModeWatching} />
+                            </div>
+                        </div>}
+                    </div>
+                    <table className='w-full table-auto' style={{ minWidth: '500px' }}>
+                        <thead className='bg-pink-400 text-white md:text-xl'>
+                            <tr
+                                className='grid py-2'
+                                style={{
+                                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
+                                }}
+                            >
+                                <th className='flex items-center justify-center'>Title</th>
+                                <th className='flex items-center justify-center'>Watchtimes</th>
+                                <th className='flex items-center justify-center'>Score</th>
+                                <th className='flex items-center justify-center'>{myProfile ? 'Action' : 'Watched'}</th>
+                            </tr>
+                        </thead>
+                        <tbody className='text-gray-700 bg-pink-150'>
+                            {tvlist.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show, index) =>
+                                <TableRow editMode={editMode} handleEditSelect={handleEditSelect} editSelection={editSelection} key={show.tv_info.id.toString()} odd={index % 2 === 0} show={show} />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
-                <table className='w-full table-auto' style={{ minWidth: '500px' }}>
-                    <thead className='bg-pink-400 text-white md:text-xl'>
-                        <tr
-                            className='grid py-2'
-                            style={{
-                                gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
-                            }}
-                        >
-                            <th className='flex items-center justify-center'>Title</th>
-                            <th className='flex items-center justify-center'>Watchtimes</th>
-                            <th className='flex items-center justify-center'>Score</th>
-                            <th className='flex items-center justify-center'>{myProfile ? 'Action' : 'Watched'}</th>
-                        </tr>
-                    </thead>
-                    <tbody className='text-gray-700 bg-pink-150'>
-                        {tvlist.map((show, index) =>
-                            <TableRow editMode={editMode} handleEditSelect={handleEditSelect} editSelection={editSelection} key={show.tv_info.id.toString()} odd={index % 2 === 0} show={show} />
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                {(tvlist.length / showsPerPage) > 1 &&
+                    <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(tvlist.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
+                }
+            </>
         )
     else
         return (
