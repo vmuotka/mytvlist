@@ -363,6 +363,13 @@ const ShowProgressTable = ({ tvlist, name }) => {
         return showCopy
     }
 
+    const sliceListWithoutEditMode = (tvlist) => {
+        if (!editMode)
+            return tvlist.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage)
+        else
+            return tvlist
+    }
+
     if (tvlist.length > 0)
         return (
             <>
@@ -399,13 +406,13 @@ const ShowProgressTable = ({ tvlist, name }) => {
                             </tr>
                         </thead>
                         <tbody className='text-gray-700 bg-pink-150'>
-                            {tvlist.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show, index) =>
+                            {sliceListWithoutEditMode(tvlist).map((show, index) =>
                                 <TableRow editMode={editMode} handleEditSelect={handleEditSelect} editSelection={editSelection} key={show.tv_info.id.toString()} odd={index % 2 === 0} show={show} />
                             )}
                         </tbody>
                     </table>
                 </div>
-                {(tvlist.length / showsPerPage) > 1 &&
+                {((tvlist.length / showsPerPage) > 1 && !editMode) &&
                     <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(tvlist.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
                 }
             </>
