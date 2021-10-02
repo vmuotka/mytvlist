@@ -199,8 +199,6 @@ const TableRow = ({ show, odd }) => {
 
         episodes.reverse()
 
-        console.log(episodes.findIndex(ep => ep.watched) - 1)
-
         const nextEpisode = (episodes.findIndex(ep => ep.watched) - 1) > -2 ? episodes[episodes.findIndex(ep => ep.watched) - 1] : episodes[episodes.length - 1]
         return nextEpisode
     }
