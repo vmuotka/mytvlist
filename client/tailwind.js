@@ -19,6 +19,9 @@ module.exports = {
                     900: '#702459',
                 },
 
+            },
+            maxHeight: {
+                'enough': '480rem'
             }
         },
     },
