@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ordinal from 'ordinal'
 
 
 import { useProfile } from '../../../context/profile'
@@ -7,6 +8,7 @@ import userService from '../../../services/userService'
 import tvlistService from '../../../services/tvlistService'
 import DoubleUp from '../../../components/icons/DoubleUp'
 import DoubleDown from '../../../components/icons/DoubleDown'
+import DoubleRight from '../../../components/icons/DoubleRight'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -258,7 +260,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                     }
                     <Link to={`/show/${show.tv_info.id}`} className='ml-6'>{show.tv_info.name}</Link>
                 </td>
-                <td className='flex justify-center items-center '>{show.watch_progress.length}</td>
+                <td className='flex justify-center items-center '>{ordinal(show.watch_progress.length)}</td>
                 <td className='justify-center items-center flex'>
                     {myProfile && <InputField
                         className='w-full text-center'
@@ -269,13 +271,14 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                     />}
                 </td>
                 <td className='flex justify-center items-center'>
-                    {(myProfile && nextEpisode) &&
+                    {(myProfile && nextEpisode) ?
                         <button
                             onClick={handleWatchNext}
                             className='px-2 py-1 bg-indigo-500 text-white font-semibold rounded text-base hover:bg-indigo-600 flex justify-center items-center'
                         >
                             {nextEpisode && `S${nextEpisode.season_number} E${nextEpisode.episode_number}`}
-                        </button>
+                        </button> :
+                        nextEpisode && `S${nextEpisode.season_number} E${nextEpisode.episode_number}`
                     }
                 </td>
             </tr>
@@ -400,9 +403,9 @@ const ShowProgressTable = ({ tvlist, name }) => {
                                 }}
                             >
                                 <th className='flex items-center justify-center'>Title</th>
-                                <th className='flex items-center justify-center'>Watchtimes</th>
+                                <th className='flex items-center justify-center'>Watchtime</th>
                                 <th className='flex items-center justify-center'>Score</th>
-                                <th className='flex items-center justify-center'>{myProfile ? 'Action' : 'Watched'}</th>
+                                <th className='flex items-center justify-center' title='Next Episode'><DoubleRight className='h-7' /></th>
                             </tr>
                         </thead>
                         <tbody className='text-gray-700 bg-pink-150'>
