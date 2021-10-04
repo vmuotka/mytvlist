@@ -72,13 +72,17 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     )
 }
 
-const ExpandedTable = ({ show, odd, watchtime, setWatchtime }) => {
-    const [season, setSeason] = useState(0)
+const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
+    const [season, setSeason] = useState(nextEpisode ? nextEpisode.season_number - 1 : show.tv_info.seasons.length - 1)
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
     let watchtimeSelectOptions = []
     for (let i = 0; i < show.watch_progress.length; i++)
         watchtimeSelectOptions.push({ name: i + 1, value: i })
+
+    useEffect(() => {
+        setSeason(nextEpisode ? nextEpisode.season_number - 1 : show.tv_info.seasons.length - 1)
+    }, [nextEpisode, show.tv_info])
 
 
     const handleRewatch = () => {
@@ -284,7 +288,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
             </tr>
             {
                 expanded &&
-                <ExpandedTable show={show} odd={odd} watchtime={watchtime} setWatchtime={setWatchtime} />
+                <ExpandedTable nextEpisode={nextEpisode} show={show} odd={odd} watchtime={watchtime} setWatchtime={setWatchtime} />
             }
         </>
     )
