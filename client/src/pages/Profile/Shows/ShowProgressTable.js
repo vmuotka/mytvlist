@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ordinal from 'ordinal'
 
 
 import { useProfile } from '../../../context/profile'
@@ -259,7 +260,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                     }
                     <Link to={`/show/${show.tv_info.id}`} className='ml-6'>{show.tv_info.name}</Link>
                 </td>
-                <td className='flex justify-center items-center '>{show.watch_progress.length}</td>
+                <td className='flex justify-center items-center '>{ordinal(show.watch_progress.length)}</td>
                 <td className='justify-center items-center flex'>
                     {myProfile && <InputField
                         className='w-full text-center'
@@ -402,7 +403,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
                                 }}
                             >
                                 <th className='flex items-center justify-center'>Title</th>
-                                <th className='flex items-center justify-center'>Watchtimes</th>
+                                <th className='flex items-center justify-center'>Watchtime</th>
                                 <th className='flex items-center justify-center'>Score</th>
                                 <th className='flex items-center justify-center' title='Next Episode'><DoubleRight className='h-7' /></th>
                             </tr>
