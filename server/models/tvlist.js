@@ -19,7 +19,7 @@ const tvlistSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    // progress: [],
+    progress: [],
     watch_progress: [
         {
             type: Schema.Types.ObjectId, ref: 'Tvprogress',
