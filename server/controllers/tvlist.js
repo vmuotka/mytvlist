@@ -152,4 +152,18 @@ tvlistRouter.post('/save_watching', async (req, res) => {
     }
 })
 
+tvlistRouter.post('/save_pinned', async (req, res) => {
+    const decodedToken = UserHelper.decodeToken(req.token)
+    const body = req.body
+
+    try {
+        const tvlist = await Tvlist.findOneAndUpdate({ user: decodedToken.id, tv_id: body.tv_id }, { pinned: body.pinned }, { new: true })
+        res.status(200).json(tvlist)
+        return
+    } catch (err) {
+        console.error(err)
+        res.status(500).json(err)
+        return
+    }
+})
 module.exports = tvlistRouter
