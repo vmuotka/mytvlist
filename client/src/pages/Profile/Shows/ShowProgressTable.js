@@ -280,7 +280,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
             >
                 <td className='p-2 text-left flex items-center'>
                     {!editMode ? <div
-                        className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center ${myProfile && 'progress-image'}`}
+                        className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center progress-image`}
                         style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
                     >
                         <button onClick={() => setExpanded(!expanded)}
