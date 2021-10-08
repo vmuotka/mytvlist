@@ -177,18 +177,21 @@ const getTvDetailsWithProgress = async (tvlist, decodedToken) => {
             })
         }))
 
+    let season_requests = []
     for await (const listItem of tvlist) {
-        const season_requests = listItem.tv_info.seasons.map(season => api(`${baseUrl}/tv/${listItem.tv_id}/season/${season.season_number}?api_key=${API_KEY}`))
-
-        await axios.all(season_requests)
-            .then(axios.spread(async (...responses) => {
-                const seasons = responses.map(response => response.data)
-                listItem.tv_info.seasons = seasons
-            }))
-            .catch(err => {
-                console.error(err)
-            })
+        season_requests.push(...listItem.tv_info.seasons.map(season => api(`${baseUrl}/tv/${listItem.tv_id}/season/${season.season_number}?api_key=${API_KEY}`)))
     }
+    await axios.all(season_requests)
+        .then(axios.spread(async (...responses) => {
+            const seasons = responses.map(response => new Object({ data: response.data, tv_id: +response.request.path.split('/')[3] }))
+            // console.log(seasons)
+            for await (let list of tvlist) {
+                list.tv_info.seasons = seasons.filter(season => season.tv_id === list.tv_id).map(season => season.data)
+            }
+        }))
+        .catch(err => {
+            console.error(err)
+        })
 
     return tvlist
 }
