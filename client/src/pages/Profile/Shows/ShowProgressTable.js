@@ -87,7 +87,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
 
 
     const handleRewatch = () => {
-        if (window.confirm(`Are you sure you want to rewatch ${show.name}? You cannot delete the rewatch.`)) {
+        if (window.confirm(`Are you sure you want to rewatch "${show.tv_info.name}"? You cannot delete the rewatch.`)) {
             tvlistService.rewatch(show.watch_progress[show.watch_progress.length - 1])
                 .then(data => {
                     let showCopy = { ...show }
