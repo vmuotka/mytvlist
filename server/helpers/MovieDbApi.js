@@ -16,10 +16,6 @@ const api = axios.create({
     adapter: cache.adapter
 })
 
-const Tv = async (id) => {
-
-}
-
 const getTvRecommendations = async (startIndex, endIndex, decodedToken) => {
     let tvlist = await Tvlist.find({ user: decodedToken.id })
     tvlist.sort((a, b) => {
@@ -173,7 +169,7 @@ const getTvDetailsWithProgress = async (tvlist, decodedToken) => {
                     }
                 }
 
-                listItem.tv_info = show
+                listItem.tv_info = stripShow(show)
             })
         }))
 
@@ -184,9 +180,8 @@ const getTvDetailsWithProgress = async (tvlist, decodedToken) => {
     await axios.all(season_requests)
         .then(axios.spread(async (...responses) => {
             const seasons = responses.map(response => new Object({ data: response.data, tv_id: +response.request.path.split('/')[3] }))
-            // console.log(seasons)
             for await (let list of tvlist) {
-                list.tv_info.seasons = seasons.filter(season => season.tv_id === list.tv_id).map(season => season.data)
+                list.tv_info.seasons = seasons.filter(season => season.tv_id === list.tv_id).map(season => stripSeason(season.data))
             }
         }))
         .catch(err => {
@@ -283,6 +278,44 @@ const createDateString = () => {
     date = date[2] + '-' + date[0] + '-' + date[1]
 
     return date
+}
+
+const stripSeason = (season) => {
+    delete season._id
+    delete season.air_date
+    delete season.overview
+    delete season.poster_path
+
+    for (const episode of season.episodes) {
+        delete episode.air_date
+        delete episode.crew
+        delete episode.guest_stars
+        delete episode.overview
+        delete episode.production_code
+        delete episode.still_path
+        delete episode.vote_average
+        delete episode.vote_count
+    }
+    return season
+}
+
+const stripShow = (show) => {
+    delete show.backdrop_path
+    delete show.created_by
+    delete show.homepage
+    delete show.in_production
+    delete show.last_episode_to_air
+    delete show.next_episode_to_air
+    delete show.networks
+    delete show.origin_language
+    delete show.original_name
+    delete show.production_countries
+    delete show.spoken_languages
+    delete show.tagline
+    delete show.vote_average
+    delete show.vote_count
+
+    return show
 }
 
 module.exports = {
