@@ -22,6 +22,7 @@ const Shows = () => {
     useEffect(() => {
         if (profile.tvlist) {
             let list = [...profile.tvlist]
+            let pinned = { name: 'Pinned', array: [] }
             let planning = { name: 'Planning', array: [] }
             let watching = { name: 'Watching', array: [] }
             let completed = { name: 'Completed', array: [] }
@@ -30,7 +31,9 @@ const Shows = () => {
             for (const show of list) {
                 const last = show.watch_progress[show.watch_progress.length - 1]
 
-                if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
+                if (show.pinned)
+                    pinned.array.push(show)
+                else if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
                     completed.array.push(show)
                 else if (!show.watching)
                     paused.array.push(show)
@@ -42,6 +45,7 @@ const Shows = () => {
             }
 
             setTvlist([
+                pinned,
                 watching,
                 completed,
                 planning,

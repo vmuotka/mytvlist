@@ -9,6 +9,7 @@ import tvlistService from '../../../services/tvlistService'
 import DoubleUp from '../../../components/icons/DoubleUp'
 import DoubleDown from '../../../components/icons/DoubleDown'
 import DoubleRight from '../../../components/icons/DoubleRight'
+import Star from '../../../components/icons/Star'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -112,6 +113,19 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
             })
     }
 
+    const handlePin = () => {
+        tvlistService.pinShow(!show.pinned, show.tv_id)
+            .then(data => {
+                const showCopy = { ...show }
+                showCopy.pinned = data.pinned
+                setProfile({
+                    ...profile,
+                    tvlist: profile.tvlist.map(list => list.id === showCopy.id ? showCopy : list)
+                })
+            })
+
+    }
+
     return (
         <>
             <tr
@@ -120,7 +134,16 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                     gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                 }}
             >
-                <td className='flex justify-center items-center'>
+                <td className='flex gap-2 justify-center items-center'>
+                    {myProfile &&
+                        <button
+                            className='ml-2 focus:outline-none'
+                            title={`${show.pinned ? 'Unpin show from top' : 'Pin show to top'}`}
+                            onClick={handlePin}
+                        >
+                            <Star className='h-6' filled={show.pinned} />
+                        </button>
+                    }
                     <Select
                         className='w-full'
                         value={season}

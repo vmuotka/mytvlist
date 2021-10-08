@@ -15,6 +15,9 @@ const tvlistSchema = new mongoose.Schema({
     listed: {
         type: Boolean
     },
+    pinned: {
+        type: Boolean
+    },
     tv_id: {
         type: Number,
         required: true
