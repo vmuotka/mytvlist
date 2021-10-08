@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import ordinal from 'ordinal'
 
@@ -82,7 +82,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
 
     useEffect(() => {
         setSeason(nextEpisode ? nextEpisode.season_number - 1 : show.tv_info.seasons.length - 1)
-    }, [nextEpisode, show.tv_info])
+    }, [nextEpisode, show.tv_info.seasons.length])
 
 
     const handleRewatch = () => {
@@ -198,7 +198,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
     }
 
 
-    const getNextEpisode = () => {
+    const getNextEpisode = useCallback(() => {
         let last = show.watch_progress[watchtime]
         let showCopy = { ...show }
         let episodes = []
@@ -213,7 +213,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
 
         const nextEpisode = (episodes.findIndex(ep => ep.watched) - 1) > -2 ? episodes[episodes.findIndex(ep => ep.watched) - 1] : episodes[episodes.length - 1]
         return nextEpisode
-    }
+    }, [show, watchtime])
 
     const handleWatchNext = () => {
         const episodeObj = {
@@ -237,7 +237,15 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
         })
     }
 
-    const nextEpisode = getNextEpisode()
+    const [nextEpisode, setNextEpisode] = useState(getNextEpisode())
+
+    useEffect(() => {
+        if (nextEpisode && getNextEpisode())
+            nextEpisode.id !== getNextEpisode().id && setNextEpisode(getNextEpisode())
+        else
+            setNextEpisode(getNextEpisode())
+
+    }, [show.watch_progress, getNextEpisode, nextEpisode])
 
     return (
         <>
