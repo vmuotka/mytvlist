@@ -12,6 +12,8 @@ import DoubleRight from '../../../components/icons/DoubleRight'
 import Star from '../../../components/icons/Star'
 import SortAsc from '../../../components/icons/SortAsc'
 import SortDesc from '../../../components/icons/SortDesc'
+import ArrowLeft from '../../../components/icons/ArrowLeft'
+import ArrowRight from '../../../components/icons/ArrowRight'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -153,6 +155,18 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                         options={show.tv_info.seasons.map((x, i) => Object({ name: x.name, value: i }))}
                         onChange={(e) => { setSeason(+e.target.value) }}
                     />
+                    <button
+                        className='text-indigo-500 focus:outline-none season-btn'
+                        onClick={() => { setSeason(current => Math.max(0, current - 1)) }}
+                    >
+                        <ArrowLeft className='h-6' />
+                    </button>
+                    <button
+                        className='text-indigo-500 focus:outline-none season-btn mr-2'
+                        onClick={() => { setSeason(current => Math.min(show.tv_info.seasons.length - 1, current + 1)) }}
+                    >
+                        <ArrowRight className='h-6' />
+                    </button>
                 </td>
                 <td className='flex justify-center items-center'>
                     <Select
