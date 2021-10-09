@@ -10,3 +10,12 @@ sortedby > svg {
     opacity: 1;
     scale: 1;
 }
+
+.season-btn > svg {
+    scale: 1;
+    transition: scale .3s;
+}
+
+.season-btn:hover > svg {
+    scale: 1.1;
+}
