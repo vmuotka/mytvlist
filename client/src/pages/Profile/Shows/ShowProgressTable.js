@@ -10,6 +10,8 @@ import DoubleUp from '../../../components/icons/DoubleUp'
 import DoubleDown from '../../../components/icons/DoubleDown'
 import DoubleRight from '../../../components/icons/DoubleRight'
 import Star from '../../../components/icons/Star'
+import SortAsc from '../../../components/icons/SortAsc'
+import SortDesc from '../../../components/icons/SortDesc'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -17,6 +19,7 @@ import Button from '../../../components/Button'
 import Pagination from '../../../components/Pagination'
 
 import '../ProgressTableRow.css'
+import './ProgressTable.css'
 
 const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     const { profile, setProfile } = useProfile()
@@ -335,6 +338,58 @@ const ShowProgressTable = ({ tvlist, name }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const showsPerPage = 10
 
+    const [sortBy, setsortBy] = useState({ type: 'title', asc: true })
+    const [sortedList, setSortedList] = useState([])
+
+    useEffect(() => {
+        let tvlistCopy = [...tvlist]
+        if (sortBy.type === 'title') {
+            tvlistCopy.sort((a, b) => {
+                if (a.tv_info.name.toLowerCase() < b.tv_info.name.toLowerCase())
+                    return sortBy.asc ? -1 : 1
+                if (a.tv_info.name.toLowerCase() > b.tv_info.name.toLowerCase())
+                    return sortBy.asc ? 1 : -1
+                return 0
+            })
+        } else if (sortBy.type === 'score') {
+            tvlistCopy.sort((a, b) => {
+                if (!a.score && !b.score)
+                    return 0
+                if (!a.score)
+                    return 1
+                if (!b.score)
+                    return -1
+                return sortBy.asc ? a.score - b.score : b.score - a.score
+            })
+        } else if (sortBy.type === 'watchtime') {
+            tvlistCopy.sort((a, b) => {
+                return sortBy.asc ? a.watch_progress.length - b.watch_progress.length : b.watch_progress.length - a.watch_progress.length
+            })
+        }
+        // console.log(tvlistCopy.map(a => a.tv_info.name))
+        setSortedList(tvlistCopy)
+    }, [tvlist, sortBy])
+
+    const handleSortChange = (type) => {
+        if (type === 'title') {
+            if (sortBy.type === 'title')
+                setsortBy({ type, asc: !sortBy.asc })
+            else
+                setsortBy({ type, asc: true })
+        } else if (type === 'watchtime') {
+            if (sortBy.type === 'watchtime')
+                setsortBy({ type, asc: !sortBy.asc })
+            else
+                setsortBy({ type, asc: false })
+        } else if (type === 'score') {
+            if (sortBy.type === 'score')
+                setsortBy({ type, asc: !sortBy.asc })
+            else
+                setsortBy({ type, asc: false })
+        }
+
+    }
+
     const handleEditSelect = (show) => {
         const found = editSelection.some(sel => sel.tv_id === show.tv_id)
         if (!found) {
@@ -437,14 +492,32 @@ const ShowProgressTable = ({ tvlist, name }) => {
                                     gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                                 }}
                             >
-                                <th className='flex items-center justify-center'>Title</th>
-                                <th className='flex items-center justify-center'>Watchtime</th>
-                                <th className='flex items-center justify-center'>Score</th>
+                                <th
+                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'title' && 'sortedby'}`}
+                                    onClick={() => { handleSortChange('title') }}
+                                >
+                                    Title
+                                    {(sortBy.type === 'title' && !sortBy.asc) ? <SortDesc className='h-5' /> : <SortAsc className='h-5' />}
+                                </th>
+                                <th
+                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'watchtime' && 'sortedby'}`}
+                                    onClick={() => { handleSortChange('watchtime') }}
+                                >
+                                    Watchtime
+                                    {(sortBy.type === 'watchtime' && sortBy.asc) ? <SortAsc className='h-5' /> : <SortDesc className='h-5' />}
+                                </th>
+                                <th
+                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'score' && 'sortedby'}`}
+                                    onClick={() => { handleSortChange('score') }}
+                                >
+                                    Score
+                                    {(sortBy.type === 'score' && sortBy.asc) ? <SortAsc className='h-5' /> : <SortDesc className='h-5' />}
+                                </th>
                                 <th className='flex items-center justify-center' title='Next Episode'><DoubleRight className='h-7' /></th>
                             </tr>
                         </thead>
                         <tbody className='text-gray-700 bg-pink-150'>
-                            {sliceListWithoutEditMode(tvlist).map((show, index) =>
+                            {sliceListWithoutEditMode(sortedList).map((show, index) =>
                                 <TableRow editMode={editMode} handleEditSelect={handleEditSelect} editSelection={editSelection} key={show.tv_info.id.toString()} odd={index % 2 === 0} show={show} />
                             )}
                         </tbody>

@@ -1,0 +1,12 @@
+.sortable > svg,
+sortedby > svg {
+    opacity: 0;
+    scale: 0.3;
+    transition: opacity .3s, scale .3s;
+}
+
+.sortable:hover > svg,
+.sortedby > svg {
+    opacity: 1;
+    scale: 1;
+}
