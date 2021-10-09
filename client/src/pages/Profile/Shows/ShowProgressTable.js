@@ -60,15 +60,12 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
 
     return (
         <tr
-            className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
-            style={{
-                gridTemplateColumns: myProfile ? '5fr 1fr' : '5fr 1fr'
-            }}
+            className={`flex gap-2 text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
         >
-            <td className='py-2 px-2 text-md'>
+            <td className='py-2 w-5/6 px-2 text-md'>
                 {episode.episode_number}. {episode.name}
             </td>
-            <td className='flex justify-center py-2'>
+            <td className='flex w-1/6 justify-center py-2'>
                 <ToggleButton
                     toggled={toggled}
                     onClick={myProfile ? handleEpisode : undefined}
@@ -152,12 +149,9 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
     return (
         <>
             <tr
-                className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
-                style={{
-                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
-                }}
+                className={`flex gap-2 text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
             >
-                <td className='flex gap-2 justify-center items-center'>
+                <td className='flex w-1/2 gap-2 justify-center items-center'>
                     {myProfile &&
                         <button
                             className='ml-2 focus:outline-none'
@@ -186,7 +180,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                         <ArrowRight className='h-6' />
                     </button>
                 </td>
-                <td className='flex gap-2 justify-center items-center'>
+                <td className='flex w-1/6 gap-2 justify-center items-center'>
                     <Select
                         value={watchtime}
                         options={watchtimeSelectOptions}
@@ -201,7 +195,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                         </button>
                     }
                 </td>
-                <td className='flex justify-center items-center'>
+                <td className='flex w-1/6 justify-center items-center'>
                     {myProfile && <Select
                         value={show.watching}
                         options={[
@@ -211,7 +205,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                         onChange={handleWatchingChange}
                     />}
                 </td>
-                <td className='flex justify-center items-center'>
+                <td className='flex w-1/6 justify-center items-center'>
                     {myProfile && <button
                         onClick={handleRewatch}
                         className='px-2 py-1 bg-indigo-500 text-white font-semibold rounded text-base hover:bg-indigo-600'
@@ -315,14 +309,11 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
     return (
         <>
             <tr
-                className={`grid h-16 text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
-                style={{
-                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
-                }}
+                className={`flex gap-2 h-16 text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
             >
-                <td className='p-2 text-left flex items-center'>
+                <td className='p-2 w-1/2 text-left flex items-center'>
                     {!editMode ? <div
-                        className={`h-8 w-6 sm:h-12 sm:w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center progress-image`}
+                        className={`h-12 w-8 flex-none bg-cover bg-no-repeat rounded text-center overflow-hidden bg-pink-500 flex items-center progress-image`}
                         style={{ backgroundImage: show.tv_info.poster_path && `url('https://image.tmdb.org/t/p/w200${show.tv_info.poster_path}')` }}
                     >
                         <button onClick={() => setExpanded(!expanded)}
@@ -337,8 +328,8 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                     }
                     <Link to={`/show/${show.tv_info.id}`} className='ml-6'>{show.tv_info.name}</Link>
                 </td>
-                <td className='flex justify-center items-center '>{ordinal(show.watch_progress.length)}</td>
-                <td className='justify-center items-center flex'>
+                <td className='flex w-1/6 justify-center items-center '>{ordinal(show.watch_progress.length)}</td>
+                <td className='justify-center w-1/6  items-center flex'>
                     {myProfile && <InputField
                         className='w-full text-center'
                         type='number'
@@ -347,7 +338,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                         onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
                     />}
                 </td>
-                <td className='flex justify-center items-center'>
+                <td className='flex w-1/6 justify-center items-center'>
                     {(myProfile && nextEpisode) ?
                         <button
                             onClick={handleWatchNext}
@@ -405,7 +396,6 @@ const ShowProgressTable = ({ tvlist, name }) => {
                 return sortBy.asc ? a.watch_progress.length - b.watch_progress.length : b.watch_progress.length - a.watch_progress.length
             })
         }
-        // console.log(tvlistCopy.map(a => a.tv_info.name))
         setSortedList(tvlistCopy)
     }, [tvlist, sortBy])
 
@@ -529,36 +519,34 @@ const ShowProgressTable = ({ tvlist, name }) => {
                             </div>
                         </div>}
                     </div>
-                    <table className='w-full' style={{ minWidth: '500px' }}>
-                        <thead className='bg-pink-400 text-white md:text-xl'>
+                    <table className='w-full'
+                        style={{ minWidth: '500px' }}>
+                        <thead className='bg-pink-400 text-white text-xl'>
                             <tr
-                                className='grid py-2'
-                                style={{
-                                    gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
-                                }}
+                                className='flex gap-2 py-2'
                             >
                                 <th
-                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'title' && 'sortedby'}`}
+                                    className={`flex w-1/2 gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'title' && 'sortedby'}`}
                                     onClick={() => { handleSortChange('title') }}
                                 >
                                     Title
-                                    {(sortBy.type === 'title' && !sortBy.asc) ? <SortDesc className='h-5' /> : <SortAsc className='h-5' />}
+                                    {(sortBy.type === 'title' && !sortBy.asc) ? <SortDesc className='w-5 h-5' /> : <SortAsc className='w-5 h-5' />}
                                 </th>
                                 <th
-                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'watchtime' && 'sortedby'}`}
+                                    className={`flex gap-2 w-1/6 cursor-pointer items-center justify-center sortable ${sortBy.type === 'watchtime' && 'sortedby'}`}
                                     onClick={() => { handleSortChange('watchtime') }}
                                 >
-                                    Watchtime
-                                    {(sortBy.type === 'watchtime' && sortBy.asc) ? <SortAsc className='h-5' /> : <SortDesc className='h-5' />}
+                                    Watch time
+                                    {(sortBy.type === 'watchtime' && sortBy.asc) ? <SortAsc className='w-5 h-5' /> : <SortDesc className='w-5 h-5' />}
                                 </th>
                                 <th
-                                    className={`flex gap-2 cursor-pointer items-center justify-center sortable ${sortBy.type === 'score' && 'sortedby'}`}
+                                    className={`flex gap-2 w-1/6 cursor-pointer items-center justify-center sortable ${sortBy.type === 'score' && 'sortedby'}`}
                                     onClick={() => { handleSortChange('score') }}
                                 >
                                     Score
-                                    {(sortBy.type === 'score' && sortBy.asc) ? <SortAsc className='h-5' /> : <SortDesc className='h-5' />}
+                                    {(sortBy.type === 'score' && sortBy.asc) ? <SortAsc className='w-5 h-5' /> : <SortDesc className='w-5 h-5' />}
                                 </th>
-                                <th className='flex items-center justify-center' title='Next Episode'><DoubleRight className='h-7' /></th>
+                                <th className='flex w-1/6 items-center justify-center' title='Next Episode'><DoubleRight className='h-7' /></th>
                             </tr>
                         </thead>
                         <tbody className='text-gray-700 bg-pink-150'>
