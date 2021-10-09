@@ -463,6 +463,12 @@ const ShowProgressTable = ({ tvlist, name }) => {
             return tvlist
     }
 
+    // if the pagination page count is reduced by shows moving to other lists, make sure the user is not left on an empty page
+    useEffect(() => {
+        if (currentPage > Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1))
+            setCurrentPage(Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1))
+    }, [tvlist, currentPage])
+
     if (tvlist.length > 0)
         return (
             <>
@@ -524,7 +530,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
                     </table>
                 </div>
                 {((tvlist.length / showsPerPage) > 1 && !editMode) &&
-                    <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(tvlist.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
+                    <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1)} onClick={(page) => e => setCurrentPage(page)} />
                 }
             </>
         )
