@@ -14,6 +14,7 @@ import SortAsc from '../../../components/icons/SortAsc'
 import SortDesc from '../../../components/icons/SortDesc'
 import ArrowLeft from '../../../components/icons/ArrowLeft'
 import ArrowRight from '../../../components/icons/ArrowRight'
+import DeleteIcon from '../../../components/icons/DeleteIcon'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -27,7 +28,7 @@ const EpisodeRow = ({ episode, show, watchtime, odd }) => {
     const { profile, setProfile } = useProfile()
     const myProfile = userService.checkProfileOwnership(profile.id)
 
-    const [toggled, setToggled] = useState(false)
+    const [toggled, setToggled] = useState(show.watch_progress[watchtime].episodes.some(x => x.episode_id === episode.id) ? show.watch_progress[watchtime].episodes.find(x => x.episode_id === episode.id).watched : false)
 
     useEffect(() => {
         setToggled(show.watch_progress[watchtime].episodes.some(x => x.episode_id === episode.id) ? show.watch_progress[watchtime].episodes.find(x => x.episode_id === episode.id).watched : false)
@@ -92,7 +93,7 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
 
 
     const handleRewatch = () => {
-        if (window.confirm(`Are you sure you want to rewatch "${show.tv_info.name}"? You cannot delete the rewatch.`)) {
+        if (window.confirm(`Are you sure you want to rewatch "${show.tv_info.name}"?`)) {
             tvlistService.rewatch(show.watch_progress[show.watch_progress.length - 1])
                 .then(data => {
                     let showCopy = { ...show }
@@ -129,6 +130,23 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                 })
             })
 
+    }
+
+    const handleWatchtimeDelete = () => {
+        if (window.confirm(`Are you sure you want to delete your ${ordinal(watchtime + 1)} watchtime of ${show.tv_info.name}?`)) {
+            let showCopy = { ...show }
+            showCopy.watch_progress.splice(watchtime, 1)
+            console.log(showCopy)
+
+            tvlistService.deleteWatchtime(show.watch_progress[watchtime])
+
+            setWatchtime(show.watch_progress.length - 1)
+
+            setProfile({
+                ...profile,
+                tvlist: profile.tvlist.map(list => list.id === showCopy.id ? showCopy : list)
+            })
+        }
     }
 
     return (
@@ -168,12 +186,20 @@ const ExpandedTable = ({ show, odd, watchtime, setWatchtime, nextEpisode }) => {
                         <ArrowRight className='h-6' />
                     </button>
                 </td>
-                <td className='flex justify-center items-center'>
+                <td className='flex gap-2 justify-center items-center'>
                     <Select
                         value={watchtime}
                         options={watchtimeSelectOptions}
                         onChange={(e) => { setWatchtime(+e.target.value) }}
                     />
+                    {(myProfile && show.watch_progress.length > 1) &&
+                        <button
+                            className='focus:outline-none mr-2'
+                            onClick={handleWatchtimeDelete}
+                        >
+                            <DeleteIcon className='h-6' />
+                        </button>
+                    }
                 </td>
                 <td className='flex justify-center items-center'>
                     {myProfile && <Select
@@ -237,9 +263,8 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
         return score
     }
 
-
     const getNextEpisode = useCallback(() => {
-        let last = show.watch_progress[watchtime]
+        let last = show.watch_progress[Math.min(watchtime, show.watch_progress.length - 1)]
         let showCopy = { ...show }
         let episodes = []
         for (const season of showCopy.tv_info.seasons)
@@ -290,7 +315,7 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
     return (
         <>
             <tr
-                className={`grid text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
+                className={`grid h-16 text-sm sm:text-lg md:text-xl hoverable-tablerow ${odd && 'bg-pink-100'} hover:bg-pink-300`}
                 style={{
                     gridTemplateColumns: myProfile ? '3fr 1fr 1fr 1fr' : '3fr 1fr 1fr 1fr'
                 }}
@@ -504,7 +529,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
                             </div>
                         </div>}
                     </div>
-                    <table className='w-full table-auto' style={{ minWidth: '500px' }}>
+                    <table className='w-full' style={{ minWidth: '500px' }}>
                         <thead className='bg-pink-400 text-white md:text-xl'>
                             <tr
                                 className='grid py-2'

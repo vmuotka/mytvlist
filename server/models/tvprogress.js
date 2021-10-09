@@ -15,10 +15,10 @@ const tvprogressSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    watch_time: {
-        type: Number,
-        required: true
-    },
+    // watch_time: {
+    //     type: Number,
+    //     required: true
+    // },
     episodes: [
         { type: Schema.Types.ObjectId, ref: 'Episode', autopopulate: true },
     ]

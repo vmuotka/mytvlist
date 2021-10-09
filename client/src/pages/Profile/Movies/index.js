@@ -42,7 +42,8 @@ const Movies = () => {
                 <>
                     <InputField
                         label='Filter'
-                        className='my-2'
+                        className='my-2 w-full'
+                        placeholder='Filter by Title'
                         value={filter}
                         onChange={(e) => { setFilter(e.target.value) }}
                     />
