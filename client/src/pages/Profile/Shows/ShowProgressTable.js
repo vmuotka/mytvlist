@@ -536,7 +536,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
                                     className={`flex gap-2 w-1/6 cursor-pointer items-center justify-center sortable ${sortBy.type === 'watchtime' && 'sortedby'}`}
                                     onClick={() => { handleSortChange('watchtime') }}
                                 >
-                                    Watch time
+                                    Viewing
                                     {(sortBy.type === 'watchtime' && sortBy.asc) ? <SortAsc className='w-5 h-5' /> : <SortDesc className='w-5 h-5' />}
                                 </th>
                                 <th
