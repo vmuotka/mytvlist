@@ -47,6 +47,17 @@ const rewatch = async (watch_progress) => {
     return res.data
 }
 
+const deleteWatchtime = async (watch_progress) => {
+    const tokenObj = getToken()
+    let config = {}
+    const token = `bearer ${tokenObj.token}`
+    config = {
+        headers: { Authorization: token }
+    }
+    const res = await axios.post(`${baseUrl}/delete_watchtime`, watch_progress, config)
+    return res.data
+}
+
 const saveWatching = async (watching, tv_id) => {
     const tokenObj = getToken()
     let config = {}
@@ -76,5 +87,6 @@ export default {
     saveScore,
     rewatch,
     saveWatching,
-    pinShow
+    pinShow,
+    deleteWatchtime
 }

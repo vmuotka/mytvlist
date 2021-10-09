@@ -34,12 +34,6 @@ const getTvList = async (profile, decodedToken) => {
 
     tvlist = JSON.parse(JSON.stringify(tvlist))
 
-    for (let list of tvlist) {
-        list.watch_progress.sort((a, b) => {
-            return a.watch_time - b.watch_time
-        })
-    }
-
     tvlist = await MovieDbApi.getTvDetailsWithProgress(tvlist, decodedToken)
 
     return tvlist

@@ -166,4 +166,21 @@ tvlistRouter.post('/save_pinned', async (req, res) => {
         return
     }
 })
+
+tvlistRouter.post('/delete_watchtime', async (req, res) => {
+    const decodedToken = UserHelper.decodeToken(req.token)
+    const body = req.body
+
+    try {
+        await Tvprogress.findOneAndDelete({ user: decodedToken.id, _id: body.id })
+        await Episode.deleteMany({ user: decodedToken.id, tvprogress_id: body.id })
+        res.status(200).json({ message: 'Watch time deleted.' })
+        return
+    } catch (err) {
+        console.error(err)
+        res.status(500).json(err)
+        return
+    }
+})
+
 module.exports = tvlistRouter

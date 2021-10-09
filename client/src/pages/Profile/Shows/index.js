@@ -65,8 +65,8 @@ const Shows = () => {
     }, [filter, tvlist, setFilteredList])
 
     return (
-        <div className='flex mx-4'>
-            <div className=' hidden md:block md:w-1/5'>
+        <div className='flex flex-col xl:flex-row mx-4'>
+            <div className='xl:w-1/5'>
                 <ul className='sticky mx-4' style={{ top: '2rem' }}>
                     {
                         filteredList && filteredList.map(list =>
@@ -79,10 +79,16 @@ const Shows = () => {
                             </li>
                         )
                     }
-                    <InputField className='w-full text-sm' value={filter} onChange={(e) => setFilter(e.target.value)} label='Filter' />
+                    <InputField
+                        className='w-full text-sm'
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        label='Filter'
+                        placeholder='Filter by Title'
+                    />
                 </ul>
             </div>
-            <div className='w-full md:w-4/5'>
+            <div className='w-full xl:w-4/5'>
                 {
                     (filteredList) ?
                         filteredList.map((list) =>
