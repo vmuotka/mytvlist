@@ -1,8 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 
-// project hooks
-import { useProfile } from '../../context/profile'
 
 // project components
 import Button from '../../components/Button'
@@ -10,9 +8,10 @@ import Heart from '../../components/icons/Heart'
 
 // project services
 import userService from '../../services/userService'
+import { updateFollow } from '../../redux/profileReducer'
 
-const ProfileNavigation = ({ user, active, onClick }) => {
-    const { profile, setProfile } = useProfile()
+const ProfileNavigation = ({ user, active, onClick, profile }) => {
+    const dispatch = useDispatch()
     const navs = [
         'TvList',
         'Statistics',
@@ -26,10 +25,11 @@ const ProfileNavigation = ({ user, active, onClick }) => {
 
     const handleFollow = () => {
         userService.followUser({ username: profile.username, id: profile.id }, !profile.followed)
-        setProfile({
-            ...profile,
-            followed: !profile.followed
-        })
+        // setProfile({
+        //     ...profile,
+        //     followed: !profile.followed
+        // })
+        dispatch(updateFollow(!profile.followed))
     }
 
     const decodedToken = user ? JSON.parse(window.atob(user.token.split('.')[1])) : null
@@ -74,6 +74,7 @@ const ProfileNavigation = ({ user, active, onClick }) => {
 const mapProps = (state, ownProps) => {
     return {
         user: state.user,
+        profile: { id: state.profile.id, username: state.profile.username },
         active: ownProps.active,
         onClick: ownProps.onClick
     }

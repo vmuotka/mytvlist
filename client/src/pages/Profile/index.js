@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 
 // project services
 import userService from '../../services/userService'
+import { setProfile } from '../../redux/profileReducer'
 
 // project components
 import ProfileNavigation from './ProfileNavigation'
@@ -20,11 +21,11 @@ import Spinner from '../../components/Spinner'
 import { ProfileContext } from '../../context/profile'
 import { useNotification } from '../../context/notification'
 
-const Profile = ({ user }) => {
+const Profile = ({ user, profile }) => {
     const { username } = useParams()
-    const [profile, setProfile] = useState()
     const { setNotifications } = useNotification()
     const [profileNav, setProfileNav] = useState('TvList')
+    const dispatch = useDispatch()
 
     const onNavClick = (nav) => e => {
         setProfileNav(nav)
@@ -33,16 +34,8 @@ const Profile = ({ user }) => {
     useEffect(() => {
         if (username)
             userService.profile(username).then(data => {
-                setProfile({
-                    ...data,
-                    tvlist: data.tvlist.sort((a, b) => {
-                        if (a.tv_info.name < b.tv_info.name)
-                            return -1
-                        if (a.tv_info.name > b.tv_info.name)
-                            return 1
-                        return 0
-                    })
-                })
+                dispatch(setProfile(data))
+
                 setProfileNav('TvList')
             }).catch(err => {
                 setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
@@ -53,32 +46,30 @@ const Profile = ({ user }) => {
 
     return (
         <>
-            <ProfileContext.Provider value={{ profile, setProfile }} >
-
-                <div className='w-full md:w-4/5 mx-auto mt-3'>
-                    {
-                        profile ?
-                            <>
-                                <ProfileNavigation active={profileNav} onClick={onNavClick} />
-                                {profileNav === 'TvList' && <TvList />}
-                                {profileNav === 'Statistics' && <Statistics />}
-                                {profileNav === 'Progress' && <Progress />}
-                                {profileNav === 'Activity' && <Activity />}
-                                {profileNav === 'Following' && <Following />}
-                                {profileNav === 'Reviews' && <Reviews reviews={profile.reviews} />}
-                                {profileNav === 'Achievements' && <Achievements />}
-                            </>
-                            : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
-                    }
-                </div>
-            </ProfileContext.Provider>
+            <div className='w-full md:w-4/5 mx-auto mt-3'>
+                {
+                    profile ?
+                        <>
+                            <ProfileNavigation active={profileNav} onClick={onNavClick} />
+                            {profileNav === 'TvList' && <TvList />}
+                            {profileNav === 'Statistics' && <Statistics />}
+                            {profileNav === 'Progress' && <Progress />}
+                            {profileNav === 'Activity' && <Activity />}
+                            {profileNav === 'Following' && <Following />}
+                            {profileNav === 'Reviews' && <Reviews reviews={profile.reviews} />}
+                            {profileNav === 'Achievements' && <Achievements />}
+                        </>
+                        : <Spinner show={true} color='bg-pink-500' className='mx-auto mt-4' />
+                }
+            </div>
         </>
     )
 }
 
 const mapProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        profile: state.profile
     }
 }
 

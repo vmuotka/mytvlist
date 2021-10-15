@@ -10,10 +10,8 @@ import InputField from '../../components/InputField'
 import Checkbox from '../../components/Checkbox'
 
 // project hooks
-import { useProfile } from '../../context/profile'
 
-const TvList = ({ user }) => {
-    const { profile } = useProfile()
+const TvList = ({ user, profile }) => {
     const [orderBy, setOrderBy] = useState('alphabetical')
     const orderByOptions = ['alphabetical', 'score', 'newest', 'oldest']
     const [filtertext, setFiltertext] = useState('')
@@ -272,7 +270,8 @@ const TvList = ({ user }) => {
 
 const mapProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        profile: state.profile
     }
 }
 
