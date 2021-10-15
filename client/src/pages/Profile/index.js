@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
+import { connect } from 'react-redux'
 
 // project services
 import userService from '../../services/userService'
@@ -17,13 +18,11 @@ import Spinner from '../../components/Spinner'
 
 // project hooks
 import { ProfileContext } from '../../context/profile'
-import { useAuth } from '../../context/auth'
 import { useNotification } from '../../context/notification'
 
-const Profile = () => {
+const Profile = ({ user }) => {
     const { username } = useParams()
     const [profile, setProfile] = useState()
-    const { authTokens } = useAuth()
     const { setNotifications } = useNotification()
     const [profileNav, setProfileNav] = useState('TvList')
 
@@ -33,7 +32,7 @@ const Profile = () => {
 
     useEffect(() => {
         if (username)
-            userService.profile(username, authTokens).then(data => {
+            userService.profile(username).then(data => {
                 setProfile({
                     ...data,
                     tvlist: data.tvlist.sort((a, b) => {
@@ -50,7 +49,7 @@ const Profile = () => {
             }
             )
         // eslint-disable-next-line
-    }, [username, setProfile, authTokens])
+    }, [username, setProfile, user])
 
     return (
         <>
@@ -77,4 +76,12 @@ const Profile = () => {
     )
 }
 
-export default Profile
+const mapProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const connectedProfile = connect(mapProps)(Profile)
+
+export default connectedProfile

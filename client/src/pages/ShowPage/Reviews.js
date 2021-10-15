@@ -1,12 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 // project components
 import ReviewCard from '../../components/ReviewCard'
-import { useAuth } from '../../context/auth'
 
 const Reviews = ({ tv_id, data, title }) => {
-    const { authTokens } = useAuth()
-    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : undefined
+    const user = useSelector(state => state.user)
+    const decodedToken = user ? JSON.parse(window.atob(user.token.split('.')[1])) : undefined
     let filteredReviews = data
     if (decodedToken)
         filteredReviews = filteredReviews.filter(review => review.content && review.user.id !== decodedToken.id && review.content)

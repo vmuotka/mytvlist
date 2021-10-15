@@ -2,12 +2,14 @@ import axios from 'axios'
 const baseUrl = '/api/tvlist'
 
 const getToken = () => {
-    return JSON.parse(localStorage.getItem('tokens'))
+    return JSON.parse(localStorage.getItem('user'))
 }
 
-const addToList = async (showObj, tokenObj) => {
+const addToList = async (showObj) => {
+    const tokenObj = getToken()
+    let config = {}
     const token = `bearer ${tokenObj.token}`
-    const config = {
+    config = {
         headers: { Authorization: token }
     }
     const res = await axios.post(`${baseUrl}/addtolist`, showObj, config)

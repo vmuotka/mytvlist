@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MultiSelect from 'react-multi-select-component'
+import { connect } from 'react-redux'
 
 // project components
 import Select from '../../components/Select'
@@ -10,9 +11,8 @@ import Checkbox from '../../components/Checkbox'
 
 // project hooks
 import { useProfile } from '../../context/profile'
-import { useAuth } from '../../context/auth'
 
-const TvList = () => {
+const TvList = ({ user }) => {
     const { profile } = useProfile()
     const [orderBy, setOrderBy] = useState('alphabetical')
     const orderByOptions = ['alphabetical', 'score', 'newest', 'oldest']
@@ -25,9 +25,7 @@ const TvList = () => {
     const [selectedList, setSelectedList] = useState('tvlist')
     const [movielist, setMovielist] = useState([])
 
-
-    const { authTokens } = useAuth()
-    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
+    const decodedToken = user ? JSON.parse(window.atob(user.token.split('.')[1])) : null
     const myProfile = decodedToken ? decodedToken.id === profile.id : false
 
     const changeOrderBy = e => {
@@ -237,7 +235,7 @@ const TvList = () => {
 
 
             <div className='mt-2 px-3'>
-                {(!myProfile && authTokens) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
+                {(!myProfile && user) && <Checkbox label='Hide shows that you do not watch' onChange={(e) => setOnlyListed(e.target.checked)} checked={onlyListed} />}
             </div>
 
             <div className='flex justify-center my-4'>
@@ -272,4 +270,12 @@ const TvList = () => {
     )
 }
 
-export default TvList
+const mapProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const connectedTvList = connect(mapProps)(TvList)
+
+export default connectedTvList

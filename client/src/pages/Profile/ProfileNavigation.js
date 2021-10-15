@@ -1,8 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 // project hooks
 import { useProfile } from '../../context/profile'
-import { useAuth } from '../../context/auth'
 
 // project components
 import Button from '../../components/Button'
@@ -11,9 +11,8 @@ import Heart from '../../components/icons/Heart'
 // project services
 import userService from '../../services/userService'
 
-const ProfileNavigation = ({ active, onClick }) => {
+const ProfileNavigation = ({ user, active, onClick }) => {
     const { profile, setProfile } = useProfile()
-    const { authTokens } = useAuth()
     const navs = [
         'TvList',
         'Statistics',
@@ -26,14 +25,14 @@ const ProfileNavigation = ({ active, onClick }) => {
     ]
 
     const handleFollow = () => {
-        userService.followUser({ username: profile.username, id: profile.id }, !profile.followed, authTokens)
+        userService.followUser({ username: profile.username, id: profile.id }, !profile.followed)
         setProfile({
             ...profile,
             followed: !profile.followed
         })
     }
 
-    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
+    const decodedToken = user ? JSON.parse(window.atob(user.token.split('.')[1])) : null
     const myProfile = decodedToken ? decodedToken.id === profile.id : false
     return (
         <>
@@ -51,7 +50,7 @@ const ProfileNavigation = ({ active, onClick }) => {
                             )}
                         </div>
                     </div>
-                    {(!myProfile && authTokens) && <Button
+                    {(!myProfile && user) && <Button
                         onClick={handleFollow}
                         value={profile.followed ? 'Unfollow' : 'Follow'}
                         icon={<Heart filled={profile.followed} className='h-4 w-4 inline' />}
@@ -72,4 +71,14 @@ const ProfileNavigation = ({ active, onClick }) => {
     )
 }
 
-export default ProfileNavigation
+const mapProps = (state, ownProps) => {
+    return {
+        user: state.user,
+        active: ownProps.active,
+        onClick: ownProps.onClick
+    }
+}
+
+const connectedProfileNavigation = connect(mapProps)(ProfileNavigation)
+
+export default connectedProfileNavigation

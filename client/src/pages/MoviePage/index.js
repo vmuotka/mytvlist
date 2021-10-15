@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
+import { useSelector } from 'react-redux'
 
 // project components
 import Spinner from '../../components/Spinner'
@@ -15,15 +16,14 @@ import Star from '../../components/icons/Star'
 
 
 // project hooks
-import { useAuth } from '../../context/auth'
 
 const MoviePage = () => {
     const { id } = useParams()
     const [movie, setMovie] = useState(undefined)
-    const { authTokens } = useAuth()
     const [country, setCountry] = useState(undefined)
     const [countryList, setCountryList] = useState(undefined)
-    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : undefined
+    const user = useSelector((state) => state.user)
+    const decodedToken = user ? JSON.parse(window.atob(user.token.split('.')[1])) : undefined
 
     useEffect(() => {
         movieService.getMoviePage(id)
@@ -86,7 +86,7 @@ const MoviePage = () => {
                                 {movie.genres.map(genre => genre.name).join(', ')}
                             </p>
 
-                            {authTokens &&
+                            {user &&
                                 <Button
                                     onClick={addToList}
                                     className='px-3 py-2 my-2'

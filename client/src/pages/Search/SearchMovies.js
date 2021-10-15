@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 
 // project components
 import Form from '../../components/Form'
@@ -13,12 +14,10 @@ import Pagination from '../../components/Pagination'
 import movieService from '../../services/movieService'
 
 // project hooks
-import { useAuth } from '../../context/auth'
 import { useNotification } from '../../context/notification'
 
 const SearchMovies = () => {
     const [form, setForm] = useState({ searchword: '' })
-    const { authTokens } = useAuth()
     const [response, setResponse] = useState({ results: [], total_results: 0 })
     const [spinner, setSpinner] = useState(false)
     const { setNotifications } = useNotification()
@@ -29,7 +28,7 @@ const SearchMovies = () => {
         window.scrollTo(0, 0)
         setSpinner(true)
         try {
-            const res = await movieService.search({ searchword: response.searchword, page }, authTokens)
+            const res = await movieService.search({ searchword: response.searchword, page })
             setResponse(res)
             setCurrentPage(page)
         } catch (err) {
@@ -55,7 +54,7 @@ const SearchMovies = () => {
         if (form.searchword.length > 0) {
             setSpinner(true)
             try {
-                const res = await movieService.search(form, authTokens)
+                const res = await movieService.search(form)
                 setResponse(res)
                 setCurrentPage(1)
             } catch (err) {
@@ -89,4 +88,11 @@ const SearchMovies = () => {
     )
 }
 
-export default SearchMovies
+const mapProps = (state) => {
+    return {
+    }
+}
+
+const connectedSearchMovies = connect(mapProps)(SearchMovies)
+
+export default connectedSearchMovies

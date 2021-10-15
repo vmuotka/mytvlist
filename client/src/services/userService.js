@@ -2,7 +2,7 @@ import axios from 'axios'
 const baseUrl = '/api/user'
 
 const getToken = () => {
-    return JSON.parse(localStorage.getItem('tokens'))
+    return JSON.parse(localStorage.getItem('user'))
 }
 
 const login = async credentials => {

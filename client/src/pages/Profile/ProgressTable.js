@@ -16,121 +16,121 @@ import { useProfile } from '../../context/profile'
 import { useNotification } from '../../context/notification'
 
 const ProgressTable = ({ list, id }) => {
-  const { profile, setProfile } = useProfile()
-  const [editMode, setEditmode] = useState(false)
-  const [selected, setSelected] = useState([])
-  const { authTokens } = useAuth()
-  const { setNotifications } = useNotification()
-  const [currentPage, setCurrentPage] = useState(1)
-  const showsPerPage = 10
+    const { profile, setProfile } = useProfile()
+    const [editMode, setEditmode] = useState(false)
+    const [selected, setSelected] = useState([])
+    const { authTokens } = useAuth()
+    const { setNotifications } = useNotification()
+    const [currentPage, setCurrentPage] = useState(1)
+    const showsPerPage = 10
 
-  const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
-  const myProfile = decodedToken ? decodedToken.id === profile.id : false
+    const decodedToken = authTokens ? JSON.parse(window.atob(authTokens.token.split('.')[1])) : null
+    const myProfile = decodedToken ? decodedToken.id === profile.id : false
 
-  useEffect(() => {
-    let arr = []
-    list.array.forEach(show => {
-      arr.push({ selected: false, show })
-    })
-    setSelected(arr)
-  }, [list])
+    useEffect(() => {
+        let arr = []
+        list.array.forEach(show => {
+            arr.push({ selected: false, show })
+        })
+        setSelected(arr)
+    }, [list])
 
-  const handleEditMode = e => {
-    setEditmode(e.target.checked)
-    if (!e.target.checked) {
-      let arr = []
-      list.array.forEach(show => {
-        arr.push({ selected: false, show })
-      })
-      setSelected(arr)
+    const handleEditMode = e => {
+        setEditmode(e.target.checked)
+        if (!e.target.checked) {
+            let arr = []
+            list.array.forEach(show => {
+                arr.push({ selected: false, show })
+            })
+            setSelected(arr)
+        }
     }
-  }
 
-  const handleSelect = e => {
-    const show_id = +e.target.name
-    let selectedCopy = [...selected]
-    selectedCopy[selectedCopy.map(a => a.show.tv_id).indexOf(show_id)].selected = e.target.checked
-    setSelected(selectedCopy)
-  }
+    const handleSelect = e => {
+        const show_id = +e.target.name
+        let selectedCopy = [...selected]
+        selectedCopy[selectedCopy.map(a => a.show.tv_id).indexOf(show_id)].selected = e.target.checked
+        setSelected(selectedCopy)
+    }
 
-  const handleProgress = e => {
-    const btn = e.target.name
-    const sel = selected.filter(a => a.selected === true)
-    sel.forEach(async show => {
-      show = show.show
-      show.progress[show.progress.length - 1] = {
-        season: btn === 'complete' ? show.tv_info.seasons.length : 0,
-        episode: btn === 'complete' ? show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count : 0
-      }
-      setProfile({
-        ...profile,
-        tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
-      })
-      try {
-        await userService.progress(show, authTokens)
-      } catch (err) {
-        setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
-      }
-    })
-  }
-
-  const handlePause = () => {
-    const sel = selected.filter(a => a.selected === true)
-    sel.forEach(async show => {
-      show = show.show
-      show.watching = !show.watching
-      setProfile({
-        ...profile,
-        tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
-      })
-      try {
-        await userService.progress(show, authTokens)
-      } catch (err) {
-        setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
-      }
-    })
-  }
-
-  return (
-    <>
-      {
-        (list.array.length > 0 && selected.length > 0) && <div key={list.name} className='mt-4'>
-          <p id={id} className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
-          {myProfile && <div className='flex text-gray-700 gap-1 my-1'>
-            <Checkbox onChange={handleEditMode} checked={editMode} label='Edit mode' className='ml-1 py-1 mb-1' />
-            {
-              editMode &&
-              <span>
-                <Button value='Complete' onClick={handleProgress} name='complete' className='inline px-2 py-1 text-sm ml-1 mb-1' />
-                <Button value='Reset' onClick={handleProgress} name='reset' className='inline px-2 py-1 text-sm ml-1 mb-1' />
-                <Button value='Pause/Unpause' onClick={handlePause} className='inline px-2 py-1 text-sm ml-1 mb-1' />
-              </span>
+    const handleProgress = e => {
+        const btn = e.target.name
+        const sel = selected.filter(a => a.selected === true)
+        sel.forEach(async show => {
+            show = show.show
+            show.progress[show.progress.length - 1] = {
+                season: btn === 'complete' ? show.tv_info.seasons.length : 0,
+                episode: btn === 'complete' ? show.tv_info.seasons[show.tv_info.seasons.length - 1].episode_count : 0
             }
-          </div>}
-          <div className='overflow-auto'>
-            <Table className='md:table-fixed'>
-              <Thead>
-                <tr>
-                  <Th>Show</Th>
-                  <Th>Score</Th>
-                  <Th>Season</Th>
-                  <Th>Episode</Th>
-                </tr>
-              </Thead>
-              <Tbody>
-                {list.array.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show) =>
-                  <ProgressTableRow editMode={editMode} handleSelect={handleSelect} key={show.id} show={show} profile={profile} setProfile={setProfile} />
-                )}
-              </Tbody>
-            </Table>
-          </div>
-          {Math.floor(list.array.length / showsPerPage) >= 1 &&
-            <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(list.array.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
-          }
-        </div>
-      }
-    </>
-  )
+            setProfile({
+                ...profile,
+                tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
+            })
+            try {
+                await userService.progress(show, authTokens)
+            } catch (err) {
+                setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
+            }
+        })
+    }
+
+    const handlePause = () => {
+        const sel = selected.filter(a => a.selected === true)
+        sel.forEach(async show => {
+            show = show.show
+            show.watching = !show.watching
+            setProfile({
+                ...profile,
+                tvlist: profile.tvlist.map(list => list.tv_id === show.tv_id ? show : list)
+            })
+            try {
+                await userService.progress(show, authTokens)
+            } catch (err) {
+                setNotifications([{ title: 'Request failed', message: 'Saving progress failed. Try again later.', type: 'error' }])
+            }
+        })
+    }
+
+    return (
+        <>
+            {
+                (list.array.length > 0 && selected.length > 0) && <div key={list.name} className='mt-4'>
+                    <p id={id} className='text-gray-600 text-lg ml-2 mb-2'>{list.name} ({list.array.length} shows)</p>
+                    {myProfile && <div className='flex text-gray-700 gap-1 my-1'>
+                        <Checkbox onChange={handleEditMode} checked={editMode} label='Edit mode' className='ml-1 py-1 mb-1' />
+                        {
+                            editMode &&
+                            <span>
+                                <Button value='Complete' onClick={handleProgress} name='complete' className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                                <Button value='Reset' onClick={handleProgress} name='reset' className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                                <Button value='Pause/Unpause' onClick={handlePause} className='inline px-2 py-1 text-sm ml-1 mb-1' />
+                            </span>
+                        }
+                    </div>}
+                    <div className='overflow-auto'>
+                        <Table className='md:table-fixed'>
+                            <Thead>
+                                <tr>
+                                    <Th>Show</Th>
+                                    <Th>Score</Th>
+                                    <Th>Season</Th>
+                                    <Th>Episode</Th>
+                                </tr>
+                            </Thead>
+                            <Tbody>
+                                {list.array.slice((currentPage - 1) * showsPerPage, currentPage * showsPerPage).map((show) =>
+                                    <ProgressTableRow editMode={editMode} handleSelect={handleSelect} key={show.id} show={show} profile={profile} setProfile={setProfile} />
+                                )}
+                            </Tbody>
+                        </Table>
+                    </div>
+                    {Math.floor(list.array.length / showsPerPage) >= 1 &&
+                        <Pagination className='mt-2' currentPage={currentPage} totalPages={Math.floor(list.array.length / showsPerPage) + 1} onClick={(page) => e => setCurrentPage(page)} />
+                    }
+                </div>
+            }
+        </>
+    )
 }
 
 export default ProgressTable

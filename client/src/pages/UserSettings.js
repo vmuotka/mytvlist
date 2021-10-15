@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 
 // project components
 import Form, { FormGroup } from '../components/Form'
@@ -11,11 +12,8 @@ import Dots from '../components/icons/Dots'
 import { useNotification } from '../context/notification'
 import Heading from '../components/Heading'
 
-// project hooks
-import { useAuth } from '../context/auth'
 
-const UserSettings = () => {
-    const { authTokens } = useAuth()
+const UserSettings = ({ user }) => {
     const { setNotifications } = useNotification()
     const [loadingSettings, setLoadingSettings] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -43,14 +41,14 @@ const UserSettings = () => {
 
     useEffect(() => {
         const getSettings = async () => {
-            const res = await userService.getSettings(authTokens)
+            const res = await userService.getSettings()
             if (res.quote)
                 setQuote(res.quote)
 
             setLoadingSettings(false)
         }
         getSettings()
-    }, [authTokens])
+    }, [user])
 
     useEffect(() => {
         if ((newPassword.value !== newPassword.confirm || newPassword.value.length < 5) && newPassword.value.length > 0 && newPassword.confirm.length > 0)
@@ -85,7 +83,7 @@ const UserSettings = () => {
         }
 
         try {
-            const res = await userService.saveSettings(settings, authTokens)
+            const res = await userService.saveSettings(settings)
             setNotifications(res)
         } catch (e) {
             setNotifications({ title: 'There was an error.', type: 'error' })
@@ -178,4 +176,12 @@ const UserSettings = () => {
     )
 }
 
-export default UserSettings
+const mapProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const connectedUserSettings = connect(mapProps)(UserSettings)
+
+export default connectedUserSettings

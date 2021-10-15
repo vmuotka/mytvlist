@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 // project pages
 import SignUp from './pages/SignUp'
@@ -18,77 +19,83 @@ import MoviePage from './pages/MoviePage'
 import PrivateRoute from './PrivateRoute'
 
 // project hooks
-import { useAuth } from './context/auth'
 
-const AppRouter = () => {
-  const { authTokens } = useAuth()
-  const publicRoutes = [
-    {
-      path: '/show/:id',
-      component: ShowPage
-    },
-    {
-      path: '/movie/:id',
-      component: MoviePage
-    },
-    {
-      path: '/actor/:id',
-      component: ActorPage
-    },
-    {
-      path: '/search',
-      component: Search
-    },
-    {
-      path: '/signup',
-      component: SignUp
-    },
-    {
-      path: '/signin',
-      component: SignIn
-    },
-    {
-      path: '/user/:username',
-      component: Profile
-    },
-  ]
+const AppRouter = ({ user }) => {
+    const publicRoutes = [
+        {
+            path: '/show/:id',
+            component: ShowPage
+        },
+        {
+            path: '/movie/:id',
+            component: MoviePage
+        },
+        {
+            path: '/actor/:id',
+            component: ActorPage
+        },
+        {
+            path: '/search',
+            component: Search
+        },
+        {
+            path: '/signup',
+            component: SignUp
+        },
+        {
+            path: '/signin',
+            component: SignIn
+        },
+        {
+            path: '/user/:username',
+            component: Profile
+        },
+    ]
 
-  const privateRoutes = [
-    {
-      path: '/discover',
-      component: Discover
-    },
-    {
-      path: '/user_settings',
-      component: UserSettings
-    }
-  ]
+    const privateRoutes = [
+        {
+            path: '/discover',
+            component: Discover
+        },
+        {
+            path: '/user_settings',
+            component: UserSettings
+        }
+    ]
 
-  if (authTokens)
-    privateRoutes.push({
-      path: '/',
-      component: Activity
-    })
-  else
-    publicRoutes.push({
-      path: '/',
-      component: LandingPage
-    })
+    if (user)
+        privateRoutes.push({
+            path: '/',
+            component: Activity
+        })
+    else
+        publicRoutes.push({
+            path: '/',
+            component: LandingPage
+        })
 
-  return (
-    <Switch>
-      {
-        privateRoutes.map((route, index) =>
-          <PrivateRoute exact key={index} path={route.path} component={route.component} />
-        )
-      }
-      {
-        publicRoutes.map((route, index) =>
-          <Route key={index} path={route.path} component={route.component} />
-        )
-      }
-    </Switch>
-  )
+    return (
+        <Switch>
+            {
+                privateRoutes.map((route, index) =>
+                    <PrivateRoute exact key={index} path={route.path} component={route.component} />
+                )
+            }
+            {
+                publicRoutes.map((route, index) =>
+                    <Route key={index} path={route.path} component={route.component} />
+                )
+            }
+        </Switch>
+    )
 }
 
-export default AppRouter
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const connectedAppRouter = connect(mapStateToProps)(AppRouter)
+
+export default connectedAppRouter

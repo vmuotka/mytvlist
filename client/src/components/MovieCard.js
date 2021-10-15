@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 // icons
 import Star from './icons/Star'
@@ -8,7 +9,6 @@ import Star from './icons/Star'
 import Button from './Button'
 
 // project hooks
-import { useAuth } from '../context/auth'
 import { useNotification } from '../context/notification'
 
 // project services
@@ -24,7 +24,7 @@ const MovieCard = ({ movie, className }) => {
     const [fullDesc, setFullDesc] = useState(false)
 
     const [listed, setListed] = useState(movie.listed)
-    const { authTokens } = useAuth()
+    const user = useSelector((state) => state.user)
 
     // some movies return empty number of episodes when no episodes are published
     if (info.number_of_episodes === null || info.number_of_episodes === undefined)
@@ -38,7 +38,7 @@ const MovieCard = ({ movie, className }) => {
     // handle adding movie to users movielist
     const addToList = async () => {
         try {
-            await movieService.addToList({ id: info.id, title: info.title }, authTokens)
+            await movieService.addToList({ id: info.id, title: info.title })
             setListed(!listed)
         } catch (err) {
             setNotifications([{ title: 'Listing failed', message: 'There was an error while processing request', type: 'error' }])
@@ -65,7 +65,7 @@ const MovieCard = ({ movie, className }) => {
                 <div className="mb-8">
                     <div className="text-gray-900 font-bold text-xl mb-0">
                         <span className='break-word'>
-                            {authTokens &&
+                            {user &&
                                 <Button onClick={addToList} className='text-sm float-right ml-px' value={listed ? 'Unlist' : 'Add to list'} style={{ padding: '0.35rem 0.5rem' }} icon={<Star filled={listed} className='h-4 w-4 inline' />}
                                 />}
                             <Link to={`/movie/${info.id}`} >{info.title}&nbsp;

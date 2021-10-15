@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 // project components
 import Heading from '../components/Heading'
@@ -10,9 +11,6 @@ import MovieCard from '../components/MovieCard'
 
 // project services
 import userService from '../services/userService'
-
-// project hooks
-import { useAuth } from '../context/auth'
 
 // small component to render all shows when a button is clicked
 const DiscoverPage = (props) => {
@@ -41,22 +39,22 @@ const DiscoverPage = (props) => {
 }
 
 const Discover = () => {
-    const { authTokens } = useAuth()
     const [discover, setDiscover] = useState(null)
+    const user = useSelector((state) => state.user)
 
     const [subpage, setSubpage] = useState(false)
     const [type, setType] = useState('tv')
 
     // get user's recommendations
     useEffect(() => {
-        userService.discover(authTokens)
+        userService.discover()
             .then(data => {
                 setDiscover(data)
             }).catch(err => {
                 console.error(err)
             })
 
-    }, [authTokens])
+    }, [user])
 
     // detect when user has scrolled to the bottom of the screen and load more recommendations
     const [isFetching, setIsFetching] = useState(false)
@@ -90,7 +88,7 @@ const Discover = () => {
         } else {
             setIsFetching(false)
         }
-    }, [isFetching, discover, authTokens, subpage, type])
+    }, [isFetching, discover, user, subpage, type])
 
     const handleSeeAll = () => {
         window.scrollTo(0, 0)

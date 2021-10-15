@@ -5,13 +5,11 @@ import TextAreaAutoSize from 'react-textarea-autosize'
 import ThumbDown from './icons/ThumbDown'
 import ThumbUp from './icons/ThumbUp'
 import Checkbox from './Checkbox'
-import { useAuth } from '../context/auth'
 import searchService from '../services/searchService'
 import { useNotification } from '../context/notification'
 import Dots from './icons/Dots'
 
 const ReviewForm = ({ tv_id, movie_id, title, review }) => {
-    const { authTokens } = useAuth()
     const [reviewContent, setReviewContent] = useState('')
     const [recommend, setRecommend] = useState(true)
     const [spoilers, setSpoilers] = useState(false)
@@ -39,7 +37,7 @@ const ReviewForm = ({ tv_id, movie_id, title, review }) => {
         }
 
         try {
-            const res = await searchService.saveReview(review, authTokens)
+            const res = await searchService.saveReview(review)
             setNotifications(res)
         } catch (e) {
             setNotifications({ title: 'There was an error.', type: 'error' })

@@ -138,7 +138,7 @@ usersRouter.post('/login', [
 
     const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '28d' })
 
-    return res.status(200).json({ token })
+    return res.status(200).json({ token, username: user.username, id: user.id })
 })
 
 usersRouter.post('/profile', async (req, res) => {
