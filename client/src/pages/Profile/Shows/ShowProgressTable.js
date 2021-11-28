@@ -15,6 +15,7 @@ import SortDesc from '../../../components/icons/SortDesc'
 import ArrowLeft from '../../../components/icons/ArrowLeft'
 import ArrowRight from '../../../components/icons/ArrowRight'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
+import EditIcon from '../../../components/icons/EditIcon'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
 import InputField from '../../../components/InputField'
@@ -330,13 +331,15 @@ const TableRow = ({ show, odd, editMode, handleEditSelect, editSelection }) => {
                 </td>
                 <td className='flex w-1/6 justify-center items-center '>{ordinal(show.watch_progress.length)}</td>
                 <td className='justify-center w-1/6  items-center flex'>
-                    {myProfile && <InputField
-                        className='w-full text-center'
-                        type='number'
-                        value={scoreField}
-                        onBlur={handleScore}
-                        onChange={(e) => { setScoreField(getScore(+e.target.value)) }}
-                    />}
+                    {myProfile ?
+                        <input
+                            id={`${show.id}-score`}
+                            className='w-full h-full bg-transparent focus:outline-none appearance-none text-center'
+                            type='text'
+                            value={scoreField || ''}
+                            onBlur={handleScore}
+                            onChange={(e) => { setScoreField(getScore(+e.target.value.replace(/[^0-9]/g, ''))) }}
+                        /> : scoreField}
                 </td>
                 <td className='flex w-1/6 justify-center items-center'>
                     {(myProfile && nextEpisode) ?
@@ -543,6 +546,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
                                     className={`flex gap-2 w-1/6 cursor-pointer items-center justify-center sortable ${sortBy.type === 'score' && 'sortedby'}`}
                                     onClick={() => { handleSortChange('score') }}
                                 >
+                                    {myProfile && <span><EditIcon className='h-6' /></span>}
                                     Score
                                     {(sortBy.type === 'score' && sortBy.asc) ? <SortAsc className='w-5 h-5' /> : <SortDesc className='w-5 h-5' />}
                                 </th>
