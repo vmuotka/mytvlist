@@ -5,6 +5,7 @@ import ShowProgressTable from './ShowProgressTable'
 import Spinner from '../../../components/Spinner'
 import Button from '../../../components/Button'
 import InputField from '../../../components/InputField'
+import ToggleButton from '../../../components/ToggleButton'
 
 // import './ProgressTableRow.css'
 
@@ -18,6 +19,7 @@ const Shows = () => {
     const [tvlist, setTvlist] = useState(undefined)
     const [filteredList, setFilteredList] = useState(undefined)
     const [filter, setFilter] = useState('')
+    const [showPinned, setShowPinned] = useState(true)
 
     useEffect(() => {
         if (profile.tvlist) {
@@ -31,7 +33,7 @@ const Shows = () => {
             for (const show of list) {
                 const last = show.watch_progress[show.watch_progress.length - 1]
 
-                if (show.pinned)
+                if (show.pinned && showPinned)
                     pinned.array.push(show)
                 else if (last.episodes.filter(ep => ep.watched).length >= show.tv_info.number_of_episodes)
                     completed.array.push(show)
@@ -52,7 +54,7 @@ const Shows = () => {
                 paused
             ])
         }
-    }, [profile])
+    }, [profile, showPinned])
 
     useEffect(() => {
         if (tvlist) {
@@ -86,6 +88,13 @@ const Shows = () => {
                         label='Filter'
                         placeholder='Filter by Title'
                     />
+                    <span className='flex items-center gap-2 mt-2 text-gray-700'>
+                        <ToggleButton
+                            toggled={showPinned}
+                            onClick={() => { setShowPinned(!showPinned) }}
+                        />
+                        Display Pinned Table
+                    </span>
                 </ul>
             </div>
             <div className='w-full xl:w-4/5'>
