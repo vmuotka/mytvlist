@@ -497,7 +497,7 @@ const ShowProgressTable = ({ tvlist, name }) => {
     // if the pagination page count is reduced by shows moving to other lists, make sure the user is not left on an empty page
     useEffect(() => {
         if (currentPage > Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1))
-            setCurrentPage(Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1))
+            setCurrentPage(Math.max(Math.floor(tvlist.length / showsPerPage) + (tvlist.length % showsPerPage !== 0 && + 1), 1))
     }, [tvlist, currentPage])
 
     if (tvlist.length > 0)
