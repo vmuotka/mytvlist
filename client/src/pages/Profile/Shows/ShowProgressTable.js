@@ -18,7 +18,6 @@ import DeleteIcon from '../../../components/icons/DeleteIcon'
 import EditIcon from '../../../components/icons/EditIcon'
 import Select from '../../../components/Select'
 import ToggleButton from '../../../components/ToggleButton'
-import InputField from '../../../components/InputField'
 import Button from '../../../components/Button'
 import Pagination from '../../../components/Pagination'
 
