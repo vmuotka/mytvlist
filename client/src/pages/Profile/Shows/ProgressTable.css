@@ -19,3 +19,21 @@ sortedby > svg {
 .season-btn:hover > svg {
     scale: 1.1;
 }
+
+.table-row:hover .modal-btn, .hoverable-tablerow:hover .modal-btn {
+  display: inline;
+}
+
+.table-row:hover .progress-image,  .hoverable-tablerow:hover .progress-image { 
+  background-size: 0%;
+}
+
+.modal-btn {
+  display: none;
+  transition-property: padding;
+  transition-duration: 250ms;
+}
+
+.modal-btn:hover {
+  padding: .125rem;
+}

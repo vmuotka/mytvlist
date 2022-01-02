@@ -12,7 +12,7 @@ import DoubleDown from '../../../components/icons/DoubleDown'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
 import EditIcon from '../../../components/icons/EditIcon';
 
-import '../ProgressTableRow.css'
+import './ProgressTableRow.css'
 
 const TableRow = ({ movie, odd }) => {
     const { profile, setProfile } = useProfile()
