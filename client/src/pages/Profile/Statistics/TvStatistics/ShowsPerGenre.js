@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
 
-// project components
-import PieChart from '../../../../components/Charts/PieChart'
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true
+        },
+        title: {
+            display: false,
+        },
+    },
+}
+
+const backgroundColor = ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391', '#fc8181', '#63b3ed', '#d53f8c', '#f6e05e', '#805ad5', '#d53f8c', '#e53e3e', '#48bb78', '#38b2ac', '#667eea', '#ed64a6', '#d69e2e']
 
 const ShowsPerGenre = () => {
     const { profile } = useProfile()
-    const [data, setData] = useState([])
+    const [data, setData] = useState(null)
     useEffect(() => {
         if (profile.tvlist) {
             let genres = []
@@ -38,12 +54,20 @@ const ShowsPerGenre = () => {
                     return 1
                 return 0
             })
-            setData(genres)
+            setData({
+                labels: genres.map(genre => genre.name),
+                datasets: [
+                    {
+                        data: genres.map(genre => genre.value),
+                        backgroundColor
+                    }
+                ]
+            })
         }
     }, [profile])
     return (
         <div className='relative' style={{ height: '20rem' }}>
-            <PieChart data={data} />
+            {data && <Pie data={data} options={options} />}
         </div>
     )
 }

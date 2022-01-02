@@ -9,7 +9,7 @@
         "@testing-library/user-event": "^7.2.1",
         "autoprefixer": "^10.2.6",
         "axios": "^0.21.1",
-        "chart.js": "^2.9.4",
+        "chart.js": "^3.6.2",
         "cross-env": "^7.0.3",
         "date-fns": "^2.23.0",
         "disable-scroll": "^0.5.1",
@@ -17,6 +17,7 @@
         "postcss": "^8.3.5",
         "postcss-cli": "^8.1.0",
         "react": "^16.13.1",
+        "react-chartjs-2": "^4.0.0",
         "react-datepicker": "^4.1.1",
         "react-dom": "^16.13.1",
         "react-multi-select-component": "^3.0.4",
@@ -47,6 +48,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {}
+    }
 }

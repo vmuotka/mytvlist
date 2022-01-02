@@ -1,14 +1,46 @@
 import React, { useState, useEffect } from 'react'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js'
+import { Line } from 'react-chartjs-2'
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
 
-// project components
-import LineChart from '../../../../components/Charts/LineChart'
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+)
+
+const options = {
+    responsive: true,
+    spanGaps: true,
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Chart.js Line Chart',
+        },
+    },
+};
 
 const ReleaseYearChart = () => {
     const { profile } = useProfile()
-    const [data, setData] = useState([])
+    const [data, setData] = useState(null)
     useEffect(() => {
         if (profile.tvlist) {
             let started = []
@@ -89,12 +121,32 @@ const ReleaseYearChart = () => {
                     return 1
                 return 0
             })
-            setData({ range, data: [started, ended] })
+
+            const datasets = [
+                {
+                    label: 'Release Year',
+                    data: started.map(year => year.y),
+                    backgroundColor: '#f687b3',
+                    borderColor: '#f687b3'
+                },
+                {
+                    label: 'Last Year',
+                    data: ended.map(year => year.y),
+                    backgroundColor: ' #f6ad55',
+                    borderColor: ' #f6ad55'
+                }
+            ]
+            setData(
+                {
+                    labels: range,
+                    datasets
+                }
+            )
         }
     }, [profile])
     return (
         <div classx='relative' style={{ height: '20rem' }}>
-            <LineChart data={data} label='Releases' />
+            {data && <Line data={data} options={options} />}
         </div>
     )
 }

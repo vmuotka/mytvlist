@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
+
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
+ChartJS.register(ArcElement, Tooltip, Legend)
 
-// project components
-import PieChart from '../../../../components/Charts/PieChart'
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true
+        },
+        title: {
+            display: false,
+        },
+    },
+}
 
 const ProgressChart = () => {
     const { profile } = useProfile()
-    const [progress, setProgress] = useState([])
+    const [progress, setProgress] = useState(null)
     useEffect(() => {
         if (profile.tvlist) {
             let list = [...profile.tvlist]
@@ -31,17 +45,26 @@ const ProgressChart = () => {
 
             })
 
-            setProgress([
-                watching,
-                completed,
-                planning,
-                paused
-            ])
+            setProgress({
+                labels: ['Planning', 'Watching', 'Completed', 'Paused'],
+                datasets: [
+                    {
+                        label: '',
+                        data: [
+                            watching.value,
+                            completed.value,
+                            planning.value,
+                            paused.value
+                        ],
+                        backgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']
+                    }
+                ]
+            })
         }
     }, [profile])
     return (
         <div className='relative h-64'>
-            <PieChart data={progress} colors={['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']} />
+            {progress && <Pie data={progress} options={options} />}
         </div>
     )
 }
