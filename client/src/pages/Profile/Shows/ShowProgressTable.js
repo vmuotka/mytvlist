@@ -21,7 +21,6 @@ import ToggleButton from '../../../components/ToggleButton'
 import Button from '../../../components/Button'
 import Pagination from '../../../components/Pagination'
 
-import '../ProgressTableRow.css'
 import './ProgressTable.css'
 
 const EpisodeRow = ({ episode, show, watchtime, odd }) => {
