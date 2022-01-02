@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 // project components
 import ProgressChart from './ProgressChart'
@@ -9,17 +9,35 @@ import OriginCountryChart from './OriginCountryChart'
 import ReleaseYearChart from './ReleaseYearChart'
 import ShowsPerGenre from './ShowsPerGenre'
 import Basic from './Basic'
+import InputField from '../../../../components/InputField'
 
 import { useProfile } from '../../../../context/profile'
 
 const Statistics = () => {
     const { profile } = useProfile()
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+
     return (
         <>
             {
                 (profile.tvlist && profile.tvlist.length > 0) ?
                     <>
-                        <Basic />
+                        <Basic startDate={startDate} endDate={endDate} />
+                        <div className='mt-2 ml-2 flex gap-6'>
+                            <InputField
+                                label='Start Date'
+                                type='date'
+                                value={startDate}
+                                onChange={(e) => { setStartDate(e.target.value) }}
+                            />
+                            <InputField
+                                label='End Date'
+                                type='date'
+                                value={endDate}
+                                onChange={(e) => { setEndDate(e.target.value) }}
+                            />
+                        </div>
                         <div className='w-full md:w-4/5 mx-auto mt-4'>
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-12 mt-4 md:mx-2'>
                                 <div>
@@ -44,8 +62,8 @@ const Statistics = () => {
                                     <ShowsPerGenre />
                                 </div>
                                 <div className='md:col-span-2'>
-                                    <p className='text-gray-700 text-lg text-center'>Hours by Genre</p>
-                                    <HoursByGenre />
+                                    <p className='text-gray-700 text-lg text-center' title={(startDate || endDate) && 'Filtered by given dates'}>Hours by Genre{(startDate || endDate) && '*'}</p>
+                                    <HoursByGenre startDate={startDate} endDate={endDate} />
                                 </div>
                             </div>
                             <div className='md:col-span-2'>

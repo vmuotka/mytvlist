@@ -1,10 +1,25 @@
 import React from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
 
-// project components
-import PieChart from '../../../../components/Charts/PieChart'
+
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true
+        },
+        title: {
+            display: false,
+        },
+    },
+}
 
 const MovieOriginCountryChart = () => {
     const { profile } = useProfile()
@@ -33,9 +48,19 @@ const MovieOriginCountryChart = () => {
     })
 
     data.push(no_data)
+
+    const chart = {
+        labels: data.map(item => item.name),
+        datasets: [
+            {
+                data: data.map(item => item.value),
+                backgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']
+            }
+        ]
+    }
     return (
         <div className='relative h-64'>
-            <PieChart data={data} colors={['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']} />
+            <Pie data={chart} options={options} />
         </div>
     )
 }

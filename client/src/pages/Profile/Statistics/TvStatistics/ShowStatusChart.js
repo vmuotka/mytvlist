@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
 
-// project components
-import PieChart from '../../../../components/Charts/PieChart'
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true
+        },
+        title: {
+            display: false,
+        },
+    },
+}
 
 const ShowStatusChart = () => {
     const { profile } = useProfile()
-    const [status, setStatus] = useState([])
+    const [status, setStatus] = useState(null)
     useEffect(() => {
         if (profile.tvlist) {
             let returning = { name: 'Ongoing', value: 0 }
@@ -28,16 +42,24 @@ const ShowStatusChart = () => {
                     default: break;
                 }
             })
-            setStatus([
-                returning,
-                ended,
-                canceled
-            ])
+            setStatus({
+                labels: ['Ongoing', 'Ended', 'Cancelled'],
+                datasets: [
+                    {
+                        data: [
+                            returning.value,
+                            ended.value,
+                            canceled.value
+                        ],
+                        backgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']
+                    }
+                ]
+            })
         }
     }, [profile])
     return (
         <div className='relative h-64'>
-            <PieChart data={status} colors={['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']} />
+            {status && <Pie data={status} options={options} />}
         </div>
     )
 }

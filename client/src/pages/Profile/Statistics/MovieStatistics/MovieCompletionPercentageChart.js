@@ -1,11 +1,25 @@
 import React from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
 
 // project hooks
 import { useProfile } from '../../../../context/profile'
 
-// project components
-import PieChart from '../../../../components/Charts/PieChart'
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true
+        },
+        title: {
+            display: false,
+        },
+    },
+}
 
 const MovieCompletionPercentageChart = () => {
     const { profile } = useProfile()
@@ -19,10 +33,16 @@ const MovieCompletionPercentageChart = () => {
             not_watched.value++
     })
 
-    const data = [watched, not_watched]
+    const data = {
+        labels: ['Watched', 'Planned'],
+        datasets: [{
+            data: [watched.value, not_watched.value],
+            backgroundColor: ['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']
+        }]
+    }
     return (
         <div className='relative h-64'>
-            <PieChart data={data} colors={['#f687b3', ' #f6ad55', '#4fd1c5', '#68d391']} />
+            <Pie data={data} options={options} />
         </div>
     )
 }
