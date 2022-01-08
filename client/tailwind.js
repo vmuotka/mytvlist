@@ -28,9 +28,9 @@ module.exports = {
     variants: {
         extend: {
             opacity: ['disabled'],
-            borderWidth: ['focus'],
+            borderWidth: ['focus', 'first'],
             backgroundColor: ['focus', 'odd'],
-            borderRadius: ['first', 'last']
+            borderRadius: ['first', 'last'],
         },
     },
     plugins: [],

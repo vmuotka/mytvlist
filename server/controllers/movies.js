@@ -181,7 +181,7 @@ moviesRouter.post('/details', async (req, res) => {
     const body = req.body
     let response
     try {
-        response = await api(`${baseUrl}/movie/${body.id}?api_key=${process.env.MOVIEDB_API}&append_to_response=credits`)
+        response = await api(`${baseUrl}/movie/${body.id}?api_key=${process.env.MOVIEDB_API}&append_to_response=credits,videos`)
     } catch (err) {
         return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
     }

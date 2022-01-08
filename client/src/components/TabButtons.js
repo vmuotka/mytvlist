@@ -6,7 +6,7 @@ const TabButtons = ({ options, value, onChange }) => (
             options.map(option =>
                 <button
                     key={option}
-                    className={`capitalize border first:rounded-l last:rounded-r border-pink-500 py-1 w-24 font-semibold focus:outline-none ${value === option ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'} `}
+                    className={`capitalize border border-l-0 first:border-l first:rounded-l last:rounded-r border-pink-500 py-1 w-24 font-semibold focus:outline-none ${value === option ? 'bg-pink-500 text-white' : 'hover:bg-pink-500 hover:text-white text-pink-500'} `}
                     onClick={() => { onChange(option) }}
                 >
                     {option}
