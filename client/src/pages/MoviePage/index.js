@@ -9,6 +9,7 @@ import Select from '../../components/Select'
 import Cast from '../ShowPage/Cast'
 import Reviews from '../ShowPage/Reviews'
 import ReviewForm from '../../components/ReviewForm'
+import Trailer from '../../components/Trailer'
 
 // icons
 import Star from '../../components/icons/Star'
@@ -57,6 +58,8 @@ const MoviePage = () => {
         const minutes = runtimeInMinutes % 60
         return `${hours === 1 ? `1 hour` : `${hours} hours`} ${minutes === 1 ? `1 minute` : `${minutes} minutes`}`
     }
+
+    console.log(movie?.videos)
 
     return (
         <div className='w-full md:w-2/3 mx-auto mt-3'>
@@ -141,6 +144,8 @@ const MoviePage = () => {
                     </div>
 
                     <Cast cast={movie.credits.cast} />
+
+                    <Trailer videos={movie.videos.results} />
 
                     {decodedToken && <ReviewForm title={movie.title} movie_id={movie.id} review={movie.reviews.find(review => review.user.id === decodedToken.id)} />}
                     <Reviews tv_id={movie.id} title={movie.title} data={movie.reviews} />
