@@ -28,6 +28,15 @@ const ActorPage = () => {
                         return -1
                     return 0
                 })
+                res.data.movie_credits.cast.sort((a, b) => {
+                    if (a.release_date && b.release_date)
+                        return +b.release_date.split('-')[0] - +a.release_date.split('-')[0]
+                    if (!a.release_date && b.release_date)
+                        return 1
+                    if (a.release_date && !b.firstrelease_date_air_date)
+                        return -1
+                    return 0
+                })
                 setActor(res.data)
             })
             .catch(err => {
@@ -35,6 +44,8 @@ const ActorPage = () => {
                 setNotifications([{ title: 'Couln\'t find the actor', type: 'error' }])
             })
     }, [id, setNotifications])
+
+    console.log(actor?.tv_credits.cast)
 
     return (
         <div className='w-full md:w-2/3 mx-auto mt-3'>
