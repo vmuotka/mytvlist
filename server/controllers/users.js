@@ -188,67 +188,6 @@ usersRouter.post('/profile', async (req, res) => {
     return res.status(200).json(profile)
 })
 
-usersRouter.post('/progress', async (req, res) => {
-    const body = req.body
-    const decodedToken = UserHelper.decodeToken(req.token)
-
-    let score = body.score
-    if (score <= 0)
-        score = undefined
-    else if (score > 100)
-        score = 100
-
-    // let progress = body.progress
-    let watch_progress = body.watch_progress
-
-    let show
-    try {
-        show = await api(`${apiUrl}/tv/${body.tv_id}?api_key=${process.env.MOVIEDB_API}`)
-        show = show.data
-    } catch (err) {
-        return res.status(503).json({ error: 'There was an error. Try again later.' })
-    }
-    show.seasons = show.seasons.filter(season => season.name !== 'Specials')
-
-    // progress.forEach(obj => {
-    //     obj = validateProgress(obj, show)
-    // })
-
-    // if (progress[progress.length - 1].season === show.number_of_seasons && progress[progress.length - 1].episode === show.seasons[show.seasons.length - 1].episode_count) {
-    //     handleActivity({
-    //         user: decodedToken.id,
-    //         desc: `finished ${show.name}`
-    //     })
-    // }
-
-    try {
-        let tvlist = await Tvlist.findOne({ _id: body.id, user: decodedToken.id })
-        // if (progress.length > tvlist.progress.length) {
-        //     handleActivity({
-        //         desc: `started rewatching ${show.name}.`,
-        //         user: decodedToken.id
-        //     })
-        // }
-
-        // handleActivity({
-        //     tv_id: body.tv_id,
-        //     desc: `watched ${show.name}: Season ${Math.min(progress[progress.length - 1].season + 1, show.number_of_seasons)} Episode ${progress[progress.length - 1].episode}.`,
-        //     user: decodedToken.id
-        // })
-
-        // tvlist.progress = progress
-        tvlist.watching = body.watching
-        tvlist.score = body.score
-        await tvlist.save()
-
-    } catch (err) {
-        return res.status(503).json({ error: 'Database connection failed' })
-    }
-
-    return res.status(200).json({ message: 'Progress saved successfully' })
-
-})
-
 usersRouter.post('/search', async (req, res) => {
     const body = req.body
     let users
