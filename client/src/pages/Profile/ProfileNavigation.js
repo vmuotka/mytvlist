@@ -59,7 +59,7 @@ const ProfileNavigation = ({ active, onClick }) => {
                     />}
                 </div>
                 {(profile.quote && profile.quote.value) &&
-                    <div className='ml-4 mt-1 text-white font-serif text-sm'>
+                    <div className='px-4 w-max max-w-full mt-1 text-white font-serif text-sm'>
                         <span className='italic'>{profile.quote.value}</span>
                         <div className='flex justify-end'>
                             {profile.quote.character && <span>-&nbsp;{profile.quote.character}&nbsp;</span>}
