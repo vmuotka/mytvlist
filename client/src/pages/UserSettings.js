@@ -100,7 +100,7 @@ const UserSettings = () => {
                     <Spinner className='mx-auto mt-4' color='bg-pink-500' show={true} />
                     :
                     <div className='w-full md:w-3/5 md:max-w-3xl mx-auto mt-3'>
-                        <Heading className='text-center'>Discover</Heading>
+                        <Heading className='text-center'>Settings</Heading>
                         <Form onSubmit={handleSubmit}>
                             <FormGroup groupName='Change Password'>
                                 <InputField
