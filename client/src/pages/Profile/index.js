@@ -33,22 +33,23 @@ const Profile = () => {
 
     useEffect(() => {
         if (username)
-            userService.profile(username, authTokens).then(data => {
-                setProfile({
-                    ...data,
-                    tvlist: data.tvlist.sort((a, b) => {
-                        if (a.tv_info.name < b.tv_info.name)
-                            return -1
-                        if (a.tv_info.name > b.tv_info.name)
-                            return 1
-                        return 0
-                    })
+            setProfile(null)
+        userService.profile(username, authTokens).then(data => {
+            setProfile({
+                ...data,
+                tvlist: data.tvlist.sort((a, b) => {
+                    if (a.tv_info.name < b.tv_info.name)
+                        return -1
+                    if (a.tv_info.name > b.tv_info.name)
+                        return 1
+                    return 0
                 })
-                setProfileNav('TvList')
-            }).catch(err => {
-                setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
-            }
-            )
+            })
+            setProfileNav('TvList')
+        }).catch(err => {
+            setNotifications([{ title: err.message, message: 'User not found', type: 'error' }])
+        }
+        )
         // eslint-disable-next-line
     }, [username, setProfile, authTokens])
 
