@@ -26,6 +26,9 @@ app.use('/api/tvlist', tvlistRouter)
 const movieRouter = require('./controllers/movies')
 app.use('/api/movie', movieRouter)
 
+const actorRouter = require('./controllers/actors')
+app.use('/api/actor', actorRouter)
+
 // connect to database
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 
