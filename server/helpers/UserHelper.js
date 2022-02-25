@@ -17,10 +17,14 @@ const findById = async (id) => {
 }
 
 const decodeToken = (token) => {
-    if (token)
-        return jwt.verify(token, process.env.SECRET)
-    else
+    try {
+        if (token)
+            return jwt.verify(token, process.env.SECRET)
+        else
+            return undefined
+    } catch (err) {
         return undefined
+    }
 }
 
 const getTvList = async (profile, decodedToken) => {
