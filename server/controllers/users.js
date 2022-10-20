@@ -66,7 +66,7 @@ usersRouter.post('/register', [
 
 usersRouter.post('/save_settings', async (req, res) => {
     const body = req.body
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     let messages = []
     try {
@@ -101,7 +101,7 @@ usersRouter.post('/save_settings', async (req, res) => {
 })
 
 usersRouter.post('/get_settings', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     let user
     try {
         user = await User.findById(decodedToken.id)
@@ -156,7 +156,7 @@ usersRouter.post('/profile', async (req, res) => {
     let profile = JSON.parse(JSON.stringify(user))
     profile.email = undefined
 
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     profile.followed = false
     if (decodedToken && decodedToken.id !== user.id) {
@@ -212,7 +212,7 @@ usersRouter.post('/search', async (req, res) => {
 })
 
 usersRouter.post('/discover', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     const tv = await MovieDbApi.discoverTv(decodedToken)
     const movie = await MovieDbApi.discoverMovies(decodedToken)
@@ -223,7 +223,7 @@ usersRouter.post('/discover', async (req, res) => {
 })
 
 usersRouter.post('/discover/scroll', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     const body = req.body
 
@@ -239,7 +239,7 @@ usersRouter.post('/discover/scroll', async (req, res) => {
 })
 
 usersRouter.post('/follow', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     const body = req.body
 
@@ -263,7 +263,7 @@ usersRouter.post('/follow', async (req, res) => {
 })
 
 usersRouter.post('/activity', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const user = await User.findOne({ _id: decodedToken.id })
     const activities = await Activity.find({
         user: user.following,

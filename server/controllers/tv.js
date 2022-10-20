@@ -28,7 +28,7 @@ tvRouter.post('/search', async (req, res) => {
         return res.status(503).json({ error: 'Server couln\'t connect to the API. Try again later.' })
     }
 
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
 
     let tvlistArr
     if (decodedToken !== undefined) {

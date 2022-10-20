@@ -77,7 +77,7 @@ tvlistRouter.post('/addtolist', async (req, res) => {
 })
 
 tvlistRouter.post('/save_episode', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = { ...req.body, user: decodedToken.id }
 
     const query = {
@@ -100,7 +100,7 @@ tvlistRouter.post('/save_episode', async (req, res) => {
 })
 
 tvlistRouter.post('/save_score', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = req.body
 
     try {
@@ -115,7 +115,7 @@ tvlistRouter.post('/save_score', async (req, res) => {
 })
 
 tvlistRouter.post('/rewatch', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = req.body
 
     try {
@@ -138,7 +138,7 @@ tvlistRouter.post('/rewatch', async (req, res) => {
 })
 
 tvlistRouter.post('/save_watching', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = req.body
 
     try {
@@ -153,7 +153,7 @@ tvlistRouter.post('/save_watching', async (req, res) => {
 })
 
 tvlistRouter.post('/save_pinned', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = req.body
 
     try {
@@ -168,7 +168,7 @@ tvlistRouter.post('/save_pinned', async (req, res) => {
 })
 
 tvlistRouter.post('/delete_watchtime', async (req, res) => {
-    const decodedToken = UserHelper.decodeToken(req.token)
+    const decodedToken = (req.token)
     const body = req.body
 
     try {
