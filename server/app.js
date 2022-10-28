@@ -6,20 +6,16 @@ const cors = require('cors')
 const middleware = require('./utils/middleware')
 const path = require('path')
 
-// parse json bodies sent by api clients
 app.use(express.json())
 
 app.use(middleware.tokenExtractor)
 
-// api routing for users
 const usersRouter = require('./controllers/users')
 app.use('/api/user', usersRouter)
 
-// api routing for moviedatabase api
 const tvRouter = require('./controllers/tv')
 app.use('/api/tv', tvRouter)
 
-// api routing for users list interaction
 const tvlistRouter = require('./controllers/tvlist')
 app.use('/api/tvlist', tvlistRouter)
 
@@ -29,7 +25,6 @@ app.use('/api/movie', movieRouter)
 const actorRouter = require('./controllers/actors')
 app.use('/api/actor', actorRouter)
 
-// connect to database
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 
 app.use(cors())
